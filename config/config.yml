@@ -1,0 +1,21 @@
+tropo2_server:
+    jid: usera@10.0.1.11 # To login to the Tropo/Ozone server as
+    password: '1' #Password for the JID
+    sip_uri: usera@10.0.1.11 # The SIP URI for Tropo1 to pitch calls to on Tropo2/Ozone
+    wire_log: logs/tropo2-wire.log
+    transport_log: logs/tropo2-transport.log
+    
+tropo2_queue:
+    connection_timeout: 30 # Amount of time waiting to connect to the Ozone server before considering it a timeout
+    read_timeout: 5 # The number of seconds to block on waiting for a Tropo2/Ozone event
+    last_scenario_timeout: 2 # The amount of time to block while flushing the queue of any extraneous stanzas for unhappy cases
+    
+tropo1:
+    use: true # True to use Tropo1, false to be prompted to dial interactively from a softphone
+    # Tropo1 session URI, include the location of ozone_functional_tester/support/ozone_testing.rb, there is a copy on the URI below too
+    session_url: 'http://10.0.1.11:8080/tropo/calls?action=create&token=http://dl.dropbox.com/u/25511/Voxeo/tropo2_testing/tropo2_testing.rb&vars=server_uri%3D10.0.1.10:8787'
+    call_destination: ozone_testing.rb@10.0.1.11
+    druby_uri: druby://0.0.0.0:8787
+
+# Audio file to use for testing
+audio_url: http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3
