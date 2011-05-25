@@ -10,8 +10,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
     @tropo2 = Tropo2Utilities::Tropo2Driver.new({ :username         => @config['tropo2_server']['jid'],
                                                   :password         => @config['tropo2_server']['password'],
                                                   :wire_logger      => Logger.new(@config['tropo2_server']['wire_log']),
-                                                  :transport_logger => Logger.new(@config['tropo2_server']['transport_log']) })
-                                                  #:log_level        => Logger::DEBUG })
+                                                  :transport_logger => Logger.new(@config['tropo2_server']['transport_log']),
+                                                  :log_level        => Logger::DEBUG })
                                  
     ap "Starting Tropo1Driver to host scripts via DRb and launch calls via HTTP."
     @tropo1 = Tropo2Utilities::Tropo1Driver.new(@config['tropo1']['druby_uri'])
@@ -37,9 +37,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       # Read the Tropo2 queue and validate the offer
       call_event = @tropo2.read_event_queue
       call_event.should be_a_valid_call_event
-      
+
       # Send a hangup to Tropo2
-      hangup_event = @tropo2.hangup(call_event)
+      hangup_event = @tropo2.hangup
       hangup_event.should be_a_valid_hangup_event
       
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
@@ -58,14 +58,14 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call_event.should be_a_valid_call_event
     
       # Send an answer to Tropo2
-      answer_event = @tropo2.answer(call_event)
+      answer_event = @tropo2.answer
       answer_event.should be_a_valid_answer_event
       
       # Send a hangup to Tropo2
-      hangup_event = @tropo2.hangup(call_event)
-      #hangup_event.should be_a_valid_hangup_event
+      hangup_event = @tropo2.hangup
+      hangup_event.should be_a_valid_hangup_event
       
-      #@tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
         
     it "Should answer a call and let the farside hangup" do
@@ -75,33 +75,32 @@ describe "Tropo2AutomatedFunctionalTesting" do
   
   describe "Say verb" do
     it "Should say something with TTS" do
-      pending('Punchblock object model')
       @tropo1.script_content = <<-SCRIPT_CONTENT
-        call 'sip:' + '#{@config['ozone_server']['sip_uri']}'
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         ask 'One', { :choices     => 'yes, no',
                      :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
-                     :onChoice    => lambda { |event| ozone_testing_server.tropo_result = event.value  } }
+                     :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
         wait 3000
       SCRIPT_CONTENT
-      @tropo1.launch_call @config['tropo1']['session_url']
+      @tropo1.place_call @config['tropo1']['session_url']
     
       call_event = @tropo2.read_event_queue
       call_event.should be_a_valid_call_event
     
-      answer_event = @tropo2.answer(call_event)
+      answer_event = @tropo2.answer
       answer_event.should be_a_valid_answer_event
     
-      say_event = @tropo.say 'yes' => string
-      say_event.should be_a_valid_say_event
+      say_event = @tropo2.say 'yes'
+      say_event.should be_a_valid_successful_say_event
 
       # Give time for the media transaction to complete 
-      sleep 3
+      sleep @config['media_assertion_timeout']
     
-      hangup_event = @tropo2.hangup(call_event)
+      hangup_event = @tropo2.hangup
       hangup_event.should be_a_valid_hangup_event
 
       # Validate the media worked properly
-      @tropo1.tropo_result.should eql 'yes'
+      @tropo1.result.should eql 'yes'
       
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -109,10 +108,10 @@ describe "Tropo2AutomatedFunctionalTesting" do
     it "Should say some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
       pending('Punchblock object model')
       @tropo1.script_content = <<-SCRIPT_CONTENT
-        call 'sip:' + '#{@config['ozone_server']['sip_uri']}'
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 30000
       SCRIPT_CONTENT
-      @tropo1.launch_call @config['tropo1']['session_url']
+      @tropo1.place_call @config['tropo1']['session_url']
     
       call_event = @tropo2.read_event_queue
       call_event.should be_a_valid_call_event
@@ -159,29 +158,30 @@ describe "Tropo2AutomatedFunctionalTesting" do
   
   describe "Ask verb" do
     it "Should ask something with ASR and get the utterance back" do
-      pending('Punchblock object model')
+      pending('https://github.com/tropo/punchblock/issues/8')
       @tropo1.script_content = <<-SCRIPT_CONTENT
-        call 'sip:' + '#{@config['ozone_server']['sip_uri']}'
-        sleep 3
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        sleep #{@config['media_assertion_timeout']}.to_i
         say 'yes'
         wait 3000
       SCRIPT_CONTENT
-      @tropo1.launch_call @config['tropo1']['session_url']
+      @tropo1.place_call @config['tropo1']['session_url']
     
       call_event = @tropo2.read_event_queue
       call_event.should be_a_valid_call_event
         
-      answer_event = @tropo2.answer(call_event)
+      answer_event = @tropo2.answer
       answer_event.should be_a_valid_answer_event
     
-      # @blather_stream.send_data generator.ask({ :prompt => 'One', :choices => 'yes, no' })
-      # ask_reply, ask = read_queue, read_queue
+      ask_event = @tropo2.ask('One', 'yes, no')
+      ap ask_event
+      ask_event.should be_a_valid_ask_event
     
-      hangup_event = @tropo2.hangup(call_event)
+      hangup_event = @tropo2.hangup
       hangup_event.should be_a_valid_hangup_event
       
       # Validate the media worked properly
-      @tropo1.tropo_result.should eql 'yes'
+      #@tropo1.result.should eql 'yes'
       
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -192,7 +192,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       pending('Punchblock object model')
   #     pending('Reported issue to Jose')
   #     @tropo_connector.script_content = <<-SCRIPT_CONTENT
-  #       call 'sip:' + '#{@config['ozone_server']['sip_uri']}'
+  #       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
   #       wait 30000
   #     SCRIPT_CONTENT
   #     

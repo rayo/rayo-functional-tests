@@ -19,3 +19,5 @@ tropo1:
 
 # Audio file to use for testing
 audio_url: http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3
+
+media_assertion_timeout: 3
