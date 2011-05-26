@@ -33,7 +33,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
         wait 3000
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
-      
       # Read the Tropo2 queue and validate the offer
       call_event = @tropo2.read_event_queue
       call_event.should be_a_valid_call_event
@@ -285,7 +284,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       
       call_event = @tropo2.transfer(@config['tropo1']['call_destination'])
       call_event.should be_a_valid_call_event
-      call_event.headers[:to].should eql "sip:tropo2_testing.rb@10.0.1.11"
+      call_event.headers[:to].should eql @config['tropo1']['call_destination']
     end
   end
 end
