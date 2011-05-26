@@ -265,7 +265,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
   
   describe "Transfer verb" do
     it "Should answer a call and then transfer it" do
-      pending('https://github.com/tropo/tropo2/issues/7')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 30000
@@ -284,8 +283,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
         wait 30000
       SCRIPT_CONTENT
       
-      transfer_event = @tropo2.transfer(@config['tropo1']['call_destination'])
-      ap transfer_event
+      call_event = @tropo2.transfer(@config['tropo1']['call_destination'])
+      call_event.should be_a_valid_call_event
+      call_event.headers[:to].should eql "sip:tropo2_testing.rb@10.0.1.11"
     end
   end
 end
