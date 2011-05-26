@@ -109,12 +109,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should say an audio URL" do
-      pending('When it completes, should it be reason STOP versus SUCCESS?')
+      pending('https://github.com/tropo/tropo2/issues/9')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        ask 'One', { :choices     => 'yes, no',
-                     :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
-                     :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
         wait 3000
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
@@ -131,7 +128,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
       sleep 9
       
       say_event = @tropo2.read_event_queue
-      ap say_event
       say_event.should be_a_valid_successful_say_event
     
       hangup_event = @tropo2.hangup

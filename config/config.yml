@@ -1,7 +1,7 @@
 tropo2_server:
-    jid: usera@127.0.0.1 # To login to the Tropo/Ozone server as
+    jid: usera@199.230.56.129 # To login to the Tropo/Ozone server as
     password: '1' #Password for the JID
-    sip_uri: usera@127.0.0.1 # The SIP URI for Tropo1 to pitch calls to on Tropo2/Ozone
+    sip_uri: usera@199.230.56.129 # The SIP URI for Tropo1 to pitch calls to on Tropo2/Ozone
     wire_log: logs/tropo2-wire.log
     transport_log: logs/tropo2-transport.log
     
@@ -13,8 +13,8 @@ tropo2_queue:
 tropo1:
     use: true # True to use Tropo1, false to be prompted to dial interactively from a softphone
     # Tropo1 session URI, include the location of ozone_functional_tester/support/ozone_testing.rb, there is a copy on the URI below too
-    session_url: 'http://127.0.0.1:8080/tropo/calls?action=create&token=http://dl.dropbox.com/u/25511/Voxeo/tropo2_testing/tropo2_testing.rb&vars=server_uri%3D127.0.0.1:8787'
-    call_destination: sip:tropo2_testing.rb@127.0.0.1
+    session_url: 'http://199.230.56.129:8080/tropo/calls?action=create&token=http://dl.dropbox.com/u/25511/Voxeo/tropo2_testing/tropo2_testing.rb&vars=server_uri%3D98.207.5.162:8787'
+    call_destination: sip:tropo2_testing.rb@199.230.56.129
     druby_uri: druby://0.0.0.0:8787
     wait_to_hangup: 3000
 
