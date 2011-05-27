@@ -3,10 +3,11 @@ source "http://geminabox.voxeolabs.com/"
 
 group :development do
   gem 'rspec'
-  gem 'rake'
   gem 'bundler'
+  gem 'rake'
   gem 'rcov'
   gem 'rspec-tropo2'
   gem 'punchblock'
   gem 'awesome_print'
+  gem 'ci_reporter'
 end
