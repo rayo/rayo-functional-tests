@@ -241,7 +241,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       answer_event = @tropo2.answer
       answer_event.should be_a_valid_answer_event
     
-      ask_event = @tropo2.ask('One', 'yes, no')
+      ask_event = @tropo2.ask('One',{ :choices => 'yes, no' })
       ask_event.should be_a_valid_ask_event
     
       hangup_event = @tropo2.hangup
@@ -268,7 +268,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       answer_event = @tropo2.answer
       answer_event.should be_a_valid_answer_event
     
-      @tropo2.ask_nonblocking('<say-as interpret-as="ordinal">100</say-as>', 'yes, no', :timeout => 5)
+      @tropo2.ask_nonblocking('<say-as interpret-as="ordinal">100</say-as>', :choices => 'yes, no')
       sleep 6
       ask_event = @tropo2.read_event_queue
       ask_event.should be_a_valid_ask_event
@@ -297,7 +297,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       answer_event = @tropo2.answer
       answer_event.should be_a_valid_answer_event
       
-      ask_event = @tropo2.ask('One', @grxml, :grammar => 'application/grammar+grxml')
+      ask_event = @tropo2.ask('One', { :choices => @grxml, 
+                                       :grammar => 'application/grammar+grxml' })
       ask_event.should be_a_valid_ask_event
     
       hangup_event = @tropo2.hangup
@@ -326,7 +327,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       answer_event = @tropo2.answer
       answer_event.should be_a_valid_answer_event
     
-      ask_event = @tropo2.ask('<say-as interpret-as="ordinal">100</say-as>', @grxml, :grammar => 'application/grammar+grxml')
+      ask_event = @tropo2.ask('<say-as interpret-as="ordinal">100</say-as>', { :choices => @grxml, 
+                                                                               :grammar => 'application/grammar+grxml' })
       ask_event.should be_a_valid_ask_event
     
       hangup_event = @tropo2.hangup
@@ -353,7 +355,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       answer_event.should be_a_valid_answer_event
       
       time = Time.now
-      ask_event = @tropo2.ask('Yeap', 'yes, no', :timeout => 3)
+      ask_event = @tropo2.ask('Yeap', { :choices => 'yes, no', 
+                                        :timeout => 3 })
       seconds_elapsed = Time.now - time
       ap seconds_elapsed
       ap ask_event
@@ -363,6 +366,17 @@ describe "Tropo2AutomatedFunctionalTesting" do
       hangup_event.should be_a_valid_hangup_event
       
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
+  end
+  
+  describe "Conference verb" do
+    it "Should put one caller in conference and then hangup" do
+    end
+    
+    it "Should put two callers into a conference and then hangup" do
+    end
+    
+    it "Should put two callers into a conference, validate media and hangup" do
     end
   end
   
