@@ -13,10 +13,10 @@ tropo2_queue:
 tropo1:
     use: true # True to use Tropo1, false to be prompted to dial interactively from a softphone
     # Tropo1 session URI, include the location of ozone_functional_tester/support/ozone_testing.rb, there is a copy on the URI below too
-    session_url: 'http://127.0.0.1:8080/tropo/calls?action=create&token=http://dl.dropbox.com/u/25511/Voxeo/tropo2_testing/tropo2_testing.rb&vars=server_uri%3D127.0.0.1:8787'
+    session_url: 'http://127.0.0.1:8080/tropo/calls?action=create&token=http://dl.dropbox.com/u/25511/Voxeo/tropo2_testing/tropo2_testing.rb&vars=server_uri%3D98.207.5.162:8787'
     call_destination: sip:tropo2_testing.rb@127.0.0.1
     druby_uri: druby://0.0.0.0:8787
-    wait_to_hangup: 3000
+    wait_to_hangup: 30000
 
 # Audio file to use for testing
 audio_url: http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3

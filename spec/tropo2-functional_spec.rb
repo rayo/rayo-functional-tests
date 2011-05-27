@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 # startCallRecording 'http://tropo-audiofiles-to-s3.heroku.com/post_audio_to_s3?file_name=ozone2_testing.wav'
 
-describe "Tropo2AutomatedFunctionalTesting" do  
+describe "Tropo2AutomatedFunctionalTesting" do
   before(:all) do
     @config = YAML.load(File.open('config/config.yml'))
 
@@ -30,7 +30,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     it "Should receive a call arrives and then hangup" do
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        wait 3000
+        wait #{@config['tropo1']['wait_to_hangup']}
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
       # Read the Tropo2 queue and validate the offer
@@ -48,7 +48,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         say 'Hello world'
-        wait 3000
+        wait #{@config['tropo1']['wait_to_hangup']}
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
@@ -83,7 +83,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
         ask 'One', { :choices     => 'yes, no',
                      :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
                      :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
-        wait 3000
+        wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
@@ -112,7 +112,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       pending('https://github.com/tropo/tropo2/issues/9')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        wait 3000
+        wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
@@ -142,7 +142,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
         ask 'One', { :choices     => 'one hundred, ireland',
                      :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
                      :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
-        wait 3000
+        wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
@@ -171,7 +171,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       pending('https://github.com/tropo/punchblock/issues/10')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        wait 30000
+        wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
@@ -199,12 +199,39 @@ describe "Tropo2AutomatedFunctionalTesting" do
   end
   
   describe "Ask verb" do
+    before(:all) do
+      @grxml = <<-GRXML
+        <grammar xmlns="http://www.w3.org/2001/06/grammar" root="MAINRULE">
+            <rule id="MAINRULE"> 
+                <one-of>
+                    <item>
+                        <item repeat="0-1"> need a</item>
+                        <item repeat="0-1"> i need a</item>
+                            <one-of> 
+                                <item> clue </item>
+                            </one-of>
+                        <tag> out.concept = "clue";</tag> 
+                    </item>
+                    <item>
+                        <item repeat="0-1"> have an</item>
+                        <item repeat="0-1"> i have an</item>
+                            <one-of> 
+                                <item> answer </item>
+                            </one-of>
+                        <tag> out.concept = "answer";</tag> 
+                    </item>
+                    </one-of>
+            </rule> 
+        </grammar>
+      GRXML
+    end
+    
     it "Should ask something with ASR and get the utterance back" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
         say 'yes'
-        wait 3000
+        wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
@@ -226,14 +253,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
-    it "Should ask with SSML as a prompt" do
-      pending('https://github.com/tropo/punchblock/issues/13')
+    it "Should ask with an SSML as a prompt" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        ask 'One', { :choices     => 'one hundred, ireland',
-                     :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
-                     :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
-        wait 3000
+        sleep #{@config['media_assertion_timeout']}.to_i
+        say 'yes'
+        wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
       
@@ -252,7 +277,90 @@ describe "Tropo2AutomatedFunctionalTesting" do
       hangup_event.should be_a_valid_hangup_event
       
       # Validate the media worked properly
-      ask_event.attributes[:utterance].should eql 'one hundred'
+      ask_event.attributes[:utterance].should eql 'yes'
+      
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
+    
+    it "Should ask with a GRXML grammar" do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        sleep 3
+        say 'clue'
+        wait #{@config['tropo1']['wait_to_hangup']}
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
+      
+      call_event = @tropo2.read_event_queue
+      call_event.should be_a_valid_call_event
+        
+      answer_event = @tropo2.answer
+      answer_event.should be_a_valid_answer_event
+      
+      ask_event = @tropo2.ask('One', @grxml, :grammar => 'application/grammar+grxml')
+      ask_event.should be_a_valid_ask_event
+    
+      hangup_event = @tropo2.hangup
+      hangup_event.should be_a_valid_hangup_event
+      
+      # Validate the media worked properly
+      ask_event.attributes[:utterance].should eql 'clue'
+      
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
+    
+    it "Should ask with an SSML prompt and a GRXML grammar" do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        sleep 1
+        ask 'clue', { :choices     => 'one hundred, ireland',
+                      :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
+                      :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
+        wait #{@config['tropo1']['wait_to_hangup']}
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
+      
+      call_event = @tropo2.read_event_queue
+      call_event.should be_a_valid_call_event
+        
+      answer_event = @tropo2.answer
+      answer_event.should be_a_valid_answer_event
+    
+      ask_event = @tropo2.ask('<say-as interpret-as="ordinal">100</say-as>', @grxml, :grammar => 'application/grammar+grxml')
+      ask_event.should be_a_valid_ask_event
+    
+      hangup_event = @tropo2.hangup
+      hangup_event.should be_a_valid_hangup_event
+      
+      # Validate the media worked properly
+      ask_event.attributes[:utterance].should eql 'clue'
+      
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
+    
+    it "Should timeout on an ask if a timeout is specified" do
+      pending('https://github.com/tropo/punchblock/issues/16')
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        wait #{@config['tropo1']['wait_to_hangup']}
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
+    
+      call_event = @tropo2.read_event_queue
+      call_event.should be_a_valid_call_event
+        
+      answer_event = @tropo2.answer
+      answer_event.should be_a_valid_answer_event
+      
+      time = Time.now
+      ask_event = @tropo2.ask('Yeap', 'yes, no', :timeout => 3)
+      seconds_elapsed = Time.now - time
+      ap seconds_elapsed
+      ap ask_event
+      ask_event.should be_a_valid_ask_event
+      
+      hangup_event = @tropo2.hangup
+      hangup_event.should be_a_valid_hangup_event
       
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -262,7 +370,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     it "Should answer a call and then transfer it" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        wait 30000
+        wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
