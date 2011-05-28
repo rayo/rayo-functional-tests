@@ -8,8 +8,8 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
   awesome_print
   drb
   logger
-  rspec-tropo2
   punchblock
+  rspec-tropo2
   }.each { |lib| require lib }
   # /Users/jsgoecke/Dropbox/Development/punchblock/lib/punchblock
   # /Users/jsgoecke/Dropbox/Development/rspec-tropo2/lib/rspec-tropo2
