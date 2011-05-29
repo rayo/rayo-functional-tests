@@ -38,9 +38,13 @@ Running
 -------
 
 	cd tropo2_functional_tester
-	rspec spec/tropo2-functional_spec.rb --format doc (for verbose output)
-	rake spec (for basic output)
+	rspec spec/*_spec.rb --format doc (for verbose output)
 	rake hudson (for basic output that supports Hudson CI server)
+	rake ask
+	rake conference
+	rake dial
+	rake misc
+	rake say
 
 Screencast
 ----------
