@@ -37,7 +37,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
-  
       call_event = @tropo2.read_event_queue
       call_event.should be_a_valid_call_event
       
@@ -86,6 +85,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask with a GRXML grammar" do
+      pending('https://github.com/tropo/tropo2/issues/18')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 3
@@ -114,6 +114,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask with an SSML prompt and a GRXML grammar" do
+      pending('https://github.com/tropo/tropo2/issues/18')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 1

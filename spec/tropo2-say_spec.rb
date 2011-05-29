@@ -77,7 +77,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       answer_event = @tropo2.answer
       answer_event.should be_a_valid_answer_event
   
-      say_event = @tropo2.say '<say-as interpret-as="ordinal">100</say-as>'
+      say_event = @tropo2.say '<say-as interpret-as="ordinal">100</say-as>', :ssml
       say_event.should be_a_valid_successful_say_event
 
       # Give time for the media transaction to complete 
