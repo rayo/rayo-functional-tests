@@ -71,28 +71,14 @@
 	          <target>1.6</target>
 	        </configuration>
 	      </plugin>		
-	        <plugin>
-	            <groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-surefire-plugin</artifactId>
-	            <version>2.4.3</version>
-	            <!--
-	                    By default, the Surefire Plugin will automatically include all test classes with the following wildcard patterns:
-	                    "**/Test*.java" - includes all of its subdirectory and all java filenames that start with "Test". "**/*Test.java" -
-	                    includes all of its subdirectory and all java filenames that end with "Test". "**/*TestCase.java" - includes all of
-	                    its subdirectory and all java filenames that end with "TestCase".
-	                -->
-	            <configuration>
-	                <includes>
-	                    <include>**/*Test.java</include>
-	                </includes>
-	                <systemProperties>
-	                    <property>
-	                        <name>war.location</name>
-	                        <value>${war.location}</value>
-	                    </property>               
-	                </systemProperties>
-	            </configuration>
-	        </plugin>		
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-surefire-report-plugin</artifactId>
+	        <version>2.8.1</version>
+	        <configuration>
+	          <outputDirectory>${basedir}/spec/reports</outputDirectory>
+	        </configuration>
+	      </plugin>
 		      <plugin>
 			<groupId>org.codehaus.gmaven</groupId>
 			<artifactId>gmaven-plugin</artifactId>
