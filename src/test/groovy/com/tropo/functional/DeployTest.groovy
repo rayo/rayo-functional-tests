@@ -60,9 +60,7 @@ class DeployTest {
 		try {
 			tf = TestFramework.create(Integer.valueOf(prismPort))
 			server = tf.createPrismServer(prismLocation)
-			server.undeploy appName
-			def app = tf.createFileApplication(warLocation)
-			server.deploy app			
+
 			server.start 'Tropo Functional Test Server'
 			
 			assertEquals new URL("http://${serverName}:${serverPort}/" + appName).openConnection().responseCode, 200
