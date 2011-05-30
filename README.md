@@ -31,8 +31,9 @@ Configuration
 
 * voxeo/prism/conf/sipmethod.xml (ensure both 5060 and 5061 are configured to listen)
 * tropo2_functional_tester/config/config.yml.sample (rename to config.yml with changes for your environment)
-* tropo2_functional_tester/tropo1_script/tropo2_testing.rb
+
 * Deploy script to ~/voxeo/prism/apps/tropo/scripts (tropo2_functional_tester/tropo1_script/tropo2_testing.rb)
+* tropo2_functional_tester/tropo1_script/tropo2_testing.rb (change this line as needed: drb_server_address = $drb_server_address || '98.207.5.162:8787')
 
 Running
 -------

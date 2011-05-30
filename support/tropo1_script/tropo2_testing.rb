@@ -1,10 +1,12 @@
 require 'drb/drb'
 
-log "====>Connecting to the Ozone Test Server @ #{$server_uri}<===="
+drb_server_address = $drb_server_address || '98.207.5.162:8787'
+
+log "====>Connecting to the Ozone Test Server @ #{drb_server_address}<===="
 
 begin
   # Connect to the DRb server on the RSpec instance
-  ozone_testing_server = DRbObject.new_with_uri("druby://#{$server_uri}")
+  ozone_testing_server = DRbObject.new_with_uri("druby://#{drb_server_address}")
 
   log "====>Connected with the Ozone Test Server<===="
 
