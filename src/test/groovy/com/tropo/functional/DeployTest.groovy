@@ -69,7 +69,11 @@ class DeployTest {
 			assertEquals new URL("http://${serverName}:${serverPort}/" + appName).openConnection().responseCode, 200
 			
 			//TODO: run tests
+			DefaultExecutor executor = new DefaultExecutor()
+			CommandLine command = CommandLine.parse("./build.sh");
+			executor.execute(command);
 			
+			/*
 			InputStream is = DeployTest.class.getClassLoader().getResourceAsStream("build.sh")
 			if (is != null) {
 				DefaultExecutor executor = new DefaultExecutor()
@@ -86,7 +90,7 @@ class DeployTest {
 			} else {
 				fail("Could not find script to run in the classpath: build.sh")
 			}
-			
+			*/
 		} catch (Exception e) {
 			e.printStackTrace()
 			throw e;
