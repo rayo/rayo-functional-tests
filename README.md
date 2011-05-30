@@ -26,8 +26,8 @@ Configuration
 
 * voxeo/prism/conf/portmappings.properties (both Tropo versions may run in the same Prism instance):
 
-	5060:tropo2
-	5061:tropo
+    * 5060:tropo2
+    * 5061:tropo
 
 * voxeo/prism/conf/sipmethod.xml (ensure both 5060 and 5061 are configured to listen)
 * tropo2_functional_tester/config/config.yml.sample (rename to config.yml with changes for your environment)
