@@ -1,10 +1,13 @@
 package com.tropo.functional
 
-import static org.junit.Assert.*
-import org.junit.Test;
-import org.junit.Before;
+import java.io.InputStream;
+import java.util.Scanner;
 
-import com.voxeo.prism.tf.TestFramework;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*
 
 class DeployTest {
 	
@@ -65,6 +68,22 @@ class DeployTest {
 			assertEquals new URL("http://${serverName}:${serverPort}/" + appName).openConnection().responseCode, 200
 			
 			//TODO: run tests
+			InputStream is = DeployTest.class.getClassLoader().getResourceAsStream("build.sh")
+			if (is != null) {
+				Scanner scanner = new Scanner(is)
+				while (scanner.hasNextLine()) {
+					String line = scanner.nextLine();
+					System.out.println(String.format("Running command %s", line))
+					CommandLine command = CommandLine.parse(line)
+					DefaultExecutor executor = new DefaultExecutor()
+					int exitValue = executor.execute(command)
+					if (!exitValue == 0) {
+						fail(String.format("Command %s failed with exit value %s", line, exitValue))
+					}
+				}
+			} else {
+				fail("Could not find script to run in the classpath: build.sh")
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace()
