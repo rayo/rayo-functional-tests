@@ -1,14 +1,15 @@
 package com.tropo.functional
 
 import static org.junit.Assert.*
+
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+
 import org.junit.Before
 import org.junit.Test
-
-import java.io.InputStream;
-import java.util.Scanner;
-
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
 
 import com.voxeo.prism.tf.TestFramework
 
@@ -68,41 +69,16 @@ class DeployTest {
 			
 			assertEquals new URL("http://${serverName}:${serverPort}/" + appName).openConnection().responseCode, 200
 			
-			//TODO: run tests
-			/*
-			DefaultExecutor executor = new DefaultExecutor()
-			CommandLine command = CommandLine.parse("./build.sh");
-			executor.execute(command);
-			*/
-			
 			def process = Runtime.getRuntime().exec('./build.sh')
-			process.waitFor()
+			def exitVal = ProcessRunner.waitFor(process)
 			
-			/*
-			InputStream is = DeployTest.class.getClassLoader().getResourceAsStream("build.sh")
-			if (is != null) {
-				DefaultExecutor executor = new DefaultExecutor()
-				Scanner scanner = new Scanner(is)
-				while (scanner.hasNextLine()) {
-					String line = scanner.nextLine();
-					System.out.println(String.format("Running command %s", line))
-					CommandLine command = CommandLine.parse(line)
-					int exitValue = executor.execute(command)
-					if (!exitValue == 0) {
-						fail(String.format("Command %s failed with exit value %s", line, exitValue))
-					}
-				}
-			} else {
-				fail("Could not find script to run in the classpath: build.sh")
-			}
-			*/
 		} catch (Exception e) {
 			e.printStackTrace()
 			throw e;
 		} finally {
 			if (server.isRunning()) {
 				server.stop()
-			}		
+			}
 			TestFramework.release(tf.report(server))
 		}
 	}
