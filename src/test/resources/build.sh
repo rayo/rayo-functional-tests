@@ -1,2 +1,2 @@
-rvm jruby-1.8.7
+rvm ruby-1.8.7
 rake hudson
