@@ -69,9 +69,14 @@ class DeployTest {
 			assertEquals new URL("http://${serverName}:${serverPort}/" + appName).openConnection().responseCode, 200
 			
 			//TODO: run tests
+			/*
 			DefaultExecutor executor = new DefaultExecutor()
 			CommandLine command = CommandLine.parse("./build.sh");
 			executor.execute(command);
+			*/
+			
+			def process = Runtime.getRuntime().exec('./build.sh')
+			process.waitFor()
 			
 			/*
 			InputStream is = DeployTest.class.getClassLoader().getResourceAsStream("build.sh")
