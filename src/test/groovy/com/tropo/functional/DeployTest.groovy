@@ -72,12 +72,12 @@ class DeployTest {
 			
 			InputStream is = DeployTest.class.getClassLoader().getResourceAsStream("build.sh")
 			if (is != null) {
+				DefaultExecutor executor = new DefaultExecutor()
 				Scanner scanner = new Scanner(is)
 				while (scanner.hasNextLine()) {
 					String line = scanner.nextLine();
 					System.out.println(String.format("Running command %s", line))
 					CommandLine command = CommandLine.parse(line)
-					DefaultExecutor executor = new DefaultExecutor()
 					int exitValue = executor.execute(command)
 					if (!exitValue == 0) {
 						fail(String.format("Command %s failed with exit value %s", line, exitValue))
