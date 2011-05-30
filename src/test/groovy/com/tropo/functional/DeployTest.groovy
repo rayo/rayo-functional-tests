@@ -68,6 +68,7 @@ class DeployTest {
 			assertEquals new URL("http://${serverName}:${serverPort}/" + appName).openConnection().responseCode, 200
 			
 			//TODO: run tests
+			/*
 			InputStream is = DeployTest.class.getClassLoader().getResourceAsStream("build.sh")
 			if (is != null) {
 				Scanner scanner = new Scanner(is)
@@ -84,7 +85,7 @@ class DeployTest {
 			} else {
 				fail("Could not find script to run in the classpath: build.sh")
 			}
-			
+			*/
 		} catch (Exception e) {
 			e.printStackTrace()
 			throw e;
