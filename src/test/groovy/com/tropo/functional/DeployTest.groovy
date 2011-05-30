@@ -1,13 +1,16 @@
 package com.tropo.functional
 
+import static org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+
 import java.io.InputStream;
 import java.util.Scanner;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*
+
+import com.voxeo.prism.tf.TestFramework
 
 class DeployTest {
 	
