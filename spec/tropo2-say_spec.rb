@@ -12,51 +12,42 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
   
-      call_event = @tropo2.read_event_queue
-      call_event.should be_a_valid_call_event
+      @tropo2.read_event_queue.should be_a_valid_call_event  
+      @tropo2.answer.should eql true
   
-      answer_event = @tropo2.answer
-      answer_event.should be_a_valid_answer_event
-  
-      say_event = @tropo2.say 'yes'
-      say_event.should be_a_valid_successful_say_event
-
-      # Give time for the media transaction to complete 
+      @tropo2.say('yes').should eql true
+      
       sleep @config['media_assertion_timeout']
+      
+      @tropo2.read_event_queue.should be_a_valid_successful_say_event
   
-      hangup_event = @tropo2.hangup
-      hangup_event.should be_a_valid_hangup_event
+      @tropo2.hangup.should eql true
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
 
-      # Validate the media worked properly
       @tropo1.result.should eql 'yes'
     
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   
     it "Should say an audio URL" do
-      pending('https://github.com/tropo/tropo2/issues/9')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
   
-      call_event = @tropo2.read_event_queue
-      call_event.should be_a_valid_call_event
+      @tropo2.read_event_queue.should be_a_valid_call_event  
+      @tropo2.answer.should eql true
   
-      answer_event = @tropo2.answer
-      answer_event.should be_a_valid_answer_event
-  
-      @tropo2.say_nonblocking 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3', :url
+      @tropo2.say('http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3', :url).should eql true
     
       #Wait for audio file to complete playing
       sleep 9
-    
-      say_event = @tropo2.read_event_queue
-      say_event.should be_a_valid_successful_say_event
+
+      @tropo2.read_event_queue.should be_a_valid_successful_say_event
   
-      hangup_event = @tropo2.hangup
-      hangup_event.should be_a_valid_hangup_event
+      @tropo2.hangup.should eql true
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
     
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -71,22 +62,17 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
   
-      call_event = @tropo2.read_event_queue
-      call_event.should be_a_valid_call_event
+      @tropo2.read_event_queue.should be_a_valid_call_event  
+      @tropo2.answer.should eql true
   
-      answer_event = @tropo2.answer
-      answer_event.should be_a_valid_answer_event
-  
-      say_event = @tropo2.say '<say-as interpret-as="ordinal">100</say-as>', :ssml
-      say_event.should be_a_valid_successful_say_event
+      @tropo2.say('<say-as interpret-as="ordinal">100</say-as>', :ssml).should eql true
+      @tropo2.read_event_queue.should be_a_valid_successful_say_event
 
-      # Give time for the media transaction to complete 
       sleep @config['media_assertion_timeout']
   
-      hangup_event = @tropo2.hangup
-      hangup_event.should be_a_valid_hangup_event
+      @tropo2.hangup.should eql true
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
 
-      # Validate the media worked properly
       @tropo1.result.should eql 'one hundred'
     
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
@@ -100,11 +86,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
   
-      call_event = @tropo2.read_event_queue
-      call_event.should be_a_valid_call_event
-  
-      answer_event = @tropo2.answer
-      answer_event.should be_a_valid_answer_event
+      @tropo2.read_event_queue.should be_a_valid_call_event  
+      @tropo2.answer.should eql true
     
       say_event = @tropo2.say 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3', :url
       ap say_event

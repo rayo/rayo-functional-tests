@@ -11,14 +11,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
       
-      # Read the Tropo2 queue and validate the offer
-      call_event = @tropo2.read_event_queue
-      call_event.should be_a_valid_call_event
-
-      # Send a hangup to Tropo2
-      hangup_event = @tropo2.hangup
-      hangup_event.should be_a_valid_hangup_event
-      
+      @tropo2.read_event_queue.should be_a_valid_call_event
+      @tropo2.hangup.should eql true
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
 
@@ -29,18 +24,32 @@ describe "Tropo2AutomatedFunctionalTesting" do
         wait #{@config['tropo1']['wait_to_hangup']}
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
+
+      @tropo2.read_event_queue.should be_a_valid_call_event
+      @tropo2.answer.should eql true
+      @tropo2.hangup.should eql true
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
     
-      # Read the Tropo2 queue and validate the offer
-      call_event = @tropo2.read_event_queue
-      call_event.should be_a_valid_call_event
+    it "Should throw an error if we try to answer a call that is hungup" do
+      @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        say 'Hello world'
+        wait #{@config['tropo1']['wait_to_hangup']}
+      TROPO_SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
     
-      # Send an answer to Tropo2
-      answer_event = @tropo2.answer
-      answer_event.should be_a_valid_answer_event
+      @tropo2.read_event_queue.should be_a_valid_call_event
+      @tropo2.answer.should eql true
+      @tropo2.hangup.should eql true
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
       
-      # Send a hangup to Tropo2
-      hangup_event = @tropo2.hangup
-      hangup_event.should be_a_valid_hangup_event
+      begin
+        @tropo2.answer
+      rescue => error
+        error.class.should eql Punchblock::Transport::TransportError 
+      end
       
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -54,23 +63,14 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
-      # Read the Tropo2 queue and validate the offer
-      call_event = @tropo2.read_event_queue
-      ap call_event
-      call_event.should be_a_valid_call_event
-    
-      # Send an answer to Tropo2
-      accept_event = @tropo2.accept
-      ap accept_event
-      accept_event.should be_a_valid_answer_event
-      
-      # Send a hangup to Tropo2
-      hangup_event = @tropo2.hangup
-      hangup_event.should be_a_valid_hangup_event
+      @tropo2.read_event_queue.should be_a_valid_call_event
+      @tropo2.accept.should eql true
+      @tropo2.hangup.should eql true
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
       
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
-        
+    
     it "Should answer a call and let the farside hangup" do
       pending('This bug being fixed: https://evolution.voxeo.com/ticket/1423272')
     end
@@ -84,11 +84,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      call_event = @tropo2.read_event_queue
-      call_event.should be_a_valid_call_event
-      
-      answer_event = @tropo2.answer
-      answer_event.should be_a_valid_answer_event
+      @tropo2.read_event_queue.should be_a_valid_call_event
+      @tropo2.answer.should eql true
       
       # Set a script that handles the incoming Xfer from Tropo2
       @tropo1.script_content = <<-SCRIPT_CONTENT
@@ -96,9 +93,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
         wait 30000
       SCRIPT_CONTENT
       
-      call_event = @tropo2.transfer(@config['tropo1']['call_destination'])
-      call_event.should be_a_valid_call_event
-      call_event.headers[:to].should eql @config['tropo1']['call_destination']
+      @tropo2.transfer(@config['tropo1']['call_destination']).should eql true
+      @tropo2.read_event_queue.should be_a_valid_call_event
     end
     
     it "Should try to transfer but get a timeout" do
