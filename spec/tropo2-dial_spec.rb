@@ -3,17 +3,14 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Dial command" do
     it "Should place an outbound call" do
-      pending('more testing')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
         wait #{@config['tropo1']['wait_to_hangup']}
       TROPO_SCRIPT_CONTENT
     
       # Request an outbound call
-      @tropo2.dial(:to => @config['tropo1']['call_destination']).should eql true
-      ap @tropo2.read_event_queue
-      ap @tropo2.read_event_queue
-      ap @tropo2.read_event_queue
+      @tropo2.dial(:to => @config['tropo1']['call_destination'], :from => 'tel:+14155551212').should eql true
+      @tropo2.read_event_queue.should be_a_valid_call_event
     
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
