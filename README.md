@@ -40,6 +40,7 @@ Running
 
 	cd tropo2_functional_tester
 	rspec spec/*_spec.rb --format doc (for verbose output)
+	rake format=junit
 	rake hudson (for basic output that supports Hudson CI server)
 	rake ask
 	rake conference
