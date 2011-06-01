@@ -3,7 +3,6 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Dial command" do
     it "Should place an outbound call" do
-      pending('https://github.com/tropo/tropo2/issues/26')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -17,7 +16,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should place an outbound call with a Caller ID set" do
-      pending('https://github.com/tropo/tropo2/issues/26')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -33,9 +31,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should place an outbound call and receive a ringing event" do
-      pending('https://github.com/tropo/tropo2/issues/26')
+      pending('https://github.com/tropo/tropo2/issues/27')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
-        answer
         wait #{@config['tropo1']['wait_to_hangup']}
       TROPO_SCRIPT_CONTENT
     
@@ -52,11 +49,11 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should place an outbound call and then receive an answered event" do
-      pending('https://github.com/tropo/tropo2/issues/26')
+      pending('https://github.com/tropo/tropo2/issues/27')
     end
     
     it "Should place an outbound call and then receive an unanswered event for calls not answered" do
-      pending('https://github.com/tropo/tropo2/issues/26')
+      pending('https://github.com/tropo/tropo2/issues/27')
     end
   end
 end
