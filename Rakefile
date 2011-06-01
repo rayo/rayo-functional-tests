@@ -17,6 +17,15 @@ RSpec::Core::RakeTask.new(:hudson => ["ci:setup:rspec"]) do |spec|
   spec.pattern = '**/*_spec.rb'
 end
 
+RSpec::Core::RakeTask.new(:rspec) do |spec|
+  mapper       = { "junit" => "JUnitFormatter" \
+                 , "tap"   => "TapFormatter" \
+                 }
+  format       = mapper[ENV["format"]] || "progress"
+  spec.rspec_opts = ["-r lib/j_unit_formatter.rb", "-r lib/tap_formatter.rb", "-f \"#{format}\""]
+  spec.pattern    = "spec/**/*_spec.rb"
+end
+
 RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
@@ -27,5 +36,5 @@ end
   end
 end
 
-task :default => :spec
+task :default => :rspec
 

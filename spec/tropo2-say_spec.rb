@@ -45,7 +45,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       sleep 9
 
       @tropo2.read_event_queue.should be_a_valid_successful_say_event
-  
+      
       @tropo2.hangup.should eql true
       @tropo2.read_event_queue.should be_a_valid_hangup_event
     
