@@ -26,7 +26,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should try to transfer but get a timeout" do
-      pending('Implementation')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -38,12 +37,11 @@ describe "Tropo2AutomatedFunctionalTesting" do
     
       # Set a script that handles the incoming Xfer from Tropo2
       @tropo1.script_content = <<-SCRIPT_CONTENT
-        answer
-        wait 30000
+        wait 5000
       SCRIPT_CONTENT
     
-      @tropo2.transfer(@config['tropo1']['call_destination']).should eql true
-      @tropo2.read_event_queue.should be_a_valid_call_event
+      @tropo2.transfer(@config['tropo1']['call_destination'], :timeout => 2000).should eql true
+      @tropo2.read_event_queue.should be_a_valid_transfer_timeout_event
     end
   end
 end
