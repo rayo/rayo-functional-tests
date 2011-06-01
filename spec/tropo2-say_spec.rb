@@ -104,5 +104,25 @@ describe "Tropo2AutomatedFunctionalTesting" do
     
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
+    
+    it "Should say an audio URL and get a stop event" do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        sleep 2
+        hangup
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
+  
+      @tropo2.read_event_queue.should be_a_valid_call_event  
+      @tropo2.answer.should eql true
+  
+      @tropo2.say('http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3', :url).should eql true
+      
+      @tropo2.read_event_queue.should be_a_valid_stopped_say_event
+      
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
+    
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
   end
 end
