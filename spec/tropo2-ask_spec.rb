@@ -131,7 +131,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   
-    it "Should timeout on an ask if a timeout is specified" do
+    it "Should timeout on an ask if a timeout is specified and get a NOINPUT" do
       pending('https://github.com/tropo/tropo2/issues/24')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
@@ -151,6 +151,25 @@ describe "Tropo2AutomatedFunctionalTesting" do
     
       hangup_event = @tropo2.hangup
       hangup_event.should be_a_valid_hangup_event
+    
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
+    
+    it "Should ask and get a STOP event" do
+      pending('https://github.com/tropo/punchblock/issues/24 & https://github.com/tropo/tropo2/issues/29')
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        wait 5000
+        hangup
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
+  
+      @tropo2.read_event_queue.should be_a_valid_call_event
+      @tropo2.answer.should eql true
+    
+      @tropo2.ask('Yeap', { :choices => 'yes, no' })
+      @tropo2.read_event_queue.should be_a_valid_stopped_ask_event
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
     
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
