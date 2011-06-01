@@ -143,7 +143,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo2.answer.should eql true
     
       time = Time.now
-      @tropo2.ask('Yeap', { :choices => 'yes, no', :timeout => 3 }).should eql true
+      @tropo2.ask('Yeap', { :choices => 'yes, no', :timeout => 3000 }).should eql true
       seconds_elapsed = Time.now - time
       ap seconds_elapsed
       ap @tropo2.read_event_queue

@@ -55,19 +55,18 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should accept and hangup" do 
-      pending('https://github.com/tropo/tropo2/issues/15')
+      #pending('https://github.com/tropo/tropo2/issues/15')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         say 'Hello world'
         wait #{@config['tropo1']['wait_to_hangup']}
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
-    
+
       @tropo2.read_event_queue.should be_a_valid_call_event
       @tropo2.accept.should eql true
       @tropo2.hangup.should eql true
       @tropo2.read_event_queue.should be_a_valid_hangup_event
-      
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     

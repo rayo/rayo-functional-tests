@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Conference command" do
     it "Should put one caller in conference and then hangup" do
-      pending('https://github.com/tropo/tropo2/issues/23')
+      pending('How we want to handle off-hold and lifecycle events')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
