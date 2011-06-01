@@ -105,6 +105,11 @@ describe "Tropo2AutomatedFunctionalTesting" do
       
       @tropo2.transfer(@config['tropo1']['call_destination']).should eql true
       @tropo2.read_event_queue.should be_a_valid_call_event
+      @tropo2.hangup.should eql true
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      @tropo2.read_event_queue.should be_a_valid_transfer_event
+      
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
     it "Should try to transfer but get a timeout" do
