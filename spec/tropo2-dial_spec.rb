@@ -33,10 +33,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
   
-      # Read the Tropo2 queue and validate the offer
       @tropo2.read_event_queue.should be_a_valid_call_event
-  
-      # Send an answer to Tropo2
       @tropo2.reject.should eql true
       @tropo2.read_event_queue.should be_a_valid_reject_event
     
@@ -44,7 +41,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should redirect a call" do
-      pending('Additional testing')
+      pending('https://github.com/tropo/punchblock/issues/22')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         say 'Hello world'
@@ -52,9 +49,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
   
-      # Read the Tropo2 queue and validate the offer
-      call_event = @tropo2.read_event_queue
-      call_event.should be_a_valid_call_event
+      @tropo2.read_event_queue.should be_a_valid_call_event
     
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
@@ -62,8 +57,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
     
       # Send an answer to Tropo2
-      redirect_event = @tropo2.redirect @config['tropo1']['call_destination']
-      ap redirect_event
+      @tropo2.redirect @config['tropo1']['call_destination'].should eql true
       ap @tropo2.read_event_queue
       ap @tropo2.read_event_queue
       ap @tropo2.read_event_queue
