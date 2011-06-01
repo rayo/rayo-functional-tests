@@ -132,7 +132,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should timeout on an ask if a timeout is specified" do
-      pending('https://github.com/tropo/punchblock/issues/16')
+      pending('https://github.com/tropo/tropo2/issues/24')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -143,12 +143,11 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo2.answer.should eql true
     
       time = Time.now
-      ask_event = @tropo2.ask('Yeap', { :choices => 'yes, no', 
-                                        :timeout => 3 })
+      @tropo2.ask('Yeap', { :choices => 'yes, no', :timeout => 3 }).should eql true
       seconds_elapsed = Time.now - time
       ap seconds_elapsed
-      ap ask_event
-      ask_event.should be_a_valid_ask_event
+      ap @tropo2.read_event_queue
+      #ask_event.should be_a_valid_ask_event
     
       hangup_event = @tropo2.hangup
       hangup_event.should be_a_valid_hangup_event
