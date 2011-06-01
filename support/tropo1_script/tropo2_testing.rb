@@ -1,6 +1,6 @@
 require 'drb/drb'
 
-drb_server_address = $drb_server_address || '98.207.5.162:8787'
+drb_server_address = $drb_server_address || '10.0.1.10:8787'
 
 log "====>Connecting to the Ozone Test Server @ #{drb_server_address}<===="
 

@@ -14,7 +14,7 @@ tropo1:
     use: true # True to use Tropo1, false to be prompted to dial interactively from a softphone
     # Tropo1 session URI, include the location of ozone_functional_tester/support/ozone_testing.rb, there is a copy on the URI below too
     session_url: 'http://10.0.1.11:8080/tropo/calls?action=create&token=http://dl.dropbox.com/u/25511/Voxeo/tropo2_testing/tropo2_testing.rb&vars=drb_server_address%3D10.0.1.10:8787'
-    call_destination: sip:tropo2_testing.rb@10.0.1.11
+    call_destination: sip:tropo2_testing.rb@10.0.1.11:5061
     druby_uri: druby://0.0.0.0:8787
     wait_to_hangup: 30000
 

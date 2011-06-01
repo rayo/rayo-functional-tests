@@ -146,8 +146,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo2.ask('Yeap', { :choices => 'yes, no', :timeout => 3000 }).should eql true
       seconds_elapsed = Time.now - time
       ap seconds_elapsed
-      ap @tropo2.read_event_queue
-      #ask_event.should be_a_valid_ask_event
+      ask_event = @tropo2.read_event_queue
+      ask_event.should be_a_valid_ask_event
     
       hangup_event = @tropo2.hangup
       hangup_event.should be_a_valid_hangup_event
