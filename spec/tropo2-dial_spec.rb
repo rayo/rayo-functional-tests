@@ -16,11 +16,33 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should place an outbound call to multiple destinations" do
-      pending('https://github.com/tropo/punchblock/issues/20')
+      pending("https://github.com/tropo/tropo2/issues/25 May be an invalid test, as it may be the DSL's responsibility")
+      @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+        answer
+        wait #{@config['tropo1']['wait_to_hangup']}
+      TROPO_SCRIPT_CONTENT
+    
+      @tropo2.dial(:to => "tel:+14155551212,#{@config['tropo1']['call_destination']}", :from => 'tel:+14155551212').should eql true
+      call_event = @tropo2.read_event_queue
+      ap call_event
+      call_event.read_event_queue.should be_a_valid_call_event
+    
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   
     it "Should place an outbound call with a Caller ID set" do
-      pending('https://github.com/tropo/punchblock/issues/20')
+      @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+        answer
+        wait #{@config['tropo1']['wait_to_hangup']}
+      TROPO_SCRIPT_CONTENT
+    
+      @tropo2.dial({ :to        => @config['tropo1']['call_destination'], 
+                     :from      => 'tel:+14155551212' }).should eql true
+      call_event = @tropo2.read_event_queue
+      call_event.should be_a_valid_call_event
+      call_event.headers[:from].match(/\A\<tel:\+14155551212\>/).should_not eql nil
+    
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   end
 
