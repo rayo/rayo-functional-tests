@@ -57,23 +57,52 @@ Screencast
 Example
 -------
 
-	rspec spec/tropo2-functional_spec.rb --format doc
 	Tropo2AutomatedFunctionalTesting
-	"Connecting to Tropo2 server with: usera@10.0.1.11 1"
-	"Connected to Tropo2 Server"
-	"Starting Distributed Ruby Service to host Tropo scripts."
-	  connection handling
-	    EventMachine Should be connected to the Tropo2 XMPP service
-	  Answer and hangup handling
-	    Should receive an offer when a call arrives
-	    Should accept and answer a call
-	    Should answer and then hangup a call
-	  Say verb
-	    Should say something with TTS
-	  Ask verb
+	  Call accept, answer and hangup handling
+	    Should receive a call arrives and then hangup
+	    Should answer and hangup
+	    Should throw an error if we try to answer a call that is hungup
+	    Should accept and hangup
+	    Should answer a call and let the farside hangup
+	Tropo2AutomatedFunctionalTesting
+	  Ask command
 	    Should ask something with ASR and get the utterance back
-	Finished in 31.15 seconds
-	7 examples, 0 failures, 0 pending
+	    Should ask with an SSML as a prompt
+	    Should ask with a GRXML grammar
+	    Should ask with an SSML prompt and a GRXML grammar
+	    Should ask and get a NOINPUT event
+	    Should ask and get a NOMATCH event with min_confidence set to 1 (PENDING: https://github.com/tropo/tropo2/issues/30)
+	    Should ask and get a STOP if the farside hangs up before the command complete (PENDING: https://github.com/tropo/tropo2/issues/32)
+	Tropo2AutomatedFunctionalTesting
+	  Conference command
+	    Should put one caller in conference and then hangup
+	    Should put two callers into a conference and then hangup (PENDING: The DSL needs to handle two calls at a time now, for the first time. Will add.)
+	    Should put two callers into a conference, validate media and hangup (PENDING: The DSL needs to handle two calls at a time now, for the first time. Will add.)
+	Tropo2AutomatedFunctionalTesting
+	  Dial command
+	    Should place an outbound call, receive a ring event, receive an answer event and then hangup
+	    Should place an outbound call and then receive a reject event
+	Tropo2AutomatedFunctionalTesting
+	  Redirect command
+	    Should redirect a call (PENDING: https://github.com/tropo/punchblock/issues/22)
+	Tropo2AutomatedFunctionalTesting
+	  Reject command
+	    Should reject with a declined reason
+	    Should reject with a busy reason
+	    Should reject with a error reason
+	Tropo2AutomatedFunctionalTesting
+	  Say command
+	    Should say something with TTS
+	    Should say an audio URL
+	    Should say SSML
+	    Should say some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop (PENDING: https://github.com/tropo/punchblock/issues/10)
+	    Should say an audio URL and get a stop event
+	Tropo2AutomatedFunctionalTesting
+	  Transfer verb
+	    Should answer a call and then transfer it
+	    Should try to transfer but get a timeout
+	Finished in 199.55 seconds
+	28 examples, 0 failures, 6 pending
 
 Project Files
 -------------
