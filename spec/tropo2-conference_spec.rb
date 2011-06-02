@@ -3,7 +3,6 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Conference command" do
     it "Should put one caller in conference and then hangup" do
-      pending('How we want to handle off-hold and lifecycle events')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -14,9 +13,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo2.answer.should eql true
     
       @tropo2.conference('1234').should eql true
-      ap @tropo2.read_event_queue
-      
+      @tropo2.read_event_queue.should eql nil # Temp based on this: https://github.com/tropo/punchblock/issues/27
       @tropo2.hangup.should eql true
+      @tropo2.read_event_queue.should be_a_valid_conference_event
       @tropo2.read_event_queue.should be_a_valid_hangup_event
     
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
