@@ -4,7 +4,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Tropo2AutomatedFunctionalTesting" do  
   describe "Call accept, answer and hangup handling" do
-    it "Should receive a call arrives and then hangup" do
+    it "Should receive a call and then hangup" do
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
