@@ -2,14 +2,8 @@ package com.tropo.functional
 
 import static org.junit.Assert.*
 
-import java.util.concurrent.Callable
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-
-import org.junit.Before
-import org.junit.Test
+import org.junit.Before;
+import org.junit.Test;
 
 import com.voxeo.prism.tf.TestFramework
 
@@ -70,6 +64,8 @@ class DeployTest {
 			assertEquals new URL("http://${serverName}:${serverPort}/" + appName).openConnection().responseCode, 200
 			
 			def process = Runtime.getRuntime().exec('./build.sh')
+			new ProcessLogger(process, 'spec/reports/SPEC-FunctionalTest-output.txt').start()
+
 			def exitVal = ProcessRunner.waitFor(process)
 			
 		} catch (Exception e) {
