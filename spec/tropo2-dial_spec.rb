@@ -29,5 +29,24 @@ describe "Tropo2AutomatedFunctionalTesting" do
       
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
+    
+    it "Should place an outbound call and send SIP headers" do
+      @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+        answer
+        ozone_testing_server.result = $currentCall.getHeader('x-tropo2-test')
+        sleep 1
+        hangup
+      TROPO_SCRIPT_CONTENT
+    
+      @tropo2.dial(:to      => @config['tropo1']['call_destination'], 
+                   :from    => 'tel:+14155551212',
+                   :headers => { 'x-tropo2-test' => 'booyah!' } ).should eql true
+      @tropo2.read_event_queue.should be_a_valid_ring_event
+      @tropo2.read_event_queue.should be_a_valid_answer_event
+      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      @tropo1.result.should eql 'booyah!'
+      
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
   end
 end
