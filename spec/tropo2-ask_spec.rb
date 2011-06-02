@@ -191,5 +191,27 @@ describe "Tropo2AutomatedFunctionalTesting" do
       
       @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
+    
+    it "Should ask something with an invalid grammar and get an error back" do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        wait 2000
+        hangup
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
+      
+      @tropo2.read_event_queue.should be_a_valid_call_event
+      @tropo2.answer.should eql true
+  
+      begin
+        @tropo2.ask('One', { :choices => '<grammar>' }).should eql true
+      rescue => error
+        error.class.should eql Punchblock::Transport::TransportError
+      end
+      
+      @tropo2.read_event_queue.type.should eql :error
+    
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
   end
 end
