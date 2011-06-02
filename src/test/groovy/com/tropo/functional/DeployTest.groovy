@@ -64,7 +64,6 @@ class DeployTest {
 			assertEquals new URL("http://${serverName}:${serverPort}/" + appName).openConnection().responseCode, 200
 			
 			def process = Runtime.getRuntime().exec('./build.sh')
-			new ProcessLogger(process, 'spec/reports/SPEC-FunctionalTest-output.txt').start()
 
 			def exitVal = ProcessRunner.waitFor(process)
 			
