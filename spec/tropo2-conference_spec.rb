@@ -22,11 +22,11 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should put two callers into a conference and then hangup" do
-      pending('https://github.com/tropo/tropo2/issues/23')
+      pending('The DSL needs to handle two calls at a time now, for the first time. Will add.')
     end
   
     it "Should put two callers into a conference, validate media and hangup" do
-      pending('https://github.com/tropo/tropo2/issues/23')
+      pending('The DSL needs to handle two calls at a time now, for the first time. Will add.')
     end
   end
 end
