@@ -6,12 +6,18 @@ describe "Tropo2AutomatedFunctionalTesting" do
   describe "JMX Tests" do
         
     it "Should find JMX MBeans available" do
-    	res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Info', 8080)
+    
+    	server = @config['tropo2_server']['server']
+    	port = @config['tropo2_server']['port'].to_i
+    	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)
 		res.code.should eql '200'
     end
 
     it "Should find Build Number" do
-    	res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Info', 8080)
+    
+    	server = @config['tropo2_server']['server']
+    	port = @config['tropo2_server']['port'].to_i
+    	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)
 
 		json = JSON.parse res.body
 
@@ -19,45 +25,51 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
 
     it "Should find all main JMX Beans" do
-    	res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Info', 8080)
+ 
+ 		server = @config['tropo2_server']['server']
+ 		port = @config['tropo2_server']['port'].to_i
+    	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)
     	res.code.should eql '200'
 
-    	res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', 8080)
+    	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
     	res.code.should eql '200'
 
-    	res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Admin', 8080)
+    	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Admin', port)
     	res.code.should eql '200'
 
-    	res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Calls', 8080)
+    	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Calls', port)
     	res.code.should eql '200'
 
-    	res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Ozone', 8080)
+    	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Ozone', port)
     	res.code.should eql '200'
 
     end
 
     it "Be able to enable quiesce mode" do
-
-		res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/exec/com.tropo:Type=Admin/enableQuiesce', 8080)
+    
+		server = @config['tropo2_server']['server']
+		port = @config['tropo2_server']['port'].to_i
+		res = Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin/enableQuiesce', port)
 		res.code.should eql '200'
 		json = JSON.parse res.body
 		json['error'].should eql nil
     end
         
     it "Be able to disable quiesce mode" do
-
-		res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/exec/com.tropo:Type=Admin/disableQuiesce', 8080)
+    
+		server = @config['tropo2_server']['server']
+		port = @config['tropo2_server']['port'].to_i
+		res = Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin/disableQuiesce', port)
 		res.code.should eql '200'
 		json = JSON.parse res.body
 		json['error'].should eql nil
     end 
             
     it "Does process incoming calls" do
-
-		res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', 8080)
-		puts res
-		puts 'Quiesce mode'
-		puts Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Admin', 8080)
+    
+		server = @config['tropo2_server']['server']
+		port = @config['tropo2_server']['port'].to_i
+		res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
 		json = JSON.parse res.body
 		calls = json['value']['IncomingCalls'].to_i
 		
@@ -68,20 +80,22 @@ describe "Tropo2AutomatedFunctionalTesting" do
   				
 		sleep(10)
 		
-		res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', 8080)
-		puts res
+		res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
 		json = JSON.parse res.body
 		calls2 = json['value']['IncomingCalls'].to_i
 		calls2.should eql calls+1
     end 
 
     it "Do not accept calls on Quiesce enabled" do
+    
+    	server = @config['tropo2_server']['server']
+    	port = @config['tropo2_server']['port'].to_i
 		begin
-			res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', 8080)
+			res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
 			json = JSON.parse res.body
 			calls = json['value']['CallsRejected'].to_i
 			
-			Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/exec/com.tropo:Type=Admin/enableQuiesce', 8080)
+			Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin/enableQuiesce', port)
 
 	        @tropo1.script_content = <<-SCRIPT_CONTENT
 	          call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
@@ -90,12 +104,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
       				
 			sleep(6)
 			
-			res = Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', 8080)
+			res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
 			json = JSON.parse res.body
 			calls2 = json['value']['CallsRejected'].to_i
 			calls2.should eql calls+1
 		ensure
-			Net::HTTP.get_response('127.0.0.1', '/tropo2/jmx/exec/com.tropo:Type=Admin/disableQuiesce', 8080)
+			Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin/disableQuiesce', port)
 		end
     end  
   end

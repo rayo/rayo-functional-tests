@@ -4,6 +4,8 @@ tropo2_server:
     sip_uri: usera@127.0.0.1 # The SIP URI for Tropo1 to pitch calls to on Tropo2/Ozone
     wire_log: logs/tropo2-wire.log
     transport_log: logs/tropo2-transport.log
+    server: 127.0.0.1
+    port: 8080
     
 tropo2_queue:
     connection_timeout: 30 # Amount of time waiting to connect to the Ozone server before considering it a timeout
