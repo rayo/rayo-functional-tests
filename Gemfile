@@ -10,4 +10,5 @@ group :development do
   gem 'punchblock'
   gem 'awesome_print'
   gem 'ci_reporter'
+  gem 'json'
 end
