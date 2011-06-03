@@ -30,6 +30,7 @@ Configuration
     * 5061:tropo
 
 * voxeo/prism/conf/sipmethod.xml (ensure both 5060 and 5061 are configured to listen)
+* voxeo/prism/apps/tropo/WEB-INF/classes/tropo.xml (in the <mediaServer/> section you should have <bangSyntax>false</bangSyntax>)
 * tropo2_functional_tester/config/config.yml.sample (rename to config.yml with changes for your environment)
 
 * Deploy script to $PRISM_HOME/apps/tropo/scripts (tropo2_functional_tester/support/tropo1_script/tropo2_testing.rb)
