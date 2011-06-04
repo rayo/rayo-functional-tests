@@ -14,7 +14,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.answer.should eql true
     
       call.conference('1234').should eql true
-      call.next_event.should eql nil # Temp based on this: https://github.com/tropo/punchblock/issues/27
       call.hangup.should eql true
       call.next_event.should be_a_valid_conference_event
       call.next_event.should be_a_valid_hangup_event
