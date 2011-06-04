@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Transfer verb" do
     it "Should answer a call and then transfer it" do
+      pending('https://github.com/tropo/tropo2/issues/36')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
