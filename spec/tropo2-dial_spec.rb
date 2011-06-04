@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Dial command" do
-    pending('Need to allow for creation of outbound calls')
+    pending('https://github.com/tropo/rspec-tropo2/issues/1')
     it "Should place an outbound call, receive a ring event, receive an answer event and then hangup" do
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
@@ -21,7 +21,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
         
     it "Should place an outbound call and then receive a reject event" do
-      pending('Need to allow for creation of outbound calls')
+      pending('https://github.com/tropo/rspec-tropo2/issues/1')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         reject
       TROPO_SCRIPT_CONTENT
@@ -34,7 +34,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should place an outbound call and send SIP headers" do
-      pending('Need to allow for creation of outbound calls')
+      pending('https://github.com/tropo/rspec-tropo2/issues/1')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
         ozone_testing_server.result = $currentCall.getHeader('x-tropo2-test')
