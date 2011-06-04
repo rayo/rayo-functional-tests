@@ -14,7 +14,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call = @tropo2.get_call
       call.call_event.should be_a_valid_call_event
       call.hangup.should eql true
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_hangup_event
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
 
@@ -30,7 +30,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
       call.hangup.should eql true
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_hangup_event
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
@@ -46,7 +46,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
       call.hangup.should eql true
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_hangup_event
       
       begin
         call.answer
@@ -69,7 +69,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.accept.should eql true
       call.hangup.should eql true
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_hangup_event
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
@@ -85,7 +85,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call = @tropo2.get_call
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_hangup_event
       
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end

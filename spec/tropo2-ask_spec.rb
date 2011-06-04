@@ -46,12 +46,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
       
       sleep @config['media_assertion_timeout']
       
-      ask_event = call.read_queue
+      ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
       ask_event.attributes[:utterance].should eql 'yes'
       
       call.hangup.should eql true
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_hangup_event
     
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -73,12 +73,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
       
       sleep 6
       
-      ask_event = call.read_queue
+      ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
       ask_event.attributes[:utterance].should eql 'yes'
   
       call.hangup.should eql true
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_hangup_event
     
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -98,12 +98,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
     
       call.ask('One', { :choices => @grxml, :grammar => 'application/grammar+grxml' }).should eql true
 
-      ask_event = call.read_queue
+      ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
       ask_event.attributes[:utterance].should eql 'clue'
       
       call.hangup.should eql true
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_hangup_event
     
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -125,12 +125,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
   
       call.ask('<say-as interpret-as="ordinal">100</say-as>', { :choices => @grxml, 
                                                                 :grammar => 'application/grammar+grxml' }).should eql true
-      ask_event = call.read_queue
+      ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
       ask_event.attributes[:utterance].should eql 'clue'
       
       call.hangup.should eql true
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_hangup_event
     
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -149,8 +149,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
     
       call.ask('Yeap', { :choices => 'yes, no',
                          :timeout => 2000 })
-      call.read_queue.should be_a_valid_noinput_event
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_noinput_event
+      call.next_event.should be_a_valid_hangup_event
       
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -167,14 +167,14 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo1.place_call @config['tropo1']['session_url']
   
       call = @tropo2.get_call
-      call.read_queue.should be_a_valid_call_event
+      call.next_event.should be_a_valid_call_event
       call.answer.should eql true
     
       call.ask('Yeap', { :choices        => 'red, green',
                          :timeout        => 2000,
                          :min_confidence => '1' })
-      call.read_queue.should be_a_valid_nomatch_event
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_nomatch_event
+      call.next_event.should be_a_valid_hangup_event
       
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -193,8 +193,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.answer.should eql true
     
       call.ask('Yeap', { :choices => 'red, green' })
-      call.read_queue.should be_a_valid_stopped_ask_event
-      call.read_queue.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_stopped_ask_event
+      call.next_event.should be_a_valid_hangup_event
       
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
@@ -217,7 +217,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
         error.class.should eql Punchblock::Transport::TransportError
       end
       
-      call.read_queue.type.should eql :error
+      call.next_event.type.should eql :error
     
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
