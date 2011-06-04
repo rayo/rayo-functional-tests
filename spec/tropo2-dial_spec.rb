@@ -2,8 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Dial command" do
-    pending('https://github.com/tropo/rspec-tropo2/issues/1')
     it "Should place an outbound call, receive a ring event, receive an answer event and then hangup" do
+      pending('https://github.com/tropo/rspec-tropo2/issues/1')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
         sleep 2
