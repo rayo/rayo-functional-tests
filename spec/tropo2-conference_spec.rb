@@ -9,16 +9,17 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
-      @tropo2.read_event_queue.should be_a_valid_call_event      
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event      
+      call.answer.should eql true
     
-      @tropo2.conference('1234').should eql true
-      @tropo2.read_event_queue.should eql nil # Temp based on this: https://github.com/tropo/punchblock/issues/27
-      @tropo2.hangup.should eql true
-      @tropo2.read_event_queue.should be_a_valid_conference_event
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call.conference('1234').should eql true
+      call.next_event.should eql nil # Temp based on this: https://github.com/tropo/punchblock/issues/27
+      call.hangup.should eql true
+      call.next_event.should be_a_valid_conference_event
+      call.next_event.should be_a_valid_hangup_event
     
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   
     it "Should put two callers into a conference and then hangup" do

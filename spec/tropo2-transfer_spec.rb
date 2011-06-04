@@ -9,8 +9,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
     
       # Set a script that handles the incoming Xfer from Tropo2
       @tropo1.script_content = <<-SCRIPT_CONTENT
@@ -19,10 +20,11 @@ describe "Tropo2AutomatedFunctionalTesting" do
         hangup
       SCRIPT_CONTENT
     
-      @tropo2.transfer(@config['tropo1']['call_destination']).should eql true
-      @tropo2.read_event_queue.should be_a_valid_transfer_event
-    
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.transfer(@config['tropo1']['call_destination']).should eql true
+      call.next_event.should be_a_valid_transfer_event
+      call.next_event.should be_a_valid_hangup_event
+      
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   
     it "Should try to transfer but get a timeout" do
@@ -32,16 +34,19 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
     
       # Set a script that handles the incoming Xfer from Tropo2
       @tropo1.script_content = <<-SCRIPT_CONTENT
         wait 5000
       SCRIPT_CONTENT
     
-      @tropo2.transfer(@config['tropo1']['call_destination'], :timeout => 2000).should eql true
-      @tropo2.read_event_queue.should be_a_valid_transfer_timeout_event
+      call.transfer(@config['tropo1']['call_destination'], :timeout => 2000).should eql true
+      call.next_event.should be_a_valid_transfer_timeout_event
+      
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   end
 end
