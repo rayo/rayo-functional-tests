@@ -70,7 +70,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
       
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        sleep 2
         say 'yes'
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
