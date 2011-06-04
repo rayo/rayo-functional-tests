@@ -38,21 +38,22 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
       
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
   
-      @tropo2.ask('One', { :choices => 'yes, no' }).should eql true
+      call.ask('One', { :choices => 'yes, no' }).should eql true
       
       sleep @config['media_assertion_timeout']
       
-      ask_event = @tropo2.read_event_queue
+      ask_event = call.read_queue
       ask_event.should be_a_valid_ask_event
       ask_event.attributes[:utterance].should eql 'yes'
       
-      @tropo2.hangup.should eql true
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call.hangup.should eql true
+      call.read_queue.should be_a_valid_hangup_event
     
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   
     it "Should ask with an SSML as a prompt" do
@@ -64,21 +65,22 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
   
-      @tropo2.ask('<say-as interpret-as="ordinal">100</say-as>', :choices => 'yes, no').should eql true
+      call.ask('<say-as interpret-as="ordinal">100</say-as>', :choices => 'yes, no').should eql true
       
       sleep 6
       
-      ask_event = @tropo2.read_event_queue
+      ask_event = call.read_queue
       ask_event.should be_a_valid_ask_event
       ask_event.attributes[:utterance].should eql 'yes'
   
-      @tropo2.hangup.should eql true
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call.hangup.should eql true
+      call.read_queue.should be_a_valid_hangup_event
     
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   
     it "Should ask with a GRXML grammar" do
@@ -90,19 +92,20 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
     
-      @tropo2.ask('One', { :choices => @grxml, :grammar => 'application/grammar+grxml' }).should eql true
+      call.ask('One', { :choices => @grxml, :grammar => 'application/grammar+grxml' }).should eql true
 
-      ask_event = @tropo2.read_event_queue
+      ask_event = call.read_queue
       ask_event.should be_a_valid_ask_event
       ask_event.attributes[:utterance].should eql 'clue'
       
-      @tropo2.hangup.should eql true
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call.hangup.should eql true
+      call.read_queue.should be_a_valid_hangup_event
     
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   
     it "Should ask with an SSML prompt and a GRXML grammar" do
@@ -116,19 +119,20 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
     
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
   
-      @tropo2.ask('<say-as interpret-as="ordinal">100</say-as>', { :choices => @grxml, 
-                                                                   :grammar => 'application/grammar+grxml' }).should eql true
-      ask_event = @tropo2.read_event_queue
+      call.ask('<say-as interpret-as="ordinal">100</say-as>', { :choices => @grxml, 
+                                                                :grammar => 'application/grammar+grxml' }).should eql true
+      ask_event = call.read_queue
       ask_event.should be_a_valid_ask_event
       ask_event.attributes[:utterance].should eql 'clue'
       
-      @tropo2.hangup.should eql true
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call.hangup.should eql true
+      call.read_queue.should be_a_valid_hangup_event
     
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
     it "Should ask and get a NOINPUT event" do
@@ -139,15 +143,16 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
   
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
     
-      @tropo2.ask('Yeap', { :choices => 'yes, no',
-                            :timeout => 2000 })
-      @tropo2.read_event_queue.should be_a_valid_noinput_event
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call.ask('Yeap', { :choices => 'yes, no',
+                         :timeout => 2000 })
+      call.read_queue.should be_a_valid_noinput_event
+      call.read_queue.should be_a_valid_hangup_event
       
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
     it "Should ask and get a NOMATCH event with min_confidence set to 1" do
@@ -161,16 +166,17 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
   
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.read_queue.should be_a_valid_call_event
+      call.answer.should eql true
     
-      @tropo2.ask('Yeap', { :choices        => 'red, green',
-                            :timeout        => 2000,
-                            :min_confidence => '1' })
-      @tropo2.read_event_queue.should be_a_valid_nomatch_event
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call.ask('Yeap', { :choices        => 'red, green',
+                         :timeout        => 2000,
+                         :min_confidence => '1' })
+      call.read_queue.should be_a_valid_nomatch_event
+      call.read_queue.should be_a_valid_hangup_event
       
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
     it "Should ask and get a STOP if the farside hangs up before the command complete" do
@@ -182,14 +188,15 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
   
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
     
-      @tropo2.ask('Yeap', { :choices => 'red, green' })
-      @tropo2.read_event_queue.should be_a_valid_stopped_ask_event
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call.ask('Yeap', { :choices => 'red, green' })
+      call.read_queue.should be_a_valid_stopped_ask_event
+      call.read_queue.should be_a_valid_hangup_event
       
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
     it "Should ask something with an invalid grammar and get an error back" do
@@ -200,18 +207,19 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
       
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
   
       begin
-        @tropo2.ask('One', { :choices => '<grammar>' }).should eql true
+        call.ask('One', { :choices => '<grammar>' }).should eql true
       rescue => error
         error.class.should eql Punchblock::Transport::TransportError
       end
       
-      @tropo2.read_event_queue.type.should eql :error
+      call.read_queue.type.should eql :error
     
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   end
 end

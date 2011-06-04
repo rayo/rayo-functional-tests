@@ -11,10 +11,11 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.hangup.should eql true
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.hangup.should eql true
+      call.read_queue.should be_a_valid_hangup_event
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
 
     it "Should answer and hangup" do 
@@ -25,11 +26,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
-      @tropo2.hangup.should eql true
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
+      call.hangup.should eql true
+      call.read_queue.should be_a_valid_hangup_event
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
     it "Should throw an error if we try to answer a call that is hungup" do
@@ -39,19 +41,20 @@ describe "Tropo2AutomatedFunctionalTesting" do
         wait #{@config['tropo1']['wait_to_hangup']}
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
-    
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
-      @tropo2.hangup.should eql true
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
+      call.hangup.should eql true
+      call.read_queue.should be_a_valid_hangup_event
       
       begin
-        @tropo2.answer
+        call.answer
       rescue => error
         error.class.should eql Punchblock::Transport::TransportError 
       end
       
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
     it "Should accept and hangup" do 
@@ -62,11 +65,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.accept.should eql true
-      @tropo2.hangup.should eql true
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.accept.should eql true
+      call.hangup.should eql true
+      call.read_queue.should be_a_valid_hangup_event
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
     it "Should answer a call and let the farside hangup" do
@@ -78,11 +82,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @tropo2.read_event_queue.should be_a_valid_call_event
-      @tropo2.answer.should eql true
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
+      call.read_queue.should be_a_valid_hangup_event
       
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   end
 end
