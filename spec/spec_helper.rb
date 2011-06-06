@@ -28,7 +28,7 @@ RSpec.configure do |config|
                                                   :queue_timeout    => @config['tropo2_queue']['connection_timeout'] })
                                
     @tropo1 = Tropo2Utilities::Tropo1Driver.new(@config['tropo1']['druby_uri'])
-  
+    
     status = @tropo2.read_event_queue
     abort 'Could not connect to Prism XMPP Server. Aborting!' if status != 'CONNECTED'
     @tropo2.start_event_dispatcher
