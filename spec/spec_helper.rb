@@ -30,7 +30,7 @@ RSpec.configure do |config|
     @tropo1 = Tropo2Utilities::Tropo1Driver.new(@config['tropo1']['druby_uri'])
   
     status = @tropo2.read_event_queue
-    status.should eql 'CONNECTED'
+    abort 'Could not connect to Prism XMPP Server. Aborting!' if status != 'CONNECTED'
     @tropo2.start_event_dispatcher
   end
   
@@ -42,6 +42,8 @@ RSpec.configure do |config|
   config.after(:all) do
     begin
       @tropo1.drb.stop_service
+    rescue
+      puts 'Upstream error, DRb not running from previous test.'
     end
   end
 end
