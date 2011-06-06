@@ -40,6 +40,8 @@ RSpec.configure do |config|
   end
   
   config.after(:all) do
-    @tropo1.drb.stop_service
+    begin
+      @tropo1.drb.stop_service
+    end
   end
 end
