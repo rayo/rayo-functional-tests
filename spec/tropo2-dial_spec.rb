@@ -80,5 +80,16 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call2.next_event.should be_a_valid_hangup_event
       call2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
+    
+    it "Should get an error if we dial an invalid address" do
+      begin
+        call = @tropo2.dial(:to      => 'foobar', 
+                            :from    => 'tel:+14155551212',
+                            :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'],
+                                          'x-tropo2-test'        => 'booyah!' })
+      rescue => error
+        error.class.should eql Punchblock::Transport::TransportError
+      end
+    end
   end
 end
