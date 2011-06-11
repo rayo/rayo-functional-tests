@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Transfer verb" do
     it "Should answer a call and then transfer it" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -20,7 +21,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
         hangup
       SCRIPT_CONTENT
     
-      call.transfer(@config['tropo1']['call_destination']).should eql true
+      call.transfer(:to      => @config['tropo1']['call_destination'],
+                    :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'] }).should eql true
+                    
       call.next_event.should be_a_valid_transfer_event
       call.next_event.should be_a_valid_hangup_event
       
@@ -28,6 +31,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should try to transfer but get a timeout" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -43,7 +47,10 @@ describe "Tropo2AutomatedFunctionalTesting" do
         wait 5000
       SCRIPT_CONTENT
     
-      call.transfer(@config['tropo1']['call_destination'], :timeout => 2000).should eql true
+      call.transfer(:to      => @config['tropo1']['call_destination'], 
+                    :timeout => 2000,
+                    :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'] }).should eql true
+
       call.next_event.should be_a_valid_transfer_timeout_event
       
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
