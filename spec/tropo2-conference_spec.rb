@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Conference command" do
     it "Should put one caller in conference and then hangup" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -13,7 +14,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event      
       call.answer.should eql true
     
-      call.conference('1234').should eql true
+      call.conference(:name => '1234').should eql true
       call.hangup.should eql true
       call.next_event.should be_a_valid_conference_event
       call.next_event.should be_a_valid_hangup_event
@@ -22,6 +23,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should put two callers into a conference and then hangup" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -31,14 +33,14 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call_1 = @tropo2.get_call
       call_1.call_event.should be_a_valid_call_event      
       call_1.answer.should eql true
-      call_1.conference('1234').should eql true
+      call_1.conference(:name => '1234').should eql true
       
       @tropo1.place_call @config['tropo1']['session_url']
       
       call_2 = @tropo2.get_call
       call_2.call_event.should be_a_valid_call_event      
       call_2.answer.should eql true
-      call_2.conference('1234').should eql true
+      call_2.conference(:name => '1234').should eql true
       
       call_1.hangup.should eql true
       call_1.next_event.should be_a_valid_conference_event
@@ -54,6 +56,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should put two callers into a conference, validate media and hangup" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         ask 'One', { :choices     => 'yes, no',
@@ -66,7 +69,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call_1 = @tropo2.get_call
       call_1.call_event.should be_a_valid_call_event      
       call_1.answer.should eql true
-      call_1.conference('1234').should eql true
+      call_1.conference(:name => '1234').should eql true
       
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
@@ -78,7 +81,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call_2 = @tropo2.get_call
       call_2.call_event.should be_a_valid_call_event      
       call_2.answer.should eql true
-      call_2.conference('1234').should eql true
+      call_2.conference(:name => '1234').should eql true
       
       sleep @config['media_assertion_timeout'] + 2
       

@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Redirect command" do
     it "Should redirect a call" do
-      pending('https://github.com/tropo/punchblock/issues/22')
+      pending('https://github.com/tropo/tropo2/issues/52')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         say 'Hello world'
@@ -20,9 +20,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       TROPO_SCRIPT_CONTENT
   
       # Send an answer to Tropo2
-      call.redirect @config['tropo1']['call_destination'].should eql true
-      ap call.next_event
-      ap call.next_event
+      call.redirect(:to => @config['tropo1']['call_destination']).should eql true
       ap call.next_event
       #redirect_event.should be_a_valid_answer_event
   

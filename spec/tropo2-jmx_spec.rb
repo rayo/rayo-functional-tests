@@ -6,7 +6,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
   describe "JMX Tests" do
         
     it "Should find JMX MBeans available" do
-    
+
     	server = @config['tropo2_server']['server']
     	port = @config['tropo2_server']['port'].to_i
     	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)
@@ -25,7 +25,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
 
     it "Should find all main JMX Beans" do
- 
+    
  		server = @config['tropo2_server']['server']
  		port = @config['tropo2_server']['port'].to_i
     	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)

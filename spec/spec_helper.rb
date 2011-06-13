@@ -11,8 +11,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
   punchblock
   rspec-tropo2
   }.each { |lib| require lib }
-  # /Users/jsgoecke/Dropbox/Development/punchblock/lib/punchblock
-  # /Users/jsgoecke/Dropbox/Development/rspec-tropo2/lib/rspec-tropo2
 
 Thread.abort_on_exception = true
 
@@ -29,7 +27,7 @@ RSpec.configure do |config|
                                
     @tropo1 = Tropo2Utilities::Tropo1Driver.new(@config['tropo1']['druby_uri'])
     
-    status = @tropo2.read_event_queue
+    status = @tropo2.read_queue(@tropo2.event_queue)
     abort 'Could not connect to Prism XMPP Server. Aborting!' if status != 'CONNECTED'
     @tropo2.start_event_dispatcher
   end

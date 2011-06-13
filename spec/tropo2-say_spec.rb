@@ -16,11 +16,11 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event  
       call.answer.should eql true
   
-      call.say('yes').should eql true
+      call.say(:text => 'yes').should eql true
       
       sleep @config['media_assertion_timeout']
       
-      call.next_event.should be_a_valid_successful_say_event
+      call.next_event.should be_a_valid_say_event
   
       call.hangup.should eql true
       call.next_event.should be_a_valid_hangup_event
@@ -41,12 +41,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event  
       call.answer.should eql true
   
-      call.say('http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3', :url).should eql true
+      call.say(:url => 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3').should eql true
     
       #Wait for audio file to complete playing
       sleep 9
 
-      call.next_event.should be_a_valid_successful_say_event
+      call.next_event.should be_a_valid_say_event
       
       call.hangup.should eql true
       call.next_event.should be_a_valid_hangup_event
@@ -68,8 +68,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event  
       call.answer.should eql true
   
-      call.say('<say-as interpret-as="ordinal">100</say-as>', :ssml).should eql true
-      call.next_event.should be_a_valid_successful_say_event
+      call.say(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should eql true
+      call.next_event.should be_a_valid_say_event
 
       sleep @config['media_assertion_timeout']
   
@@ -121,10 +121,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event  
       call.answer.should eql true
   
-      call.say('http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3', :url).should eql true
+      call.say(:url => 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3').should eql true
       
-      call.next_event.should be_a_valid_stopped_say_event
-      
+      call.next_event.should be_a_valid_say_hangup_event
       call.next_event.should be_a_valid_hangup_event
     
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
@@ -142,11 +141,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event  
       call.answer.should eql true
   
-      begin
-        call.say('')
-      rescue => error
-        error.class.should eql Punchblock::Transport::TransportError
-      end
+      lambda {call.say('')}.should raise_error(TransportError)
       
       call.next_event.should be_a_valid_hangup_event
     

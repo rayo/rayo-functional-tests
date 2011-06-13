@@ -30,6 +30,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask something with ASR and get the utterance back" do
+      #pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
@@ -42,13 +43,14 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
   
-      call.ask('One', { :choices => 'yes, no' }).should eql true
+      call.ask({ :text    => 'One', 
+                 :choices => 'yes, no' }).should eql true
       
       sleep @config['media_assertion_timeout']
       
       ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
-      ask_event.attributes[:utterance].should eql 'yes'
+      ask_event.reason.utterance.should eql 'yes'
       
       call.hangup.should eql true
       call.next_event.should be_a_valid_hangup_event
@@ -57,6 +59,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask with an SSML as a prompt" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
@@ -69,13 +72,14 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
   
-      call.ask('<say-as interpret-as="ordinal">100</say-as>', :choices => 'yes, no').should eql true
+      call.ask(:text    => '<say-as interpret-as="ordinal">100</say-as>', 
+               :choices => 'yes, no').should eql true
       
       sleep 6
       
       ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
-      ask_event.attributes[:utterance].should eql 'yes'
+      ask_event.reason.utterance.should eql 'yes'
   
       call.hangup.should eql true
       call.next_event.should be_a_valid_hangup_event
@@ -84,6 +88,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask with a GRXML grammar" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 3
@@ -96,11 +101,13 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
     
-      call.ask('One', { :choices => @grxml, :grammar => 'application/grammar+grxml' }).should eql true
+      call.ask({ :text    => 'One', 
+                 :choices => @grxml, 
+                 :grammar => 'application/grammar+grxml' }).should eql true
 
       ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
-      ask_event.attributes[:utterance].should eql 'clue'
+      ask_event.reason.utterance.should eql 'clue'
       
       call.hangup.should eql true
       call.next_event.should be_a_valid_hangup_event
@@ -109,6 +116,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask with an SSML prompt and a GRXML grammar" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 1
@@ -123,11 +131,13 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
   
-      call.ask('<say-as interpret-as="ordinal">100</say-as>', { :choices => @grxml, 
-                                                                :grammar => 'application/grammar+grxml' }).should eql true
+      call.ask({ :text    => '<say-as interpret-as="ordinal">100</say-as>', 
+                 :choices => @grxml,
+                 :grammar => 'application/grammar+grxml' }).should eql true
+                 
       ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
-      ask_event.attributes[:utterance].should eql 'clue'
+      ask_event.reason.utterance.should eql 'clue'
       
       call.hangup.should eql true
       call.next_event.should be_a_valid_hangup_event
@@ -136,6 +146,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should ask and get a NOINPUT event" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 5000
@@ -147,8 +158,10 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
     
-      call.ask('Yeap', { :choices => 'yes, no',
-                         :timeout => 2000 })
+      call.ask({ :text    => 'Yeap', 
+                 :choices => 'yes, no',
+                 :timeout => 2000 })
+                 
       call.next_event.should be_a_valid_noinput_event
       call.next_event.should be_a_valid_hangup_event
       
@@ -170,9 +183,11 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.next_event.should be_a_valid_call_event
       call.answer.should eql true
     
-      call.ask('Yeap', { :choices        => 'red, green',
-                         :timeout        => 2000,
-                         :min_confidence => '1' })
+      call.ask({ :text           => 'Yeap', 
+                 :choices        => 'red, green',
+                 :timeout        => 2000,
+                 :min_confidence => '1' })
+
       call.next_event.should be_a_valid_nomatch_event
       call.next_event.should be_a_valid_hangup_event
       
@@ -200,6 +215,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should ask something with an invalid grammar and get an error back" do
+      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 2000
@@ -211,13 +227,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
   
-      begin
-        call.ask('One', { :choices => '<grammar>' }).should eql true
-      rescue => error
-        error.class.should eql Punchblock::Transport::TransportError
-      end
+      lambda { call.ask({ :text => 'One', :choices => '<grammar>' }) }.should raise_error(TransportError)
       
-      call.next_event.type.should eql :error
+      ap call.next_event.reason.should eql :error
     
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end

@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Dial command" do
     it "Should place an outbound call, receive a ring event, receive an answer event and then hangup" do
+      pending('https://github.com/tropo/tropo2/issues/55')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
         sleep 2
@@ -21,6 +22,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
         
     it "Should place an outbound call and then receive a reject event" do
+      pending('https://github.com/tropo/tropo2/issues/55')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         reject
       TROPO_SCRIPT_CONTENT
@@ -35,6 +37,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should place an outbound call and send SIP headers" do
+      pending('https://github.com/tropo/tropo2/issues/55')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
         ozone_testing_server.result = $currentCall.getHeader('x-tropo2-test')
@@ -55,6 +58,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should dial multiple calls" do
+      pending('https://github.com/tropo/tropo2/issues/55')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -82,6 +86,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should get an error if we dial an invalid address" do
+      pending('https://github.com/tropo/tropo2/issues/55')
       begin
         call = @tropo2.dial(:to      => 'foobar', 
                             :from    => 'tel:+14155551212',
