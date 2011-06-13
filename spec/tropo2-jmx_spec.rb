@@ -34,7 +34,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
     	res.code.should eql '200'
 
-    	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Admin', port)
+    	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Admin,name=Admin', port)
     	res.code.should eql '200'
 
     	res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Calls', port)
@@ -49,7 +49,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     
 		server = @config['tropo2_server']['server']
 		port = @config['tropo2_server']['port'].to_i
-		res = Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin/enableQuiesce', port)
+		res = Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/enableQuiesce', port)
 		res.code.should eql '200'
 		json = JSON.parse res.body
 		json['error'].should eql nil
@@ -59,7 +59,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     
 		server = @config['tropo2_server']['server']
 		port = @config['tropo2_server']['port'].to_i
-		res = Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin/disableQuiesce', port)
+		res = Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/disableQuiesce', port)
 		res.code.should eql '200'
 		json = JSON.parse res.body
 		json['error'].should eql nil
@@ -95,7 +95,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
 			json = JSON.parse res.body
 			calls = json['value']['CallsRejected'].to_i
 			
-			Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin/enableQuiesce', port)
+			Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/enableQuiesce', port)
 
 	        @tropo1.script_content = <<-SCRIPT_CONTENT
 	          call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
@@ -109,7 +109,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
 			calls2 = json['value']['CallsRejected'].to_i
 			calls2.should eql calls+1
 		ensure
-			Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin/disableQuiesce', port)
+			Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/disableQuiesce', port)
 		end
     end  
   end
