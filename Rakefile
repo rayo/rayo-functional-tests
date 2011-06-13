@@ -30,7 +30,7 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-%w{ask conference dial misc say}.each do |command|
+%w{answer-hangup ask conference dial say}.each do |command|
   RSpec::Core::RakeTask.new(command.to_sym => ["ci:setup:rspec"]) do |spec|
     spec.pattern = FileList["spec/**/tropo2-#{command}_spec.rb"]
   end

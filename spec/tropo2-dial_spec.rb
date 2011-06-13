@@ -10,12 +10,14 @@ describe "Tropo2AutomatedFunctionalTesting" do
         wait #{@config['tropo1']['wait_to_hangup']}
       TROPO_SCRIPT_CONTENT
     
-      @tropo2.dial(:to => @config['tropo1']['call_destination'], :from => 'tel:+14155551212').should eql true
-      @tropo2.read_event_queue.should be_a_valid_ring_event
-      @tropo2.read_event_queue.should be_a_valid_answer_event
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
-      
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call = @tropo2.dial(:to      => @config['tropo1']['call_destination'], 
+                          :from    => 'tel:+14155551212',
+                          :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'] })
+      call.ring_event.should be_a_valid_ring_event
+      call.next_event.should be_a_valid_answer_event
+      call.next_event.should be_a_valid_hangup_event
+       
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
         
     it "Should place an outbound call and then receive a reject event" do
@@ -23,11 +25,13 @@ describe "Tropo2AutomatedFunctionalTesting" do
         reject
       TROPO_SCRIPT_CONTENT
     
-      @tropo2.dial(:to => @config['tropo1']['call_destination'], :from => 'tel:+14155551212').should eql true
-      @tropo2.read_event_queue.should be_a_valid_ring_event
-      @tropo2.read_event_queue.should be_a_valid_reject_event
+      call = @tropo2.dial(:to      => @config['tropo1']['call_destination'], 
+                          :from    => 'tel:+14155551212',
+                          :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'] })
+      call.ring_event.should be_a_valid_ring_event
+      call.next_event.should be_a_valid_reject_event
       
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
     
     it "Should place an outbound call and send SIP headers" do
@@ -38,15 +42,54 @@ describe "Tropo2AutomatedFunctionalTesting" do
         hangup
       TROPO_SCRIPT_CONTENT
     
-      @tropo2.dial(:to      => @config['tropo1']['call_destination'], 
-                   :from    => 'tel:+14155551212',
-                   :headers => { 'x-tropo2-test' => 'booyah!' } ).should eql true
-      @tropo2.read_event_queue.should be_a_valid_ring_event
-      @tropo2.read_event_queue.should be_a_valid_answer_event
-      @tropo2.read_event_queue.should be_a_valid_hangup_event
+      call = @tropo2.dial(:to      => @config['tropo1']['call_destination'], 
+                          :from    => 'tel:+14155551212',
+                          :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'],
+                                        'x-tropo2-test'        => 'booyah!' })
+      call.ring_event.should be_a_valid_ring_event
+      call.next_event.should be_a_valid_answer_event
+      call.next_event.should be_a_valid_hangup_event
       @tropo1.result.should eql 'booyah!'
       
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
+    
+    it "Should dial multiple calls" do
+      @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+        answer
+        wait #{@config['tropo1']['wait_to_hangup']}
+        hangup
+      TROPO_SCRIPT_CONTENT
+      
+      call1 = @tropo2.dial(:to      => @config['tropo1']['call_destination'], 
+                           :from    => 'tel:+14155551212',
+                           :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'],
+                                         'x-tropo2-test'        => 'booyah!' })
+      call2 = @tropo2.dial(:to      => @config['tropo1']['call_destination'], 
+                           :from    => 'tel:+14155551212',
+                           :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'],
+                                         'x-tropo2-test'        => 'booyah!' })
+                                         
+      call1.ring_event.should be_a_valid_ring_event
+      call1.next_event.should be_a_valid_answer_event
+      call1.next_event.should be_a_valid_hangup_event
+      call1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      
+      call2.ring_event.should be_a_valid_ring_event
+      call2.next_event.should be_a_valid_answer_event
+      call2.next_event.should be_a_valid_hangup_event
+      call2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
+    
+    it "Should get an error if we dial an invalid address" do
+      begin
+        call = @tropo2.dial(:to      => 'foobar', 
+                            :from    => 'tel:+14155551212',
+                            :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'],
+                                          'x-tropo2-test'        => 'booyah!' })
+      rescue => error
+        error.class.should eql Punchblock::Transport::TransportError
+      end
     end
   end
 end

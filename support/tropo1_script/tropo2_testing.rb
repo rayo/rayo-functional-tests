@@ -1,6 +1,6 @@
 require 'drb/drb'
 
-drb_server_address = $drb_server_address || '10.0.1.10:8787'
+drb_server_address = $drb_server_address || $currentCall.getHeader('x-tropo2-drb-address')
 
 log "====>Connecting to the Ozone Test Server @ #{drb_server_address}<===="
 
