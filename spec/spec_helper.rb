@@ -11,8 +11,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
   punchblock
   rspec-tropo2
   }.each { |lib| require lib }
-  # /Users/jsgoecke/Dropbox/Development/punchblock/lib/punchblock
-  # /Users/jsgoecke/Dropbox/Development/rspec-tropo2/lib/rspec-tropo2
 
 Thread.abort_on_exception = true
 

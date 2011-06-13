@@ -30,7 +30,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask something with ASR and get the utterance back" do
-      pending('https://github.com/tropo/tropo2/issues/53')
+      #pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
