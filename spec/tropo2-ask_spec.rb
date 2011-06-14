@@ -30,7 +30,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask something with ASR and get the utterance back" do
-      #pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
@@ -59,7 +58,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask with an SSML as a prompt" do
-      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
@@ -88,7 +86,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask with a GRXML grammar" do
-      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 3
@@ -116,7 +113,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should ask with an SSML prompt and a GRXML grammar" do
-      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 1
@@ -146,7 +142,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should ask and get a NOINPUT event" do
-      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 5000
@@ -169,7 +164,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should ask and get a NOMATCH event with min_confidence set to 1" do
-      pending('https://github.com/tropo/tropo2/issues/30')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 1000
@@ -180,7 +174,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo1.place_call @config['tropo1']['session_url']
   
       call = @tropo2.get_call
-      call.next_event.should be_a_valid_call_event
+      call.call_event.should be_a_valid_call_event
       call.answer.should eql true
     
       call.ask({ :text           => 'Yeap', 
@@ -195,10 +189,10 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should ask and get a STOP if the farside hangs up before the command complete" do
-      pending('https://github.com/tropo/tropo2/issues/32')
+      pending('https://github.com/tropo/tropo2/issues/59')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        wait 1000
+        wait 8000
         hangup
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
@@ -207,7 +201,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
     
-      call.ask('Yeap', { :choices => 'red, green' })
+      call.ask({ :text => 'Yeap', :choices => 'red, green' })
+      
       call.next_event.should be_a_valid_stopped_ask_event
       call.next_event.should be_a_valid_hangup_event
       
@@ -215,7 +210,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should ask something with an invalid grammar and get an error back" do
-      pending('https://github.com/tropo/tropo2/issues/53')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 2000
@@ -227,9 +221,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
   
-      lambda { call.ask({ :text => 'One', :choices => '<grammar>' }) }.should raise_error(TransportError)
+      lambda { call.ask({ :text => 'One', :choices => '<grammar>' }) }.should raise_error(Punchblock::Protocol::ProtocolError)
       
-      ap call.next_event.reason.should eql :error
+      call.next_event.reason.should eql :error
     
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end

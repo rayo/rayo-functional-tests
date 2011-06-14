@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Dial command" do
     it "Should place an outbound call, receive a ring event, receive an answer event and then hangup" do
-      pending('https://github.com/tropo/tropo2/issues/55')
+      #pending('https://github.com/tropo/tropo2/issues/55')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         answer
         sleep 2
@@ -14,6 +14,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call = @tropo2.dial(:to      => @config['tropo1']['call_destination'], 
                           :from    => 'tel:+14155551212',
                           :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'] })
+      ap call
       call.ring_event.should be_a_valid_ring_event
       call.next_event.should be_a_valid_answer_event
       call.next_event.should be_a_valid_hangup_event

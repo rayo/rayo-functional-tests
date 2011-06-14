@@ -48,7 +48,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.hangup.should eql true
       call.next_event.should be_a_valid_hangup_event
       
-      lambda {call.answer}.should raise_error(TransportError)
+      lambda {call.answer}.should raise_error(Punchblock::Protocol::ProtocolError)
       
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
