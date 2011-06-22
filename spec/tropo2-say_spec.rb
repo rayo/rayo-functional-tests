@@ -141,7 +141,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event  
       call.answer.should eql true
   
-      lambda {call.say('')}.should raise_error(TransportError)
+      lambda { call.say('') }.should raise_error(Punchblock::Protocol::ProtocolError)
       
       call.next_event.should be_a_valid_hangup_event
     

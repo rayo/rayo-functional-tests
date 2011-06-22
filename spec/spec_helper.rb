@@ -15,6 +15,8 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 Thread.abort_on_exception = true
 
 RSpec.configure do |config|
+  #config.filter_run :focus => true
+  
   config.before(:all) do
     @config = YAML.load(File.open('config/config.yml'))
 

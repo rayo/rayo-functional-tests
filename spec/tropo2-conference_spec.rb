@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Conference command" do
     it "Should put one caller in conference and then hangup" do
+      pending('Exception in XMPP thread! Cannot transition hold_status via :offhold from :offhold')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -23,6 +24,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should put two callers into a conference and then hangup" do
+      pending('Exception in XMPP thread! Cannot transition hold_status via :offhold from :offhold')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -57,6 +59,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should put two callers into a conference, validate media and hangup" do
+      pending('Exception in XMPP thread! Cannot transition hold_status via :offhold from :offhold')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         ask 'One', { :choices     => 'yes, no',
