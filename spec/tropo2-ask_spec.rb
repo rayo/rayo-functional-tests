@@ -42,8 +42,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
   
-      call.ask({ :text    => 'One', 
-                 :choices => 'yes, no' }).should eql true
+      call.ask({ :prompt  => { :text  => 'One' }, 
+                 :choices => { :value => 'yes, no' } }).should eql true
       
       sleep @config['media_assertion_timeout']
       
@@ -70,8 +70,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
   
-      call.ask(:text    => '<say-as interpret-as="ordinal">100</say-as>', 
-               :choices => 'yes, no').should eql true
+      call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' }, 
+               :choices => { :value => 'yes, no' }).should eql true
       
       sleep 6
       
@@ -98,9 +98,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
     
-      call.ask({ :text    => 'One', 
-                 :choices => @grxml, 
-                 :grammar => 'application/grammar+grxml' }).should eql true
+      call.ask({ :prompt       => { :text         => 'One' }, 
+                 :choices      => { :value        =>  @grxml,
+                                    :content_type => 'application/grammar+grxml' } }).should eql true
 
       ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
@@ -127,9 +127,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
   
-      call.ask({ :text    => '<say-as interpret-as="ordinal">100</say-as>', 
-                 :choices => @grxml,
-                 :grammar => 'application/grammar+grxml' }).should eql true
+      call.ask({ :prompt       => { :text  => '<say-as interpret-as="ordinal">100</say-as>' }, 
+                 :choices      => { :value => @grxml,
+                                    :content_type => 'application/grammar+grxml' } }).should eql true
                  
       ask_event = call.next_event
       ask_event.should be_a_valid_ask_event
@@ -153,8 +153,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
     
-      call.ask({ :text    => 'Yeap', 
-                 :choices => 'yes, no',
+      call.ask({ :prompt  => { :text  => 'Yeap' }, 
+                 :choices => { :value => 'yes, no' },
                  :timeout => 2000 })
                  
       call.next_event.should be_a_valid_noinput_event
@@ -177,9 +177,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
     
-      call.ask({ :text           => 'Yeap', 
-                 :choices        => 'red, green',
-                 :timeout        => 3000,
+      call.ask({ :prompt         => { :text  => 'Yeap' }, 
+                 :choices        => { :value => 'red, green' },
+                 :timeout        => 5000,
                  :min_confidence => '1' })
 
       call.next_event.should be_a_valid_nomatch_event
@@ -201,7 +201,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
     
-      call.ask({ :text => 'Yeap', :choices => 'red, green' })
+      call.ask({ :prompt  => { :text  => 'Yeap' }, 
+                 :choices => { :value => 'red, green' } })
       
       call.next_event.should be_a_valid_stopped_ask_event
       call.next_event.should be_a_valid_hangup_event
@@ -221,7 +222,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
   
-      lambda { call.ask({ :text => 'One', :choices => '<grammar>' }) }.should raise_error(Punchblock::Protocol::ProtocolError)
+      lambda { call.ask({ :prompt  => { :text => 'One' }, 
+                          :choices => { :value => '<grammar>' } }) }.should raise_error(Punchblock::Protocol::ProtocolError)
       
       call.next_event.reason.should eql :error
     
