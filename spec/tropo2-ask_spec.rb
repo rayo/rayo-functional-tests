@@ -164,6 +164,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should ask and get a NOMATCH event with min_confidence set to 1" do
+      pending('Need to get the sequencing of the test right')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 1000
