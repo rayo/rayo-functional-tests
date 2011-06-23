@@ -80,7 +80,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should get an error if we dial an invalid address" do
-      pending('https://github.com/tropo/tropo2/issues/80')
       lambda { @tropo2.dial(:to      => 'foobar', 
                             :from    => 'tel:+14155551212',
                             :headers => { 'x-tropo2-drb-address' => @config['tropo2_server']['drb_server_address'],
