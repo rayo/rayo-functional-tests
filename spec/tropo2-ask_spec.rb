@@ -167,7 +167,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 1000
-        say 'elephant'
+        say 'elephant elephant elephant elephant elephant elephant elephant elephant elephant elephant'
         wait #{@config['tropo1']['wait_to_hangup']}
         hangup
       SCRIPT_CONTENT
@@ -179,7 +179,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     
       call.ask({ :text           => 'Yeap', 
                  :choices        => 'red, green',
-                 :timeout        => 2000,
+                 :timeout        => 3000,
                  :min_confidence => '1' })
 
       call.next_event.should be_a_valid_nomatch_event
