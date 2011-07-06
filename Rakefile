@@ -14,7 +14,7 @@ require 'rspec/core/rake_task'
 require 'ci/reporter/rake/rspec'
 
 RSpec::Core::RakeTask.new(:hudson => ["ci:setup:rspec"]) do |spec|
-  spec.pattern = ['**/tropo2-jmx*_spec.rb','**/tropo2-transfer*_spec.rb','**/tropo2-dial*_spec.rb','**/tropo2-conference*_spec.rb']
+  spec.pattern = ['**/tropo2-jmx*_spec.rb','**/tropo2-transfer*_spec.rb','**/tropo2-ask*_spec.rb','**/tropo2-conference*_spec.rb']
 end
 
 RSpec::Core::RakeTask.new(:rspec) do |spec|
