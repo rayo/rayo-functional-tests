@@ -70,6 +70,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should answer a call and let the farside hangup" do
+      pending('don't know how it works')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 1
