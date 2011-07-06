@@ -70,7 +70,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
     
     it "Should answer a call and let the farside hangup" do
-      pending('don't know how it works')
+      pending('Need to figure out why this only fails on the Hudson CI server, but not locally')
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 1
