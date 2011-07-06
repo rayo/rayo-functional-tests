@@ -3,7 +3,6 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Transfer verb" do
     it "Should answer a call and then transfer it" do
-      pending('Need to figure out why this only fails on the Hudson CI server, but not locally')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -31,7 +30,6 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
   
     it "Should try to transfer but get a timeout" do
-      pending('Need to figure out why this only fails on the Hudson CI server, but not locally')
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
