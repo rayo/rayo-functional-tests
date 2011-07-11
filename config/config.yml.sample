@@ -6,8 +6,6 @@ tropo2_server:
     transport_log: logs/tropo2-transport.log
     server: 127.0.0.1
     port: 8080
-    drb_server_host: 127.0.0.1
-    drb_server_port: 8787
 
 tropo2_queue:
     connection_timeout: 30 # Amount of time waiting to connect to the Ozone server before considering it a timeout
@@ -17,9 +15,9 @@ tropo2_queue:
 tropo1:
     use: true # True to use Tropo1, false to be prompted to dial interactively from a softphone
     # Tropo1 session URI, include the location of ozone_functional_tester/support/ozone_testing.rb, there is a copy on the URI below too
-    session_url: 'http://127.0.0.1:8080/tropo/calls?action=create&token=http://dl.dropbox.com/u/25511/Voxeo/tropo2_testing/tropo2_testing.rb&vars=drb_server_address%3D127.0.0.1:8787'
+    session_url: 'http://127.0.0.1:8080/tropo/calls?action=create&token=http://dl.dropbox.com/u/25511/Voxeo/tropo2_testing/tropo2_testing.rb'
     call_destination: sip:tropo2_testing.rb@127.0.0.1:5061
-    druby_uri: druby://0.0.0.0
+    druby_host: 0.0.0.0
     druby_port: 8787
     wait_to_hangup: 30000
 

@@ -1,6 +1,6 @@
 require 'drb/drb'
 
-drb_server_address = $drb_server_address || $currentCall.getHeader('x-tropo2-drb-address')
+drb_server_address = $drb_server_address ? "druby://#{$drb_server_address}" : $currentCall.getHeader('x-tropo2-drb-address')
 
 log "====>Connecting to the Ozone Test Server @ #{drb_server_address}<===="
 

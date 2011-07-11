@@ -27,9 +27,13 @@ RSpec.configure do |config|
                                                 :log_level        => Logger::DEBUG,
                                                 :queue_timeout    => @config['tropo2_queue']['connection_timeout']
 
-    @drb_server_uri = [@config['tropo2_server']['drb_server_host'], ENV['TROPO1_DRB_PORT'] || @config['tropo2_server']['drb_server_host']].join ':'
+    drb_server_host_and_port = [@config['tropo1']['druby_host'], ENV['TROPO1_DRB_PORT'] || @config['tropo1']['druby_port']].join ':'
 
-    @tropo1 = Tropo2Utilities::Tropo1Driver.new [@config['tropo1']['druby_uri'], ENV['TROPO1_DRB_PORT'] || @config['tropo1']['druby_port']].join ':'
+    @config['tropo1']['session_url'] += "&vars=drb_server_address%3D#{drb_server_host_and_port}"
+
+    @drb_server_uri = "druby://#{drb_server_host_and_port}"
+
+    @tropo1 = Tropo2Utilities::Tropo1Driver.new @drb_server_uri
 
     status = @tropo2.read_queue(@tropo2.event_queue)
     abort 'Could not connect to Prism XMPP Server. Aborting!' if status != 'CONNECTED'
