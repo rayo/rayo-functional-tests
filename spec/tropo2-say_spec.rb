@@ -30,7 +30,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
   
-    it "Should say an audio URL" do
+    it "Should say an audio URL and hangup" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
