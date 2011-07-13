@@ -10,7 +10,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
   logger
   punchblock
   rspec-tropo2
-  }.each { |lib| require lib }
+}.each { |lib| require lib }
 
 Thread.abort_on_exception = true
 
