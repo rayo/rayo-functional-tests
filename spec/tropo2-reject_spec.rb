@@ -1,9 +1,9 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require 'spec_helper'
 
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Reject command" do
     it "Should reject with a declined reason" do
-      pending('https://github.com/tropo/tropo2/issues/81')
+      pending 'https://github.com/tropo/tropo2/issues/81'
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -57,7 +57,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
 
       call = @tropo2.get_call
       call.call_event.should be_a_valid_call_event
-      lambda { call.reject(:reason => :foobar) }.should raise_error(ArgumentError)
+      lambda { call.reject :reason => :foobar }.should raise_error(ArgumentError)
 
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end

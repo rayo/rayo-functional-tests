@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require 'spec_helper'
 require 'net/http'
 require 'json'
 
@@ -71,12 +71,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      sleep(10)
+      sleep 10
 
       res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
       json = JSON.parse res.body
       calls2 = json['value']['IncomingCalls'].to_i
-      calls2.should eql calls+1
+      calls2.should == calls + 1
     end
 
     it "Do not accept calls on Quiesce enabled" do
@@ -94,12 +94,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
         SCRIPT_CONTENT
         @tropo1.place_call @config['tropo1']['session_url']
 
-        sleep(6)
+        sleep 6
 
         res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
         json = JSON.parse res.body
         calls2 = json['value']['CallsRejected'].to_i
-        calls2.should eql calls+1
+        calls2.should == calls + 1
       ensure
         Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/disableQuiesce', port)
       end

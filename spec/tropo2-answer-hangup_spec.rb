@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require 'spec_helper'
 
 # startCallRecording 'http://tropo-audiofiles-to-s3.heroku.com/post_audio_to_s3?file_name=ozone2_testing.wav'
 
@@ -70,7 +70,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
 
     it "Should answer a call and let the farside hangup" do
-      pending('Need to figure out why this only fails on the Hudson CI server, but not locally')
+      pending 'Need to figure out why this only fails on the Hudson CI server, but not locally'
       @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 1

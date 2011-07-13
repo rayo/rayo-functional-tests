@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require 'spec_helper'
 
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Conference command" do
@@ -58,12 +58,12 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
 
     it "Should put two callers into a conference, validate media and hangup" do
-      pending('https://github.com/tropo/punchblock/issues/63')
+      pending 'https://github.com/tropo/punchblock/issues/63'
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        ask 'One', { :choices     => 'yes, no',
-                     :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
-                     :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
+        ask 'One', :choices     => 'yes, no',
+                   :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
+                   :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']

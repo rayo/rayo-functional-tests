@@ -17,8 +17,8 @@ Thread.abort_on_exception = true
 RSpec.configure do |config|
   #config.filter_run :focus => true
 
-  config.before(:all) do
-    @config = YAML.load(File.open('config/config.yml'))
+  config.before :all do
+    @config = YAML.load File.open('config/config.yml')
 
     @tropo2 = Tropo2Utilities::Tropo2Driver.new :username         => @config['tropo2_server']['jid'],
                                                 :password         => @config['tropo2_server']['password'],
@@ -40,12 +40,12 @@ RSpec.configure do |config|
     @tropo2.start_event_dispatcher
   end
 
-  config.after(:each) do
+  config.after :each do
     @tropo2.calls = {}
     @tropo2.read_event_queue(@config['tropo2_queue']['last_stanza_timeout']) until @tropo2.event_queue.empty?
   end
 
-  config.after(:all) do
+  config.after :all do
     begin
       @tropo1.drb.stop_service
     rescue

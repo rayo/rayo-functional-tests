@@ -1,13 +1,13 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require 'spec_helper'
 
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Say command" do
     it "Should say something with TTS" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        ask 'One', { :choices     => 'yes, no',
-                     :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
-                     :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
+        ask 'One', :choices     => 'yes, no',
+                   :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
+                   :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
@@ -43,8 +43,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
 
       call.say(:audio => { :url => 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3' }).should eql true
 
-      #Wait for audio file to complete playing
-      sleep 9
+      sleep 9 #Wait for audio file to complete playing
 
       call.next_event.should be_a_valid_say_event
 
@@ -57,9 +56,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
     it "Should say SSML" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        ask 'One', { :choices     => 'one hundred, ireland',
-                     :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
-                     :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
+        ask 'One', :choices     => 'one hundred, ireland',
+                   :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
+                   :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
@@ -82,7 +81,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
 
     it "Should say some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
-      pending('https://github.com/tropo/punchblock/issues/10')
+      pending 'https://github.com/tropo/punchblock/issues/10'
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
@@ -141,7 +140,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.call_event.should be_a_valid_call_event
       call.answer.should eql true
 
-      lambda { call.say(:text => '' ) }.should raise_error(Punchblock::Protocol::ProtocolError)
+      lambda { call.say :text => '' }.should raise_error(Punchblock::Protocol::ProtocolError)
 
       call.next_event.should be_a_valid_hangup_event
 
