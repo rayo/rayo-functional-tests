@@ -6,7 +6,7 @@ group :development do
   gem 'bundler'
   gem 'rake'
   gem 'rcov'
-  gem 'rspec-tropo2', :git => 'git@github.com:tropo/rspec-tropo2.git', :branch => :master
+  gem 'rspec-tropo2', :git => 'git@github.com:tropo/rspec-tropo2.git', :branch => :develop
   gem 'punchblock', :git => 'git@github.com:tropo/punchblock.git', :branch => :develop
   gem 'awesome_print'
   gem 'ci_reporter'
