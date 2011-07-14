@@ -14,7 +14,7 @@ require 'rspec/core/rake_task'
 require 'ci/reporter/rake/rspec'
 
 RSpec::Core::RakeTask.new(:hudson => ["ci:setup:rspec"]) do |spec|
-  spec.pattern = ['**/tropo2-dial*_spec.rb','**/tropo2-redirect*_spec.rb','**/tropo2-jmx*_spec.rb','**/tropo2-reject*_spec.rb','**/tropo2-say*_spec.rb','**/tropo2-ask*_spec.rb','**/tropo2-conference*_spec.rb','**/tropo2-answer*_spec.rb']
+  spec.pattern = ['**/tropo2-dial*_spec.rb','**/tropo2-redirect*_spec.rb','**/tropo2-jmx*_spec.rb','**/tropo2-reject*_spec.rb','**/tropo2-say*_spec.rb','**/tropo2-ask*_spec.rb','**/tropo2-conference*_spec.rb','**/tropo2-answer*_spec.rb','**/tropo2-dtmf*_spec.rb']
 end
 
 RSpec::Core::RakeTask.new(:rspec) do |spec|
@@ -28,7 +28,7 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-%w{answer-hangup ask conference dial jmx redirect reject transfer say}.each do |command|
+%w{answer-hangup ask conference dial dtmf jmx redirect reject transfer say}.each do |command|
   RSpec::Core::RakeTask.new(command.to_sym) do |spec|
     spec.pattern = FileList["spec/**/tropo2-#{command}_spec.rb"]
   end
