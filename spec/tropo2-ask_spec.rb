@@ -57,6 +57,35 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
 
+    it "Should ask something with DTMF and get the interpretation back" do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        sleep #{@config['media_assertion_timeout']}.to_i
+        say '#{@config['dtmf_tone_files'][3]}'
+        wait #{@config['tropo1']['wait_to_hangup']}
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
+
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
+
+      call.ask(:prompt  => { :text  => 'One' },
+               :choices => { :value => '[1 DIGITS]',
+               :mode    => :dtmf }).should eql true
+
+      sleep @config['media_assertion_timeout']
+
+      ask_event = call.next_event
+      ask_event.should be_a_valid_ask_event
+      ask_event.reason.interpretation.should eql '3'
+
+      call.hangup.should eql true
+      call.next_event.should be_a_valid_hangup_event
+
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
+
     it "Should ask with an SSML as a prompt" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
