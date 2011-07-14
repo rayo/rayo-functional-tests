@@ -26,6 +26,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
 
     it "Should be generated when DTMF tones are detected during an <ask/>" do
+      pending 'Tropo2 does not currently support in-band DTMF'
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
