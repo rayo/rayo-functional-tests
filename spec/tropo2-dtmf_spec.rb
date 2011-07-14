@@ -39,7 +39,8 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.answer.should eql true
 
       call.ask(:prompt  => { :text  => 'Three?' },
-               :choices => { :value => '[1 DIGITS]' }).should eql true
+               :choices => { :value => '[1 DIGITS]' },
+               :mode    => :dtmf).should eql true
 
       sleep @config['media_assertion_timeout']
 
