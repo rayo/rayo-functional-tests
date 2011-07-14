@@ -13,7 +13,8 @@
 Thread.abort_on_exception = true
 
 RSpec.configure do |config|
-  #config.filter_run :focus => true
+  config.filter_run :focus => true
+  config.run_all_when_everything_filtered = true
 
   config.before :all do
     @config = YAML.load File.open('config/config.yml')
