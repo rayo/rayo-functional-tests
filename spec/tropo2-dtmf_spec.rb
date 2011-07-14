@@ -59,5 +59,33 @@ describe "Tropo2AutomatedFunctionalTesting" do
 
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     end
+
+    it "should send DTMF tones correctly" do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        ask 'One', :choices     => '[1 DIGITS]',
+                   :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
+                   :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+        wait #{@config['tropo1']['wait_to_hangup']}
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
+
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
+
+      call.say(:audio => { :url => 'dtmf:5' }).should eql true
+
+      sleep @config['media_assertion_timeout']
+
+      call.next_event.should be_a_valid_say_event
+
+      call.hangup.should eql true
+      call.next_event.should be_a_valid_hangup_event
+
+      @tropo1.result.should eql '5'
+
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
   end
 end
