@@ -147,7 +147,7 @@ describe "Ask command" do
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep 1
       ask 'clue', :choices     => 'one hundred, ireland',
-                  :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
+                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
                   :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
