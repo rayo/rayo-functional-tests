@@ -122,7 +122,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
 
       call.say(:audio => { :url => 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3' }).should eql true
 
-      call.next_event.should be_a_valid_say_hangup_event
+      call.next_event.should be_a_valid_complete_hangup_event
       call.next_event.should be_a_valid_hangup_event
 
       call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true

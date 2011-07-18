@@ -48,7 +48,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       sleep @config['media_assertion_timeout']
 
       ask_event = call.next_event
-      ask_event.should be_a_valid_ask_event
+      ask_event.should be_a_valid_successful_ask_event
       ask_event.reason.utterance.should eql 'yes'
 
       call.hangup.should eql true
@@ -78,7 +78,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       sleep @config['media_assertion_timeout']
 
       ask_event = call.next_event
-      ask_event.should be_a_valid_ask_event
+      ask_event.should be_a_valid_successful_ask_event
       ask_event.reason.interpretation.should eql '3'
 
       call.hangup.should eql true
@@ -106,7 +106,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       sleep 6
 
       ask_event = call.next_event
-      ask_event.should be_a_valid_ask_event
+      ask_event.should be_a_valid_successful_ask_event
       ask_event.reason.utterance.should eql 'yes'
 
       call.hangup.should eql true
@@ -133,7 +133,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
                              :content_type => 'application/grammar+grxml' } ).should eql true
 
       ask_event = call.next_event
-      ask_event.should be_a_valid_ask_event
+      ask_event.should be_a_valid_successful_ask_event
       ask_event.reason.utterance.should eql 'clue'
 
       call.hangup.should eql true
@@ -162,7 +162,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
                              :content_type => 'application/grammar+grxml' } ).should eql true
 
       ask_event = call.next_event
-      ask_event.should be_a_valid_ask_event
+      ask_event.should be_a_valid_successful_ask_event
       ask_event.reason.utterance.should eql 'clue'
 
       call.hangup.should eql true

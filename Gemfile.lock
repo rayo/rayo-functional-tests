@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:tropo/punchblock.git
-  revision: 0e43ed96d077b36c151bccf24088ee3f2e5725c6
+  revision: 02d3ca098b2d1fcfdec1e5a474d1b0c571b83d54
   branch: develop
   specs:
     punchblock (0.1.0)
@@ -12,10 +12,12 @@ GIT
 
 GIT
   remote: git@github.com:tropo/rspec-tropo2.git
-  revision: 0d8dce497f03d560c2a3f9b956417258699a6531
+  revision: 6d993562cbaa2262f3ff19dd6f6909146ef3ab55
   branch: develop
   specs:
-    rspec-tropo2 (0.0.1)
+    rspec-tropo2 (0.1.0)
+      punchblock (>= 0.1.0)
+      rspec (>= 2.6.0)
 
 GEM
   remote: http://rubygems.org/
