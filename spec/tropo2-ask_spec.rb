@@ -57,33 +57,34 @@ describe "Ask command" do
   end
 
   it "Should ask something with DTMF and get the interpretation back" do
-    pending 'Tropo2 does not currently support in-band DTMF'
-    @tropo1.script_content = <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      sleep #{@config['media_assertion_timeout']}.to_i
-      say '#{@config['dtmf_tone_files'][3]}'
-      wait #{@config['tropo1']['wait_to_hangup']}
-    SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
+    pending 'Tropo2 does not currently support in-band DTMF' do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        sleep #{@config['media_assertion_timeout']}.to_i
+        say '#{@config['dtmf_tone_files'][3]}'
+        wait #{@config['tropo1']['wait_to_hangup']}
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
 
-    call.ask(:prompt  => { :text  => 'One' },
-             :choices => { :value => '[1 DIGITS]' },
-             :mode    => :dtmf).should eql true
+      call.ask(:prompt  => { :text  => 'One' },
+               :choices => { :value => '[1 DIGITS]' },
+               :mode    => :dtmf).should eql true
 
-    sleep @config['media_assertion_timeout']
+      sleep @config['media_assertion_timeout']
 
-    ask_event = call.next_event
-    ask_event.should be_a_valid_successful_ask_event
-    ask_event.reason.interpretation.should eql '3'
+      ask_event = call.next_event
+      ask_event.should be_a_valid_successful_ask_event
+      ask_event.reason.interpretation.should eql '3'
 
-    call.hangup.should eql true
-    call.next_event.should be_a_valid_hangup_event
+      call.hangup.should eql true
+      call.next_event.should be_a_valid_hangup_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
   end
 
   it "Should ask with an SSML as a prompt" do
@@ -193,51 +194,53 @@ describe "Ask command" do
   end
 
   it "Should ask and get a NOMATCH event with min_confidence set to 1" do
-    pending 'Need to get the sequencing of the test right'
-    @tropo1.script_content = <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait 1000
-      say 'elephant elephant elephant elephant elephant elephant elephant elephant elephant elephant'
-      wait #{@config['tropo1']['wait_to_hangup']}
-      hangup
-    SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
+    pending 'Need to get the sequencing of the test right' do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        wait 1000
+        say 'elephant elephant elephant elephant elephant elephant elephant elephant elephant elephant'
+        wait #{@config['tropo1']['wait_to_hangup']}
+        hangup
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
 
-    call.ask :prompt         => { :text  => 'Yeap' },
-             :choices        => { :value => 'red, green' },
-             :timeout        => 5000,
-             :min_confidence => '1'
+      call.ask :prompt         => { :text  => 'Yeap' },
+               :choices        => { :value => 'red, green' },
+               :timeout        => 5000,
+               :min_confidence => '1'
 
-    call.next_event.should be_a_valid_nomatch_event
-    call.next_event.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_nomatch_event
+      call.next_event.should be_a_valid_hangup_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
   end
 
   it "Should ask and get a STOP if the farside hangs up before the command complete" do
-    pending 'https://github.com/tropo/tropo2/issues/59'
-    @tropo1.script_content = <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait 8000
-      hangup
-    SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
+    pending 'https://github.com/tropo/tropo2/issues/59' do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        wait 8000
+        hangup
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
 
-    call.ask :prompt  => { :text  => 'Yeap' },
-             :choices => { :value => 'red, green' }
+      call.ask :prompt  => { :text  => 'Yeap' },
+               :choices => { :value => 'red, green' }
 
-    call.next_event.should be_a_valid_stopped_ask_event
-    call.next_event.should be_a_valid_hangup_event
+      call.next_event.should be_a_valid_stopped_ask_event
+      call.next_event.should be_a_valid_hangup_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
   end
 
   it "Should ask something with an invalid grammar and get an error back" do

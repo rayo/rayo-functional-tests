@@ -80,31 +80,32 @@ describe "Say command" do
   end
 
   it "Should say some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
-    pending 'https://github.com/tropo/punchblock/issues/10'
-    @tropo1.script_content = <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
-    SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
+    pending 'https://github.com/tropo/punchblock/issues/10' do
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        wait #{@config['tropo1']['wait_to_hangup']}
+      SCRIPT_CONTENT
+      @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+      call = @tropo2.get_call
+      call.call_event.should be_a_valid_call_event
+      call.answer.should eql true
 
-    say_event = call.say 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3', :url
-    ap say_event
+      say_event = call.say 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3', :url
+      ap say_event
 
-    sleep 2
-    ap say_event.pause
-    sleep 2
-    ap say_event.resume
-    sleep 2
-    ap say_event.stop
+      sleep 2
+      ap say_event.pause
+      sleep 2
+      ap say_event.resume
+      sleep 2
+      ap say_event.stop
 
-    hangup_event = @tropo2.hangup(call_event)
-    hangup_event.should be_a_valid_hangup_event
+      hangup_event = @tropo2.hangup(call_event)
+      hangup_event.should be_a_valid_hangup_event
 
-    @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    end
   end
 
   it "Should say an audio URL and get a stop event" do
