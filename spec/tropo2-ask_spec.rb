@@ -2,29 +2,29 @@ require 'spec_helper'
 
 describe "Tropo2AutomatedFunctionalTesting" do
   describe "Ask command" do
-    before(:all) do
-      @grxml = <<-GRXML
+    let :grxml do
+      <<-GRXML
         <grammar xmlns="http://www.w3.org/2001/06/grammar" root="MAINRULE">
-            <rule id="MAINRULE">
+          <rule id="MAINRULE">
+            <one-of>
+              <item>
+                <item repeat="0-1"> need a</item>
+                <item repeat="0-1"> i need a</item>
                 <one-of>
-                    <item>
-                        <item repeat="0-1"> need a</item>
-                        <item repeat="0-1"> i need a</item>
-                            <one-of>
-                                <item> clue </item>
-                            </one-of>
-                        <tag> out.concept = "clue";</tag>
-                    </item>
-                    <item>
-                        <item repeat="0-1"> have an</item>
-                        <item repeat="0-1"> i have an</item>
-                            <one-of>
-                                <item> answer </item>
-                            </one-of>
-                        <tag> out.concept = "answer";</tag>
-                    </item>
-                    </one-of>
-            </rule>
+                  <item> clue </item>
+                </one-of>
+                <tag> out.concept = "clue";</tag>
+              </item>
+              <item>
+                <item repeat="0-1"> have an</item>
+                <item repeat="0-1"> i have an</item>
+                <one-of>
+                  <item> answer </item>
+                </one-of>
+                <tag> out.concept = "answer";</tag>
+              </item>
+            </one-of>
+          </rule>
         </grammar>
       GRXML
     end
@@ -129,7 +129,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.answer.should eql true
 
       call.ask(:prompt  => { :text         => 'One' },
-               :choices => { :value        =>  @grxml,
+               :choices => { :value        =>  grxml,
                              :content_type => 'application/grammar+grxml' } ).should eql true
 
       ask_event = call.next_event
@@ -146,9 +146,9 @@ describe "Tropo2AutomatedFunctionalTesting" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep 1
-        ask 'clue', { :choices     => 'one hundred, ireland',
-                      :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
-                      :onChoice    => lambda { |event| ozone_testing_server.result = event.value  } }
+        ask 'clue', :choices     => 'one hundred, ireland',
+                    :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
+                    :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
@@ -158,7 +158,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
       call.answer.should eql true
 
       call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
-               :choices => { :value => @grxml,
+               :choices => { :value => grxml,
                              :content_type => 'application/grammar+grxml' } ).should eql true
 
       ask_event = call.next_event

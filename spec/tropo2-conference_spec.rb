@@ -23,7 +23,7 @@ describe "Tropo2AutomatedFunctionalTesting" do
     end
 
     it "Should put two callers into a conference and then hangup" do
-      pending('https://github.com/tropo/punchblock/issues/63')
+      pending 'https://github.com/tropo/punchblock/issues/63'
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait #{@config['tropo1']['wait_to_hangup']}
