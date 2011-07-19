@@ -33,8 +33,10 @@ describe "Ask command" do
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep #{@config['media_assertion_timeout']}.to_i
       say 'yes'
+      ozone_testing_server.trigger :responded
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
+    @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
     call = @tropo2.get_call
@@ -44,7 +46,7 @@ describe "Ask command" do
     call.ask(:prompt  => { :text  => 'One' },
              :choices => { :value => 'yes, no' }).should eql true
 
-    sleep @config['media_assertion_timeout']
+    @tropo1.wait :responded
 
     ask_event = call.next_event
     ask_event.should be_a_valid_successful_ask_event
@@ -62,8 +64,10 @@ describe "Ask command" do
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
         say '#{@config['dtmf_tone_files'][3]}'
+        ozone_testing_server.trigger :responded
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
+      @tropo1.add_latch :responded
       @tropo1.place_call @config['tropo1']['session_url']
 
       call = @tropo2.get_call
@@ -74,9 +78,9 @@ describe "Ask command" do
                :choices => { :value => '[1 DIGITS]' },
                :mode    => :dtmf).should eql true
 
-      sleep @config['media_assertion_timeout']
+      @tropo1.wait :responded
 
-      ask_event = call.next_event
+      ask_event = call.next_event 2
       ask_event.should be_a_valid_successful_ask_event
       ask_event.reason.interpretation.should eql '3'
 
@@ -92,8 +96,10 @@ describe "Ask command" do
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep #{@config['media_assertion_timeout']}.to_i
       say 'yes'
+      ozone_testing_server.trigger :responded
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
+    @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
     call = @tropo2.get_call
@@ -103,7 +109,7 @@ describe "Ask command" do
     call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
              :choices => { :value => 'yes, no' }).should eql true
 
-    sleep 6
+    @tropo1.wait :responded
 
     ask_event = call.next_event
     ask_event.should be_a_valid_successful_ask_event
