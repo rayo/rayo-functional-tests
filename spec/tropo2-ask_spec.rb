@@ -194,30 +194,30 @@ describe "Ask command" do
   end
 
   it "Should ask and get a NOMATCH event with min_confidence set to 1" do
-    pending 'Need to get the sequencing of the test right' do
-      @tropo1.script_content = <<-SCRIPT_CONTENT
-        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-        wait 1000
-        say 'elephant elephant elephant elephant elephant elephant elephant elephant elephant elephant'
-        wait #{@config['tropo1']['wait_to_hangup']}
-        hangup
-      SCRIPT_CONTENT
-      @tropo1.place_call @config['tropo1']['session_url']
+    @tropo1.script_content = <<-SCRIPT_CONTENT
+      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      wait 1000
+      say 'blue'
+      wait #{@config['tropo1']['wait_to_hangup']}
+      hangup
+    SCRIPT_CONTENT
+    @tropo1.place_call @config['tropo1']['session_url']
 
-      call = @tropo2.get_call
-      call.call_event.should be_a_valid_call_event
-      call.answer.should eql true
+    call = @tropo2.get_call
+    call.call_event.should be_a_valid_call_event
+    call.answer.should eql true
 
-      call.ask :prompt         => { :text  => 'Yeap' },
-               :choices        => { :value => 'red, green' },
-               :timeout        => 5000,
-               :min_confidence => '1'
+    call.ask :prompt         => { :text  => 'Yeap' },
+             :choices        => { :value => 'red, green' },
+             :timeout        => 3000,
+             :min_confidence => 1
 
-      call.next_event.should be_a_valid_nomatch_event
-      call.next_event.should be_a_valid_hangup_event
+    call.next_event.should be_a_valid_nomatch_event
 
-      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
-    end
+    call.hangup.should eql true
+    call.next_event.should be_a_valid_hangup_event
+
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
   end
 
   it "Should ask and get a STOP if the farside hangs up before the command complete" do
