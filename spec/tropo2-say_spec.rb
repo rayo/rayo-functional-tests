@@ -5,10 +5,12 @@ describe "Say command" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       ask 'One', :choices     => 'yes, no',
-                 :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
+                 :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+      ozone_testing_server.trigger :responded
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
+    @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
     call = @tropo2.get_call
@@ -17,7 +19,7 @@ describe "Say command" do
 
     call.say(:text => 'yes').should eql true
 
-    sleep @config['media_assertion_timeout']
+    @tropo1.wait :responded
 
     call.next_event.should be_a_valid_say_event
 
@@ -56,10 +58,12 @@ describe "Say command" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       ask 'One', :choices     => 'one hundred, ireland',
-                 :onBadChoice => lambda { ozone_testing_server.tropo_result = 'badchoice' },
+                 :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+      ozone_testing_server.trigger :responded
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
+    @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
     call = @tropo2.get_call
@@ -67,9 +71,10 @@ describe "Say command" do
     call.answer.should eql true
 
     call.say(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should eql true
-    call.next_event.should be_a_valid_say_event
 
-    sleep @config['media_assertion_timeout']
+    @tropo1.wait :responded
+
+    call.next_event.should be_a_valid_say_event
 
     call.hangup.should eql true
     call.next_event.should be_a_valid_hangup_event

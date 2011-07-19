@@ -34,11 +34,15 @@ RSpec.configure do |config|
 
     @drb_server_uri = "druby://#{drb_server_host_and_port}"
 
-    @tropo1 = Tropo2Utilities::Tropo1Driver.new @drb_server_uri
+    @tropo1 = Tropo2Utilities::Tropo1Driver.new @drb_server_uri, @config['tropo1']['latch_timeout']
 
     status = @tropo2.read_queue(@tropo2.event_queue)
     abort 'Could not connect to Prism XMPP Server. Aborting!' if status != 'CONNECTED'
     @tropo2.start_event_dispatcher
+  end
+
+  config.before :each do
+    @tropo1.reset!
   end
 
   config.after :each do
