@@ -12,10 +12,11 @@ GIT
 
 GIT
   remote: git@github.com:tropo/rspec-tropo2.git
-  revision: 6d993562cbaa2262f3ff19dd6f6909146ef3ab55
+  revision: 4c7180628d22e938bb899b4937b52146a055fb28
   branch: develop
   specs:
     rspec-tropo2 (0.1.0)
+      countdownlatch (>= 1.0.0)
       punchblock (>= 0.1.0)
       rspec (>= 2.6.0)
 
@@ -35,6 +36,7 @@ GEM
     ci_reporter (1.6.5)
       builder (>= 2.1.2)
     coderay (0.9.8)
+    countdownlatch (1.0.0)
     diff-lcs (1.1.2)
     eventmachine (0.12.10)
     json (1.5.3)

@@ -67,8 +67,10 @@ describe "DTMF events" do
       ask 'One', :choices     => '[1 DIGITS]',
                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+      ozone_testing_server.trigger :responded
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
+    @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
     call = @tropo2.get_call
@@ -77,7 +79,7 @@ describe "DTMF events" do
 
     call.say(:audio => { :url => 'dtmf:5' }).should eql true
 
-    sleep @config['media_assertion_timeout']
+    @tropo1.wait :responded
 
     call.next_event.should be_a_valid_say_event
 
