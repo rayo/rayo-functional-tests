@@ -45,13 +45,12 @@ describe "Conference command" do
     call_1.next_event.should be_a_valid_complete_hangup_event
     call_1.next_event.should be_a_valid_hangup_event
 
-    call_1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
-
     call_2.hangup.should eql true
     call_2.next_event.should be_a_valid_conference_command
     call_2.next_event.should be_a_valid_complete_hangup_event
     call_2.next_event.should be_a_valid_hangup_event
 
+    call_1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     call_2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
   end
 
@@ -89,8 +88,6 @@ describe "Conference command" do
     call_1.next_event.should be_a_valid_complete_hangup_event
     call_1.next_event.should be_a_valid_hangup_event
 
-    call_1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
-
     call_2.hangup.should eql true
     call_2.next_event.should be_a_valid_conference_command
     call_2.next_event.should be_a_valid_complete_hangup_event
@@ -98,6 +95,7 @@ describe "Conference command" do
 
     @tropo1.result.should == 'yes'
 
+    call_1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
     call_2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
   end
 end
