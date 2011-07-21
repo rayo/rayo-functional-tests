@@ -49,6 +49,7 @@ describe "Transfer verb" do
                   :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should eql true
 
     call.next_event.should be_a_valid_transfer_timeout_event
+    call.next_event.should be_a_valid_hangup_event
 
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
   end
