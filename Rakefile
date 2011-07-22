@@ -13,9 +13,7 @@ require 'rspec/core'
 require 'rspec/core/rake_task'
 require 'ci/reporter/rake/rspec'
 
-RSpec::Core::RakeTask.new(:hudson => ["ci:setup:rspec"]) do |spec|
-  spec.pattern = ['**/tropo2-dial*_spec.rb','**/tropo2-redirect*_spec.rb','**/tropo2-jmx*_spec.rb','**/tropo2-reject*_spec.rb','**/tropo2-say*_spec.rb','**/tropo2-ask*_spec.rb','**/tropo2-conference*_spec.rb','**/tropo2-answer*_spec.rb','**/tropo2-dtmf*_spec.rb']
-end
+task :hudson => ["ci:setup:rspec", :dial]#, :redirect, :jmx, :reject, :say, :ask, :conference, :'answer-hangup', :dtmf, :transfer]
 
 RSpec::Core::RakeTask.new(:rspec) do |spec|
   mapper          = { "junit" => "JUnitFormatter", "tap" => "TapFormatter" }

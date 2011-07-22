@@ -14,7 +14,7 @@ describe "Dial command" do
     call.ring_event.should be_a_valid_ringing_event
     call.next_event.should be_a_valid_reject_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "Should place an outbound call and then receive a reject event" do
@@ -28,7 +28,7 @@ describe "Dial command" do
     call.ring_event.should be_a_valid_ringing_event
     call.next_event.should be_a_valid_reject_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "Should place an outbound call and send SIP headers" do
@@ -48,10 +48,10 @@ describe "Dial command" do
     call.next_event.should be_a_valid_hangup_event
     @tropo1.result.should eql 'booyah!'
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should dial multiple calls" do
+  it "Should dial multiple calls", :focus => true do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer
       wait 100
@@ -70,12 +70,12 @@ describe "Dial command" do
     call1.ring_event.should be_a_valid_ringing_event
     call1.next_event.should be_a_valid_answered_event
     call1.next_event.should be_a_valid_hangup_event
-    call1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
 
     call2.ring_event.should be_a_valid_ringing_event
     call2.next_event.should be_a_valid_answered_event
     call2.next_event.should be_a_valid_hangup_event
-    call2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "Should get an error if we dial an invalid address" do

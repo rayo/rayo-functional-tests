@@ -11,10 +11,10 @@ describe "Reject command" do
 
       call = @tropo2.get_call
       call.call_event.should be_a_valid_call_event
-      call.reject(:reason => :declined).should eql true
+      call.reject(:reason => :declined).should be_true
       call.next_event.should be_a_valid_reject_event
 
-      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
     end
   end
 
@@ -27,10 +27,10 @@ describe "Reject command" do
 
     call = @tropo2.get_call
     call.call_event.should be_a_valid_call_event
-    call.reject(:reason => :busy).should eql true
+    call.reject(:reason => :busy).should be_true
     call.next_event.should be_a_valid_reject_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "Should reject with a error reason" do
@@ -42,10 +42,10 @@ describe "Reject command" do
 
     call = @tropo2.get_call
     call.call_event.should be_a_valid_call_event
-    call.reject(:reason => :error).should eql true
+    call.reject(:reason => :error).should be_true
     call.next_event.should be_a_valid_reject_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "Should reject and raise an error due to an invalid reason" do
@@ -59,6 +59,6 @@ describe "Reject command" do
     call.call_event.should be_a_valid_call_event
     lambda { call.reject :reason => :foobar }.should raise_error(ArgumentError)
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 end

@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:tropo/punchblock.git
-  revision: 02d3ca098b2d1fcfdec1e5a474d1b0c571b83d54
+  revision: 5b4733d7025d7f898b61c76f7c2ff52472adbb2d
   branch: develop
   specs:
     punchblock (0.1.0)
@@ -12,10 +12,11 @@ GIT
 
 GIT
   remote: git@github.com:tropo/rspec-tropo2.git
-  revision: 6d993562cbaa2262f3ff19dd6f6909146ef3ab55
+  revision: 1b2fcd5dbb4b7206304e32c8a48b0218d1b3e900
   branch: develop
   specs:
     rspec-tropo2 (0.1.0)
+      countdownlatch (>= 1.0.0)
       punchblock (>= 0.1.0)
       rspec (>= 2.6.0)
 
@@ -35,6 +36,7 @@ GEM
     ci_reporter (1.6.5)
       builder (>= 2.1.2)
     coderay (0.9.8)
+    countdownlatch (1.0.0)
     diff-lcs (1.1.2)
     eventmachine (0.12.10)
     json (1.5.3)
