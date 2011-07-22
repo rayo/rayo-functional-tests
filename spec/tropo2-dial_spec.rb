@@ -54,7 +54,7 @@ describe "Dial command" do
   it "Should dial multiple calls" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer
-      wait 2
+      wait 100
       hangup
     TROPO_SCRIPT_CONTENT
 
