@@ -51,7 +51,7 @@ describe "Dial command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should dial multiple calls", :focus => true do
+  it "Should dial multiple calls" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer
       wait 100
