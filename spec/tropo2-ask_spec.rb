@@ -43,7 +43,7 @@ describe "Ask command" do
     call.call_event.should be_a_valid_call_event
     call.answer.should be_true
 
-    call.ask(:prompt  => { :text  => 'One' },
+    call.ask(:prompt  => { :text  => 'One1' },
              :choices => { :value => 'yes, no' }).should be_true
 
     @tropo1.wait :responded
@@ -74,7 +74,7 @@ describe "Ask command" do
       call.call_event.should be_a_valid_call_event
       call.answer.should be_true
 
-      call.ask(:prompt  => { :text  => 'One' },
+      call.ask(:prompt  => { :text  => 'One2' },
                :choices => { :value => '[1 DIGITS]' },
                :mode    => :dtmf).should be_true
 
@@ -134,7 +134,7 @@ describe "Ask command" do
     call.call_event.should be_a_valid_call_event
     call.answer.should be_true
 
-    call.ask(:prompt  => { :text         => 'One' },
+    call.ask(:prompt  => { :text         => 'One3' },
              :choices => { :value        =>  grxml,
                            :content_type => 'application/grammar+grxml' } ).should be_true
 
@@ -261,7 +261,7 @@ describe "Ask command" do
     call.call_event.should be_a_valid_call_event
     call.answer.should be_true
 
-    lambda { call.ask :prompt  => { :text => 'One' },
+    lambda { call.ask :prompt  => { :text => 'One4' },
                       :choices => { :value => '<grammar>' } }.should raise_error(Punchblock::Protocol::ProtocolError)
 
     call.next_event.reason.should eql :error

@@ -57,7 +57,7 @@ describe "Conference command" do
   it "Should put two callers into a conference, validate media and hangup" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      ask 'One', :choices     => 'yes, no',
+      ask 'One5', :choices     => 'yes, no',
                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
       wait #{@config['tropo1']['wait_to_hangup']}

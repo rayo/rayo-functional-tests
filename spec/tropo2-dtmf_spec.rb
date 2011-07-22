@@ -70,7 +70,7 @@ describe "DTMF events" do
   it "should send DTMF tones correctly" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      ask 'One', :choices     => '[1 DIGITS]',
+      ask 'One6', :choices     => '[1 DIGITS]',
                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
       ozone_testing_server.trigger :responded
