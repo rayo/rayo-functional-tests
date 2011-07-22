@@ -47,6 +47,7 @@ describe "Reject command" do
   end
 
   it "Should reject and raise an error due to an invalid reason" do
+    pending
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}
