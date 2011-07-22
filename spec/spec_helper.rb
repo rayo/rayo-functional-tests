@@ -19,13 +19,16 @@ RSpec.configure do |config|
   config.before :all do
     @config = YAML.load File.open('config/config.yml')
 
-    @tropo2 = Tropo2Utilities::Tropo2Driver.new :username         => ENV['TROPO2_JID'] || @config['tropo2_server']['jid'],
+    jid = "user#{(1..1000).to_a.sort_by { rand }.first}@127.0.0.1"
+
+    @tropo2 = Tropo2Utilities::Tropo2Driver.new :username         => ENV['TROPO2_JID'] || jid,
                                                 :password         => ENV['TROPO2_PASSWORD'] || @config['tropo2_server']['password'],
                                                 :wire_logger      => Logger.new(@config['tropo2_server']['wire_log']),
                                                 :transport_logger => Logger.new(@config['tropo2_server']['transport_log']),
                                                 :log_level        => Logger::DEBUG,
                                                 :queue_timeout    => @config['tropo2_queue']['connection_timeout']
 
+    @config['tropo2_server']['sip_uri'] = jid
     @config['tropo2_server']['sip_uri'] = ENV['TROPO2_SIP_URI'] if ENV['TROPO2_SIP_URI']
 
     drb_server_host_and_port = [@config['tropo1']['druby_host'], ENV['TROPO1_DRB_PORT'] || @config['tropo1']['druby_port']].join ':'
