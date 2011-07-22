@@ -15,20 +15,20 @@ describe "Say command" do
 
     call = @tropo2.get_call
     call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+    call.answer.should be_true
 
-    call.say(:text => 'yes').should eql true
+    call.say(:text => 'yes').should be_true
 
     @tropo1.wait :responded
 
     call.next_event.should be_a_valid_say_event
 
-    call.hangup.should eql true
+    call.hangup.should be_true
     call.next_event.should be_a_valid_hangup_event
 
     @tropo1.result.should eql 'yes'
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "Should say an audio URL and hangup" do
@@ -40,18 +40,18 @@ describe "Say command" do
 
     call = @tropo2.get_call
     call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+    call.answer.should be_true
 
-    call.say(:audio => { :url => 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3' }).should eql true
+    call.say(:audio => { :url => 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3' }).should be_true
 
     sleep 9 #Wait for audio file to complete playing
 
     call.next_event.should be_a_valid_say_event
 
-    call.hangup.should eql true
+    call.hangup.should be_true
     call.next_event.should be_a_valid_hangup_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "Should say SSML" do
@@ -68,20 +68,20 @@ describe "Say command" do
 
     call = @tropo2.get_call
     call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+    call.answer.should be_true
 
-    call.say(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should eql true
+    call.say(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should be_true
 
     @tropo1.wait :responded
 
     call.next_event.should be_a_valid_say_event
 
-    call.hangup.should eql true
+    call.hangup.should be_true
     call.next_event.should be_a_valid_hangup_event
 
     @tropo1.result.should eql 'one hundred'
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "Should say some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
@@ -94,7 +94,7 @@ describe "Say command" do
 
       call = @tropo2.get_call
       call.call_event.should be_a_valid_call_event
-      call.answer.should eql true
+      call.answer.should be_true
 
       say_event = call.say 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3', :url
       ap say_event
@@ -109,7 +109,7 @@ describe "Say command" do
       hangup_event = @tropo2.hangup(call_event)
       hangup_event.should be_a_valid_hangup_event
 
-      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      @tropo2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
     end
   end
 
@@ -123,14 +123,14 @@ describe "Say command" do
 
     call = @tropo2.get_call
     call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+    call.answer.should be_true
 
-    call.say(:audio => { :url => 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3' }).should eql true
+    call.say(:audio => { :url => 'http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3' }).should be_true
 
     call.next_event.should be_a_valid_complete_hangup_event
     call.next_event.should be_a_valid_hangup_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "Should error on a say and return a complete event" do
@@ -143,12 +143,12 @@ describe "Say command" do
 
     call = @tropo2.get_call
     call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+    call.answer.should be_true
 
     lambda { call.say :text => '' }.should raise_error(Punchblock::Protocol::ProtocolError)
 
     call.next_event.should be_a_valid_hangup_event
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 end

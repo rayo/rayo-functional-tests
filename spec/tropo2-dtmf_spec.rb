@@ -14,7 +14,7 @@ describe "DTMF events" do
 
       call = @tropo2.get_call
       call.call_event.should be_a_valid_call_event
-      call.answer.should eql true
+      call.answer.should be_true
 
       @tropo1.wait :responded
 
@@ -22,10 +22,10 @@ describe "DTMF events" do
       dtmf_event.should be_a_valid_dtmf_event
       dtmf_event.signal.should == '3'
 
-      call.hangup.should eql true
+      call.hangup.should be_true
       call.next_event.should be_a_valid_hangup_event
 
-      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
     end
   end
 
@@ -43,11 +43,11 @@ describe "DTMF events" do
 
       call = @tropo2.get_call
       call.call_event.should be_a_valid_call_event
-      call.answer.should eql true
+      call.answer.should be_true
 
       call.ask(:prompt  => { :text  => 'Three?' },
                :choices => { :value => '[1 DIGITS]' },
-               :mode    => :dtmf).should eql true
+               :mode    => :dtmf).should be_true
 
       @tropo1.wait :responded
 
@@ -60,10 +60,10 @@ describe "DTMF events" do
       dtmf_event.should be_a_valid_dtmf_event
       dtmf_event.signal.should == '3'
 
-      call.hangup.should eql true
+      call.hangup.should be_true
       call.next_event.should be_a_valid_hangup_event
 
-      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
     end
   end
 
@@ -81,19 +81,19 @@ describe "DTMF events" do
 
     call = @tropo2.get_call
     call.call_event.should be_a_valid_call_event
-    call.answer.should eql true
+    call.answer.should be_true
 
-    call.say(:audio => { :url => 'dtmf:5' }).should eql true
+    call.say(:audio => { :url => 'dtmf:5' }).should be_true
 
     @tropo1.wait :responded
 
     call.next_event.should be_a_valid_say_event
 
-    call.hangup.should eql true
+    call.hangup.should be_true
     call.next_event.should be_a_valid_hangup_event
 
     @tropo1.result.should eql '5'
 
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should eql true
+    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 end
