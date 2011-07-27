@@ -3,8 +3,8 @@ require 'spec_helper'
 describe "Reject command" do
   it "should reject with a declined reason" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.get_call
@@ -15,8 +15,8 @@ describe "Reject command" do
 
   it "should reject with a busy reason" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.get_call
@@ -27,8 +27,8 @@ describe "Reject command" do
 
   it "should reject with a error reason" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.get_call
@@ -39,8 +39,8 @@ describe "Reject command" do
 
   it "should reject and raise an error due to an invalid reason" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.get_call

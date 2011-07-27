@@ -3,8 +3,8 @@ require 'spec_helper'
 describe "Transfer verb" do
   it "should answer a call and then transfer it" do
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     SCRIPT_CONTENT
 
     get_call_and_answer
@@ -25,8 +25,8 @@ describe "Transfer verb" do
 
   it "should try to transfer but get a timeout" do
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     SCRIPT_CONTENT
 
     get_call_and_answer

@@ -66,7 +66,7 @@ describe "JMX Tests" do
     calls = json['value']['IncomingCalls'].to_i
 
     @tropo1.script_content = <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
@@ -89,7 +89,7 @@ describe "JMX Tests" do
       Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/enableQuiesce', port)
 
       @tropo1.script_content = <<-SCRIPT_CONTENT
-        call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+        call_tropo2
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 

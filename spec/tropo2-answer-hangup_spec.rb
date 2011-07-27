@@ -5,8 +5,8 @@ require 'spec_helper'
 describe "Call accept, answer and hangup handling" do
   it "should receive a call and then hangup" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer false
@@ -15,9 +15,9 @@ describe "Call accept, answer and hangup handling" do
 
   it "should answer and hangup" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       say 'Hello world'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer
@@ -26,9 +26,9 @@ describe "Call accept, answer and hangup handling" do
 
   it "should throw an error if we try to answer a call that is hungup" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       say 'Hello world'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer
@@ -39,9 +39,9 @@ describe "Call accept, answer and hangup handling" do
 
   it "should accept and hangup" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       say 'Hello world'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.get_call
@@ -52,10 +52,10 @@ describe "Call accept, answer and hangup handling" do
 
   it "should answer a call and let the farside hangup" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       sleep 1
       hangup
-      wait #{@config['tropo1']['wait_to_hangup']}
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer
