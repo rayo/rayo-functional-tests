@@ -15,10 +15,11 @@ describe "CDR Manager" do
   
     server = @config['tropo2_server']['server']
     port = @config['tropo2_server']['port'].to_i  
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Cdrs/ActiveCDRs/0/callId', port)
+    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Cdrs/ActiveCDRs', port)    
     json = JSON.parse res.body
-    callId = json['value']
-	callId.should eql @call.call_event.call_id
+    activeCdrs = json['value']
+    
+	activeCdrs[activeCdrs.length-1]['callId'].should eql @call.call_event.call_id
     
     hangup_and_confirm
   end
@@ -36,10 +37,11 @@ describe "CDR Manager" do
     
     server = @config['tropo2_server']['server']
     port = @config['tropo2_server']['port'].to_i  
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Cdrs/ActiveCDRs/0/callId', port)
+    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Cdrs/ActiveCDRs', port)
     json = JSON.parse res.body
-    callId = json['value']
-	callId.should eql @call.call_event.call_id
+    activeCdrs = json['value']
+    
+	activeCdrs[activeCdrs.length-1]['callId'].should eql @call.call_event.call_id
 
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_reject_event    
