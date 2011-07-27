@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:tropo/punchblock.git
-  revision: e7a9c59e84745e4b0e711ed1ebe0d60ed96f4b66
+  revision: 88cd88a99540a8305af277d0db325e98ba4451f5
   branch: develop
   specs:
     punchblock (0.1.0)
@@ -12,10 +12,10 @@ GIT
 
 GIT
   remote: git@github.com:tropo/rspec-tropo2.git
-  revision: 8f9bf22ab38512126db03659a31ad2fa709ebda2
+  revision: 3bec99cdbe9a79cd231647f04eafae9307ea4c38
   branch: develop
   specs:
-    rspec-tropo2 (0.1.0)
+    rspec-rayo (0.1.0)
       countdownlatch (>= 1.0.0)
       punchblock (>= 0.1.0)
       rspec (>= 2.6.0)
@@ -79,4 +79,4 @@ DEPENDENCIES
   rake
   rcov
   rspec
-  rspec-tropo2!
+  rspec-rayo!
