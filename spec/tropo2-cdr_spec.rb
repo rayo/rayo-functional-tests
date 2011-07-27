@@ -24,7 +24,7 @@ describe "CDR Manager" do
     p activeCdrs
     p @call.call_event.call_id
 
-    activeCdrs.last['callId'].should eql @call.call_event.call_id
+    activeCdrs.first['callId'].should eql @call.call_event.call_id
 
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_reject_event
