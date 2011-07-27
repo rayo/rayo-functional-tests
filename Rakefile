@@ -26,7 +26,7 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-%w{answer-hangup ask conference dial dtmf jmx record redirect reject transfer say}.each do |command|
+%w{answer-hangup ask conference dial dtmf jmx cdr record redirect reject transfer say}.each do |command|
   RSpec::Core::RakeTask.new(command.to_sym) do |spec|
     spec.pattern = FileList["spec/**/tropo2-#{command}_spec.rb"]
   end
