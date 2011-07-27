@@ -40,8 +40,8 @@ RSpec.configure do |config|
 
     @tropo1 = RSpecRayo::Tropo1Driver.new @drb_server_uri, @config['tropo1']['latch_timeout']
 
-    status = @tropo2.read_queue(@tropo2.event_queue)
-    abort 'Could not connect to Prism XMPP Server. Aborting!' if status != 'CONNECTED'
+    status = @tropo2.read_queue @tropo2.event_queue
+    abort 'Could not connect to Prism XMPP Server. Aborting!' unless status == 'CONNECTED'
     @tropo2.start_event_dispatcher
   end
 
