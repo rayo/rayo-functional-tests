@@ -8,13 +8,11 @@ describe "Dial command" do
       wait #{@config['tropo1']['wait_to_hangup']}
     TROPO_SCRIPT_CONTENT
 
-    call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                        :from    => 'tel:+14155551212',
-                        :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
-    call.ring_event.should be_a_valid_ringing_event
-    call.next_event.should be_a_valid_reject_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
+                         :from    => 'tel:+14155551212',
+                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    @call.ring_event.should be_a_valid_ringing_event
+    @call.next_event.should be_a_valid_reject_event
   end
 
   it "should place an outbound call and then receive a reject event" do
@@ -22,13 +20,11 @@ describe "Dial command" do
       reject
     TROPO_SCRIPT_CONTENT
 
-    call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                        :from    => 'tel:+14155551212',
-                        :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
-    call.ring_event.should be_a_valid_ringing_event
-    call.next_event.should be_a_valid_reject_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
+                         :from    => 'tel:+14155551212',
+                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    @call.ring_event.should be_a_valid_ringing_event
+    @call.next_event.should be_a_valid_reject_event
   end
 
   it "should place an outbound call and send SIP headers" do
@@ -39,16 +35,14 @@ describe "Dial command" do
       hangup
     TROPO_SCRIPT_CONTENT
 
-    call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                        :from    => 'tel:+14155551212',
-                        :headers => { 'x-tropo2-drb-address' => @drb_server_uri,
-                                      'x-tropo2-test'        => 'booyah!' }
-    call.ring_event.should be_a_valid_ringing_event
-    call.next_event.should be_a_valid_answered_event
-    call.next_event.should be_a_valid_hangup_event
+    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
+                         :from    => 'tel:+14155551212',
+                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri,
+                                       'x-tropo2-test'        => 'booyah!' }
+    @call.ring_event.should be_a_valid_ringing_event
+    @call.next_event.should be_a_valid_answered_event
+    @call.next_event.should be_a_valid_hangup_event
     @tropo1.result.should eql 'booyah!'
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "should dial multiple calls" do
@@ -75,7 +69,6 @@ describe "Dial command" do
     call2.ring_event.should be_a_valid_ringing_event
     call2.next_event.should be_a_valid_answered_event
     call2.next_event.should be_a_valid_hangup_event
-    call2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
   it "should get an error if we dial an invalid address" do

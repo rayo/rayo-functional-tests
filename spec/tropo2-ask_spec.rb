@@ -39,23 +39,21 @@ describe "Ask command" do
     @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
-    call.ask(:prompt  => { :text  => 'One1' },
-             :choices => { :value => 'yes, no' }).should be_true
+    @call.ask(:prompt  => { :text  => 'One1' },
+              :choices => { :value => 'yes, no' }).should be_true
 
     @tropo1.wait :responded
 
-    ask_event = call.next_event
+    ask_event = @call.next_event
     ask_event.should be_a_valid_successful_ask_event
     ask_event.reason.utterance.should eql 'yes'
 
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should ask something with DTMF and get the interpretation back" do
@@ -70,24 +68,22 @@ describe "Ask command" do
       @tropo1.add_latch :responded
       @tropo1.place_call @config['tropo1']['session_url']
 
-      call = @tropo2.get_call
-      call.call_event.should be_a_valid_call_event
-      call.answer.should be_true
+      @call = @tropo2.get_call
+      @call.call_event.should be_a_valid_call_event
+      @call.answer.should be_true
 
-      call.ask(:prompt  => { :text  => 'One2' },
-               :choices => { :value => '[1 DIGITS]' },
-               :mode    => :dtmf).should be_true
+      @call.ask(:prompt  => { :text  => 'One2' },
+                :choices => { :value => '[1 DIGITS]' },
+                :mode    => :dtmf).should be_true
 
       @tropo1.wait :responded
 
-      ask_event = call.next_event 2
+      ask_event = @call.next_event 2
       ask_event.should be_a_valid_successful_ask_event
       ask_event.reason.interpretation.should eql '3'
 
-      call.hangup.should be_true
-      call.next_event.should be_a_valid_hangup_event
-
-      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @call.hangup.should be_true
+      @call.next_event.should be_a_valid_hangup_event
     end
   end
 
@@ -102,23 +98,21 @@ describe "Ask command" do
     @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
-    call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
-             :choices => { :value => 'yes, no' }).should be_true
+    @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
+              :choices => { :value => 'yes, no' }).should be_true
 
     @tropo1.wait :responded
 
-    ask_event = call.next_event
+    ask_event = @call.next_event
     ask_event.should be_a_valid_successful_ask_event
     ask_event.reason.utterance.should eql 'yes'
 
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should ask with a GRXML grammar" do
@@ -130,22 +124,20 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
-    call.ask(:prompt  => { :text         => 'One3' },
-             :choices => { :value        =>  grxml,
-                           :content_type => 'application/grammar+grxml' } ).should be_true
+    @call.ask(:prompt  => { :text         => 'One3' },
+              :choices => { :value        =>  grxml,
+                            :content_type => 'application/grammar+grxml' } ).should be_true
 
-    ask_event = call.next_event
+    ask_event = @call.next_event
     ask_event.should be_a_valid_successful_ask_event
     ask_event.reason.utterance.should eql 'clue'
 
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should ask with an SSML prompt and a GRXML grammar" do
@@ -159,22 +151,20 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
-    call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
-             :choices => { :value => grxml,
-                           :content_type => 'application/grammar+grxml' } ).should be_true
+    @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
+              :choices => { :value => grxml,
+                            :content_type => 'application/grammar+grxml' } ).should be_true
 
-    ask_event = call.next_event
+    ask_event = @call.next_event
     ask_event.should be_a_valid_successful_ask_event
     ask_event.reason.utterance.should eql 'clue'
 
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should ask and get a NOINPUT event" do
@@ -185,18 +175,16 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
-    call.ask :prompt  => { :text  => 'Yeap' },
-             :choices => { :value => 'yes, no' },
-             :timeout => 2000
+    @call.ask :prompt  => { :text  => 'Yeap' },
+              :choices => { :value => 'yes, no' },
+              :timeout => 2000
 
-    call.next_event.should be_a_valid_noinput_event
-    call.next_event.should be_a_valid_hangup_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.next_event.should be_a_valid_noinput_event
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should ask and get a NOMATCH event with min_confidence set to 1" do
@@ -209,21 +197,19 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
-    call.ask :prompt         => { :text  => 'Yeap' },
-             :choices        => { :value => 'red, green' },
-             :timeout        => 3000,
-             :min_confidence => 1
+    @call.ask :prompt         => { :text  => 'Yeap' },
+              :choices        => { :value => 'red, green' },
+              :timeout        => 3000,
+              :min_confidence => 1
 
-    call.next_event.should be_a_valid_nomatch_event
+    @call.next_event.should be_a_valid_nomatch_event
 
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should ask and get a STOP if the farside hangs up before the command complete" do
@@ -235,17 +221,15 @@ describe "Ask command" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      call = @tropo2.get_call
-      call.call_event.should be_a_valid_call_event
-      call.answer.should be_true
+      @call = @tropo2.get_call
+      @call.call_event.should be_a_valid_call_event
+      @call.answer.should be_true
 
-      call.ask :prompt  => { :text  => 'Yeap' },
-               :choices => { :value => 'red, green' }
+      @call.ask :prompt  => { :text  => 'Yeap' },
+                :choices => { :value => 'red, green' }
 
-      call.next_event.should be_a_valid_stopped_ask_event
-      call.next_event.should be_a_valid_hangup_event
-
-      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @call.next_event.should be_a_valid_stopped_ask_event
+      @call.next_event.should be_a_valid_hangup_event
     end
   end
 
@@ -257,15 +241,13 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
-    lambda { call.ask :prompt  => { :text => 'One4' },
-                      :choices => { :value => '<grammar>' } }.should raise_error(Punchblock::Protocol::ProtocolError)
+    lambda { @call.ask :prompt  => { :text => 'One4' },
+                       :choices => { :value => '<grammar>' } }.should raise_error(Punchblock::Protocol::ProtocolError)
 
-    call.next_event.reason.should eql :error
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.next_event.reason.should eql :error
   end
 end

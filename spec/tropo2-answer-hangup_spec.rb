@@ -10,11 +10,10 @@ describe "Call accept, answer and hangup handling" do
     TROPO_SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should answer and hangup" do
@@ -25,12 +24,11 @@ describe "Call accept, answer and hangup handling" do
     TROPO_SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should throw an error if we try to answer a call that is hungup" do
@@ -41,15 +39,13 @@ describe "Call accept, answer and hangup handling" do
     TROPO_SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
 
-    lambda {call.answer}.should raise_error(Punchblock::Protocol::ProtocolError)
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    lambda {@call.answer}.should raise_error(Punchblock::Protocol::ProtocolError)
   end
 
   it "should accept and hangup" do
@@ -60,12 +56,11 @@ describe "Call accept, answer and hangup handling" do
     TROPO_SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.accept.should be_true
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.accept.should be_true
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should answer a call and let the farside hangup" do
@@ -77,11 +72,9 @@ describe "Call accept, answer and hangup handling" do
     TROPO_SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
-    call.next_event.should be_a_valid_hangup_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 end

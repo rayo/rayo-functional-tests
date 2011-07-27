@@ -8,9 +8,9 @@ describe "Transfer verb" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
     # Set a script that handles the incoming Xfer from Tropo2
     @tropo1.script_content = <<-SCRIPT_CONTENT
@@ -19,13 +19,11 @@ describe "Transfer verb" do
       hangup
     SCRIPT_CONTENT
 
-    call.transfer(:to      => @config['tropo1']['call_destination'],
-                  :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should be_true
+    @call.transfer(:to      => @config['tropo1']['call_destination'],
+                   :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should be_true
 
-    call.next_event.should be_a_valid_transfer_event
-    call.next_event.should be_a_valid_hangup_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.next_event.should be_a_valid_transfer_event
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should try to transfer but get a timeout" do
@@ -35,23 +33,21 @@ describe "Transfer verb" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
     # Set a script that handles the incoming Xfer from Tropo2
     @tropo1.script_content = <<-SCRIPT_CONTENT
       wait 5000
     SCRIPT_CONTENT
 
-    call.transfer(:to      => @config['tropo1']['call_destination'],
-                  :timeout => 2000,
-                  :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should be_true
+    @call.transfer(:to      => @config['tropo1']['call_destination'],
+                   :timeout => 2000,
+                   :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should be_true
 
-    call.next_event.should be_a_valid_transfer_timeout_event
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.next_event.should be_a_valid_transfer_timeout_event
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
   end
 end

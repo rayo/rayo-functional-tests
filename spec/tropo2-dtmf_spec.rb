@@ -12,20 +12,18 @@ describe "DTMF events" do
       @tropo1.add_latch :responded
       @tropo1.place_call @config['tropo1']['session_url']
 
-      call = @tropo2.get_call
-      call.call_event.should be_a_valid_call_event
-      call.answer.should be_true
+      @call = @tropo2.get_call
+      @call.call_event.should be_a_valid_call_event
+      @call.answer.should be_true
 
       @tropo1.wait :responded
 
-      dtmf_event = call.next_event 2
+      dtmf_event = @call.next_event 2
       dtmf_event.should be_a_valid_dtmf_event
       dtmf_event.signal.should == '3'
 
-      call.hangup.should be_true
-      call.next_event.should be_a_valid_hangup_event
-
-      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @call.hangup.should be_true
+      @call.next_event.should be_a_valid_hangup_event
     end
   end
 
@@ -41,29 +39,27 @@ describe "DTMF events" do
       @tropo1.add_latch :responded
       @tropo1.place_call @config['tropo1']['session_url']
 
-      call = @tropo2.get_call
-      call.call_event.should be_a_valid_call_event
-      call.answer.should be_true
+      @call = @tropo2.get_call
+      @call.call_event.should be_a_valid_call_event
+      @call.answer.should be_true
 
-      call.ask(:prompt  => { :text  => 'Three?' },
-               :choices => { :value => '[1 DIGITS]' },
-               :mode    => :dtmf).should be_true
+      @call.ask(:prompt  => { :text  => 'Three?' },
+                :choices => { :value => '[1 DIGITS]' },
+                :mode    => :dtmf).should be_true
 
       @tropo1.wait :responded
 
-      ask_event = call.next_event 2
+      ask_event = @call.next_event 2
       p ask_event
       ask_event.should be_a_valid_ask_event
       ask_event.reason.utterance.should eql '3'
 
-      dtmf_event = call.next_event
+      dtmf_event = @call.next_event
       dtmf_event.should be_a_valid_dtmf_event
       dtmf_event.signal.should == '3'
 
-      call.hangup.should be_true
-      call.next_event.should be_a_valid_hangup_event
-
-      call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @call.hangup.should be_true
+      @call.next_event.should be_a_valid_hangup_event
     end
   end
 
@@ -79,21 +75,19 @@ describe "DTMF events" do
     @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
-    call.answer.should be_true
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
+    @call.answer.should be_true
 
-    call.say(:audio => { :url => 'dtmf:5' }).should be_true
+    @call.say(:audio => { :url => 'dtmf:5' }).should be_true
 
     @tropo1.wait :responded
 
-    call.next_event.should be_a_valid_say_event
+    @call.next_event.should be_a_valid_say_event
 
-    call.hangup.should be_true
-    call.next_event.should be_a_valid_hangup_event
+    @call.hangup.should be_true
+    @call.next_event.should be_a_valid_hangup_event
 
     @tropo1.result.should eql '5'
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 end

@@ -9,17 +9,15 @@ describe "Redirect command" do
     TROPO_SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    call = @tropo2.get_call
-    call.call_event.should be_a_valid_call_event
+    @call = @tropo2.get_call
+    @call.call_event.should be_a_valid_call_event
 
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer
       wait #{@config['tropo1']['wait_to_hangup']}
     TROPO_SCRIPT_CONTENT
 
-    call.redirect(:to => @config['tropo1']['call_destination']).should be_true
-    call.next_event.should be_a_valid_redirect_event
-
-    call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    @call.redirect(:to => @config['tropo1']['call_destination']).should be_true
+    @call.next_event.should be_a_valid_redirect_event
   end
 end
