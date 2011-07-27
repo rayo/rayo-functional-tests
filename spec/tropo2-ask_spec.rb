@@ -29,15 +29,15 @@ describe "Ask command" do
   end
 
   it "should ask something with ASR and get the utterance back" do
-    @tropo1.script_content = <<-SCRIPT_CONTENT
+    @tropo1.add_latch :responded
+
+    place_call_with_script <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep #{@config['media_assertion_timeout']}.to_i
       say 'yes'
       ozone_testing_server.trigger :responded
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
-    @tropo1.add_latch :responded
-    @tropo1.place_call @config['tropo1']['session_url']
 
     get_call_and_answer
 
@@ -55,15 +55,15 @@ describe "Ask command" do
 
   it "should ask something with DTMF and get the interpretation back" do
     pending 'Tropo2 does not currently support in-band DTMF' do
-      @tropo1.script_content = <<-SCRIPT_CONTENT
+      @tropo1.add_latch :responded
+
+      place_call_with_script <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
         say '#{@config['dtmf_tone_files'][3]}'
         ozone_testing_server.trigger :responded
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
-      @tropo1.add_latch :responded
-      @tropo1.place_call @config['tropo1']['session_url']
 
       get_call_and_answer
 
@@ -82,15 +82,15 @@ describe "Ask command" do
   end
 
   it "should ask with an SSML as a prompt" do
-    @tropo1.script_content = <<-SCRIPT_CONTENT
+    @tropo1.add_latch :responded
+
+    place_call_with_script <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep #{@config['media_assertion_timeout']}.to_i
       say 'yes'
       ozone_testing_server.trigger :responded
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
-    @tropo1.add_latch :responded
-    @tropo1.place_call @config['tropo1']['session_url']
 
     get_call_and_answer
 
@@ -107,13 +107,12 @@ describe "Ask command" do
   end
 
   it "should ask with a GRXML grammar" do
-    @tropo1.script_content = <<-SCRIPT_CONTENT
+    place_call_with_script <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep 3
       say 'clue'
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
 
     get_call_and_answer
 
@@ -129,7 +128,7 @@ describe "Ask command" do
   end
 
   it "should ask with an SSML prompt and a GRXML grammar" do
-    @tropo1.script_content = <<-SCRIPT_CONTENT
+    place_call_with_script <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep 1
       ask 'clue', :choices     => 'one hundred, ireland',
@@ -137,7 +136,6 @@ describe "Ask command" do
                   :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
 
     get_call_and_answer
 
@@ -153,12 +151,11 @@ describe "Ask command" do
   end
 
   it "should ask and get a NOINPUT event" do
-    @tropo1.script_content = <<-SCRIPT_CONTENT
+    place_call_with_script <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait 5000
       hangup
     SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
 
     get_call_and_answer
 
@@ -171,14 +168,13 @@ describe "Ask command" do
   end
 
   it "should ask and get a NOMATCH event with min_confidence set to 1" do
-    @tropo1.script_content = <<-SCRIPT_CONTENT
+    place_call_with_script <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait 1000
       say 'blue'
       wait #{@config['tropo1']['wait_to_hangup']}
       hangup
     SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
 
     get_call_and_answer
 
@@ -194,12 +190,11 @@ describe "Ask command" do
 
   it "should ask and get a STOP if the farside hangs up before the command complete" do
     pending 'https://github.com/tropo/tropo2/issues/59' do
-      @tropo1.script_content = <<-SCRIPT_CONTENT
+      place_call_with_script <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         wait 8000
         hangup
       SCRIPT_CONTENT
-      @tropo1.place_call @config['tropo1']['session_url']
 
       get_call_and_answer
 
@@ -212,12 +207,11 @@ describe "Ask command" do
   end
 
   it "should ask something with an invalid grammar and get an error back" do
-    @tropo1.script_content = <<-SCRIPT_CONTENT
+    place_call_with_script <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait 2000
       hangup
     SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
 
     get_call_and_answer
 

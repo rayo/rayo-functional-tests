@@ -3,14 +3,14 @@ require 'spec_helper'
 describe "DTMF events" do
   it "should be generated when DTMF tones are detected" do
     pending "Currently need a running <ask/>" do
-      @tropo1.script_content = <<-SCRIPT_CONTENT
+      @tropo1.add_latch :responded
+
+      place_call_with_script <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         say '#{@config['dtmf_tone_files'][3]}'
         ozone_testing_server.trigger :responded
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
-      @tropo1.add_latch :responded
-      @tropo1.place_call @config['tropo1']['session_url']
 
       get_call_and_answer
 
@@ -26,15 +26,15 @@ describe "DTMF events" do
 
   it "should be generated when DTMF tones are detected during an <ask/>" do
     pending 'Tropo2 does not currently support in-band DTMF' do
-      @tropo1.script_content = <<-SCRIPT_CONTENT
+      @tropo1.add_latch :responded
+
+      place_call_with_script <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
         sleep #{@config['media_assertion_timeout']}.to_i
         say '#{@config['dtmf_tone_files'][3]}'
         ozone_testing_server.trigger :responded
         wait #{@config['tropo1']['wait_to_hangup']}
       SCRIPT_CONTENT
-      @tropo1.add_latch :responded
-      @tropo1.place_call @config['tropo1']['session_url']
 
       get_call_and_answer
 
@@ -58,7 +58,9 @@ describe "DTMF events" do
   end
 
   it "should send DTMF tones correctly" do
-    @tropo1.script_content = <<-SCRIPT_CONTENT
+    @tropo1.add_latch :responded
+
+    place_call_with_script <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       ask 'One6', :choices     => '[1 DIGITS]',
                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
@@ -66,8 +68,6 @@ describe "DTMF events" do
       ozone_testing_server.trigger :responded
       wait #{@config['tropo1']['wait_to_hangup']}
     SCRIPT_CONTENT
-    @tropo1.add_latch :responded
-    @tropo1.place_call @config['tropo1']['session_url']
 
     get_call_and_answer
 

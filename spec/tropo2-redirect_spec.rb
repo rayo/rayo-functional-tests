@@ -2,12 +2,11 @@ require 'spec_helper'
 
 describe "Redirect command" do
   it "should redirect a call" do
-    @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+    place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       say 'Hello world'
       wait #{@config['tropo1']['wait_to_hangup']}
     TROPO_SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
 
     get_call_and_answer false
 
