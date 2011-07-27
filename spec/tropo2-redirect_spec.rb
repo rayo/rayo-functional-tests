@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Redirect command" do
-  it "Should redirect a call" do
+  it "should redirect a call" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       say 'Hello world'

@@ -4,14 +4,14 @@ require 'json'
 
 describe "JMX Tests" do
 
-  it "Should find JMX MBeans available" do
+  it "should find JMX MBeans available" do
     server = @config['tropo2_server']['server']
     port = @config['tropo2_server']['port'].to_i
     res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)
     res.code.should eql '200'
   end
 
-  it "Should find Build Number" do
+  it "should find Build Number" do
     server = @config['tropo2_server']['server']
     port = @config['tropo2_server']['port'].to_i
     res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)
@@ -21,7 +21,7 @@ describe "JMX Tests" do
     json['value']['BuildNumber'].should_not eql nil
   end
 
-  it "Should find all main JMX Beans" do
+  it "should find all main JMX Beans" do
     server = @config['tropo2_server']['server']
     port = @config['tropo2_server']['port'].to_i
     res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)

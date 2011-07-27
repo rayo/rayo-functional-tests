@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Conference command" do
-  it "Should put one caller in conference and then hangup" do
+  it "should put one caller in conference and then hangup" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}
@@ -21,7 +21,7 @@ describe "Conference command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should put two callers into a conference and then hangup" do
+  it "should put two callers into a conference and then hangup" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}
@@ -54,7 +54,7 @@ describe "Conference command" do
     call_2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should put two callers into a conference, validate media and hangup" do
+  it "should put two callers into a conference, validate media and hangup" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       ask 'One5', :choices     => 'yes, no',

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Say command" do
-  it "Should say something with TTS" do
+  it "should say something with TTS" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       ask 'One7', :choices     => 'yes, no',
@@ -31,7 +31,7 @@ describe "Say command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should say an audio URL and hangup" do
+  it "should say an audio URL and hangup" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}
@@ -54,7 +54,7 @@ describe "Say command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should say SSML" do
+  it "should say SSML" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       ask 'One8', :choices     => 'one hundred, ireland',
@@ -84,7 +84,7 @@ describe "Say command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should say some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
+  it "should say some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}*2
@@ -112,7 +112,7 @@ describe "Say command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should say an audio URL and get a stop event" do
+  it "should say an audio URL and get a stop event" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep 2
@@ -132,7 +132,7 @@ describe "Say command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should error on a say and return a complete event" do
+  it "should error on a say and return a complete event" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep 2

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Reject command" do
-  it "Should reject with a declined reason" do
+  it "should reject with a declined reason" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}
@@ -16,7 +16,7 @@ describe "Reject command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should reject with a busy reason" do
+  it "should reject with a busy reason" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}
@@ -31,7 +31,7 @@ describe "Reject command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should reject with a error reason" do
+  it "should reject with a error reason" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}
@@ -46,7 +46,7 @@ describe "Reject command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should reject and raise an error due to an invalid reason" do
+  it "should reject and raise an error due to an invalid reason" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}

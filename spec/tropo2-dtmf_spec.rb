@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "DTMF events" do
-  it "Should be generated when DTMF tones are detected" do
+  it "should be generated when DTMF tones are detected" do
     pending "Currently need a running <ask/>" do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
@@ -29,7 +29,7 @@ describe "DTMF events" do
     end
   end
 
-  it "Should be generated when DTMF tones are detected during an <ask/>" do
+  it "should be generated when DTMF tones are detected during an <ask/>" do
     pending 'Tropo2 does not currently support in-band DTMF' do
       @tropo1.script_content = <<-SCRIPT_CONTENT
         call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'

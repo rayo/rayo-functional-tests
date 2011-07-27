@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Transfer verb" do
-  it "Should answer a call and then transfer it" do
+  it "should answer a call and then transfer it" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}
@@ -28,7 +28,7 @@ describe "Transfer verb" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should try to transfer but get a timeout" do
+  it "should try to transfer but get a timeout" do
     @tropo1.script_content = <<-SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}

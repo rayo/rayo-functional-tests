@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Dial command" do
-  it "Should place an outbound call, receive a ring event, receive a reject event and then hangup" do
+  it "should place an outbound call, receive a ring event, receive a reject event and then hangup" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       accept
       hangup
@@ -17,7 +17,7 @@ describe "Dial command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should place an outbound call and then receive a reject event" do
+  it "should place an outbound call and then receive a reject event" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       reject
     TROPO_SCRIPT_CONTENT
@@ -31,7 +31,7 @@ describe "Dial command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should place an outbound call and send SIP headers" do
+  it "should place an outbound call and send SIP headers" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer
       ozone_testing_server.result = $currentCall.getHeader('x-tropo2-test')
@@ -51,7 +51,7 @@ describe "Dial command" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should dial multiple calls" do
+  it "should dial multiple calls" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer
       wait 100
@@ -78,7 +78,7 @@ describe "Dial command" do
     call2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should get an error if we dial an invalid address" do
+  it "should get an error if we dial an invalid address" do
     lambda { @tropo2.dial :to      => 'foobar',
                           :from    => 'tel:+14155551212',
                           :headers => { 'x-tropo2-drb-address' => @drb_server_uri,

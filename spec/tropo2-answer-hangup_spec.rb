@@ -3,7 +3,7 @@ require 'spec_helper'
 # startCallRecording 'http://tropo-audiofiles-to-s3.heroku.com/post_audio_to_s3?file_name=ozone2_testing.wav'
 
 describe "Call accept, answer and hangup handling" do
-  it "Should receive a call and then hangup" do
+  it "should receive a call and then hangup" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       wait #{@config['tropo1']['wait_to_hangup']}
@@ -17,7 +17,7 @@ describe "Call accept, answer and hangup handling" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should answer and hangup" do
+  it "should answer and hangup" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       say 'Hello world'
@@ -33,7 +33,7 @@ describe "Call accept, answer and hangup handling" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should throw an error if we try to answer a call that is hungup" do
+  it "should throw an error if we try to answer a call that is hungup" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       say 'Hello world'
@@ -52,7 +52,7 @@ describe "Call accept, answer and hangup handling" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should accept and hangup" do
+  it "should accept and hangup" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       say 'Hello world'
@@ -68,7 +68,7 @@ describe "Call accept, answer and hangup handling" do
     call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
   end
 
-  it "Should answer a call and let the farside hangup" do
+  it "should answer a call and let the farside hangup" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
       sleep 1
