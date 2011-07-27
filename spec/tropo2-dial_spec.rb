@@ -5,7 +5,7 @@ describe "Dial command" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       accept
       hangup
-      wait #{@config['tropo1']['wait_to_hangup']}
+      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],

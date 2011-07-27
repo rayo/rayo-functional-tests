@@ -3,8 +3,8 @@ require 'spec_helper'
 describe "Conference command" do
   it "should put one caller in conference and then hangup" do
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     SCRIPT_CONTENT
 
     get_call_and_answer
@@ -19,8 +19,8 @@ describe "Conference command" do
 
   it "should put two callers into a conference and then hangup" do
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     SCRIPT_CONTENT
 
     call_1 = @tropo2.get_call
@@ -51,11 +51,11 @@ describe "Conference command" do
 
   it "should put two callers into a conference, validate media and hangup" do
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       ask 'One5', :choices     => 'yes, no',
                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
-      wait #{@config['tropo1']['wait_to_hangup']}
+      wait_to_hangup
     SCRIPT_CONTENT
 
     call_1 = @tropo2.get_call
@@ -64,9 +64,9 @@ describe "Conference command" do
     call_1.conference(:name => '1234').should be_true
 
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       say 'yes'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      wait_to_hangup
     SCRIPT_CONTENT
 
     call_2 = @tropo2.get_call

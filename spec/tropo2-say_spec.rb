@@ -5,12 +5,12 @@ describe "Say command" do
     @tropo1.add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       ask 'One7', :choices     => 'yes, no',
                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
-      ozone_testing_server.trigger :responded
-      wait #{@config['tropo1']['wait_to_hangup']}
+      trigger_latch :responded
+      wait_to_hangup
     SCRIPT_CONTENT
 
     get_call_and_answer
@@ -28,8 +28,8 @@ describe "Say command" do
 
   it "should say an audio URL and hangup" do
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}
+      call_tropo2
+      wait_to_hangup
     SCRIPT_CONTENT
 
     get_call_and_answer
@@ -47,12 +47,12 @@ describe "Say command" do
     @tropo1.add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       ask 'One8', :choices     => 'one hundred, ireland',
-                 :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
-                 :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
-      ozone_testing_server.trigger :responded
-      wait #{@config['tropo1']['wait_to_hangup']}
+                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
+                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+      trigger_latch :responded
+      wait_to_hangup
     SCRIPT_CONTENT
 
     get_call_and_answer
@@ -70,8 +70,8 @@ describe "Say command" do
 
   it "should say some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
-      wait #{@config['tropo1']['wait_to_hangup']}*2
+      call_tropo2
+      2.times { wait_to_hangup }
     SCRIPT_CONTENT
 
     get_call_and_answer
@@ -92,7 +92,7 @@ describe "Say command" do
 
   it "should say an audio URL and get a stop event" do
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       sleep 2
       hangup
     SCRIPT_CONTENT
@@ -107,7 +107,7 @@ describe "Say command" do
 
   it "should error on a say and return a complete event" do
     place_call_with_script <<-SCRIPT_CONTENT
-      call 'sip:' + '#{@config['tropo2_server']['sip_uri']}'
+      call_tropo2
       sleep 2
       hangup
     SCRIPT_CONTENT
