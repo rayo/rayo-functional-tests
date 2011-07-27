@@ -8,15 +8,14 @@ describe "Conference command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.conference(:name => '1234').should be_true
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_conference_command
-    @call.next_event.should be_a_valid_complete_hangup_event
-    @call.next_event.should be_a_valid_hangup_event
+
+    hangup_and_confirm do
+      @call.next_event.should be_a_valid_conference_command
+      @call.next_event.should be_a_valid_complete_hangup_event
+    end
   end
 
   it "should put two callers into a conference and then hangup" do

@@ -12,9 +12,7 @@ describe "DTMF events" do
       @tropo1.add_latch :responded
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @call = @tropo2.get_call
-      @call.call_event.should be_a_valid_call_event
-      @call.answer.should be_true
+      get_call_and_answer
 
       @tropo1.wait :responded
 
@@ -22,8 +20,7 @@ describe "DTMF events" do
       dtmf_event.should be_a_valid_dtmf_event
       dtmf_event.signal.should == '3'
 
-      @call.hangup.should be_true
-      @call.next_event.should be_a_valid_hangup_event
+      hangup_and_confirm
     end
   end
 
@@ -39,9 +36,7 @@ describe "DTMF events" do
       @tropo1.add_latch :responded
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @call = @tropo2.get_call
-      @call.call_event.should be_a_valid_call_event
-      @call.answer.should be_true
+      get_call_and_answer
 
       @call.ask(:prompt  => { :text  => 'Three?' },
                 :choices => { :value => '[1 DIGITS]' },
@@ -58,8 +53,7 @@ describe "DTMF events" do
       dtmf_event.should be_a_valid_dtmf_event
       dtmf_event.signal.should == '3'
 
-      @call.hangup.should be_true
-      @call.next_event.should be_a_valid_hangup_event
+      hangup_and_confirm
     end
   end
 
@@ -75,9 +69,7 @@ describe "DTMF events" do
     @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.say(:audio => { :url => 'dtmf:5' }).should be_true
 
@@ -85,8 +77,7 @@ describe "DTMF events" do
 
     @call.next_event.should be_a_valid_say_event
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
 
     @tropo1.result.should eql '5'
   end

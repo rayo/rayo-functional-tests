@@ -8,9 +8,7 @@ describe "Transfer verb" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     # Set a script that handles the incoming Xfer from Tropo2
     @tropo1.script_content = <<-SCRIPT_CONTENT
@@ -33,9 +31,7 @@ describe "Transfer verb" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     # Set a script that handles the incoming Xfer from Tropo2
     @tropo1.script_content = <<-SCRIPT_CONTENT
@@ -47,7 +43,6 @@ describe "Transfer verb" do
                    :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should be_true
 
     @call.next_event.should be_a_valid_transfer_timeout_event
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
   end
 end

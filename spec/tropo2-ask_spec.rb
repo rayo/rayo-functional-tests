@@ -39,9 +39,7 @@ describe "Ask command" do
     @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.ask(:prompt  => { :text  => 'One1' },
               :choices => { :value => 'yes, no' }).should be_true
@@ -52,8 +50,7 @@ describe "Ask command" do
     ask_event.should be_a_valid_successful_ask_event
     ask_event.reason.utterance.should eql 'yes'
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
   end
 
   it "should ask something with DTMF and get the interpretation back" do
@@ -68,9 +65,7 @@ describe "Ask command" do
       @tropo1.add_latch :responded
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @call = @tropo2.get_call
-      @call.call_event.should be_a_valid_call_event
-      @call.answer.should be_true
+      get_call_and_answer
 
       @call.ask(:prompt  => { :text  => 'One2' },
                 :choices => { :value => '[1 DIGITS]' },
@@ -82,8 +77,7 @@ describe "Ask command" do
       ask_event.should be_a_valid_successful_ask_event
       ask_event.reason.interpretation.should eql '3'
 
-      @call.hangup.should be_true
-      @call.next_event.should be_a_valid_hangup_event
+      hangup_and_confirm
     end
   end
 
@@ -98,9 +92,7 @@ describe "Ask command" do
     @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
               :choices => { :value => 'yes, no' }).should be_true
@@ -111,8 +103,7 @@ describe "Ask command" do
     ask_event.should be_a_valid_successful_ask_event
     ask_event.reason.utterance.should eql 'yes'
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
   end
 
   it "should ask with a GRXML grammar" do
@@ -124,9 +115,7 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.ask(:prompt  => { :text         => 'One3' },
               :choices => { :value        =>  grxml,
@@ -136,8 +125,7 @@ describe "Ask command" do
     ask_event.should be_a_valid_successful_ask_event
     ask_event.reason.utterance.should eql 'clue'
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
   end
 
   it "should ask with an SSML prompt and a GRXML grammar" do
@@ -151,9 +139,7 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
               :choices => { :value => grxml,
@@ -163,8 +149,7 @@ describe "Ask command" do
     ask_event.should be_a_valid_successful_ask_event
     ask_event.reason.utterance.should eql 'clue'
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
   end
 
   it "should ask and get a NOINPUT event" do
@@ -175,9 +160,7 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.ask :prompt  => { :text  => 'Yeap' },
               :choices => { :value => 'yes, no' },
@@ -197,9 +180,7 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.ask :prompt         => { :text  => 'Yeap' },
               :choices        => { :value => 'red, green' },
@@ -208,8 +189,7 @@ describe "Ask command" do
 
     @call.next_event.should be_a_valid_nomatch_event
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
   end
 
   it "should ask and get a STOP if the farside hangs up before the command complete" do
@@ -221,9 +201,7 @@ describe "Ask command" do
       SCRIPT_CONTENT
       @tropo1.place_call @config['tropo1']['session_url']
 
-      @call = @tropo2.get_call
-      @call.call_event.should be_a_valid_call_event
-      @call.answer.should be_true
+      get_call_and_answer
 
       @call.ask :prompt  => { :text  => 'Yeap' },
                 :choices => { :value => 'red, green' }
@@ -241,9 +219,7 @@ describe "Ask command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     lambda { @call.ask :prompt  => { :text => 'One4' },
                        :choices => { :value => '<grammar>' } }.should raise_error(Punchblock::Protocol::ProtocolError)

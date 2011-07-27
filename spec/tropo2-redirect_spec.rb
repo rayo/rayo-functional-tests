@@ -9,8 +9,7 @@ describe "Redirect command" do
     TROPO_SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
+    get_call_and_answer false
 
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer

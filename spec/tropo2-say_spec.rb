@@ -13,9 +13,7 @@ describe "Say command" do
     @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.say(:text => 'yes').should be_true
 
@@ -23,8 +21,7 @@ describe "Say command" do
 
     @call.next_event.should be_a_valid_say_event
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
 
     @tropo1.result.should eql 'yes'
   end
@@ -36,9 +33,7 @@ describe "Say command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.say(:audio => { :url => @config['audio_url'] }).should be_true
 
@@ -46,8 +41,7 @@ describe "Say command" do
 
     @call.next_event.should be_a_valid_say_event
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
   end
 
   it "should say SSML" do
@@ -62,9 +56,7 @@ describe "Say command" do
     @tropo1.add_latch :responded
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.say(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should be_true
 
@@ -72,8 +64,7 @@ describe "Say command" do
 
     @call.next_event.should be_a_valid_say_event
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
 
     @tropo1.result.should eql 'one hundred'
   end
@@ -85,9 +76,7 @@ describe "Say command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     say_command = @call.say :audio => { :url => @config['audio_url'] }
 
@@ -100,8 +89,7 @@ describe "Say command" do
 
     @call.next_event.should be_a_valid_stopped_say_event
 
-    @call.hangup.should be_true
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
   end
 
   it "should say an audio URL and get a stop event" do
@@ -112,9 +100,7 @@ describe "Say command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     @call.say(:audio => { :url => @config['audio_url'] }).should be_true
 
@@ -130,9 +116,7 @@ describe "Say command" do
     SCRIPT_CONTENT
     @tropo1.place_call @config['tropo1']['session_url']
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
-    @call.answer.should be_true
+    get_call_and_answer
 
     lambda { @call.say :text => '' }.should raise_error(Punchblock::Protocol::ProtocolError)
 
