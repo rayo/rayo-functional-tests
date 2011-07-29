@@ -162,7 +162,7 @@ describe "Ask command" do
               :choices => { :value => 'yes, no' },
               :timeout => 2000
 
-    @call.next_event.should be_a_valid_noinput_event
+    @call.next_event.should be_a_valid_ask_noinput_event
     @call.next_event.should be_a_valid_hangup_event
   end
 
@@ -182,7 +182,7 @@ describe "Ask command" do
               :timeout        => 3000,
               :min_confidence => 1
 
-    @call.next_event.should be_a_valid_nomatch_event
+    @call.next_event.should be_a_valid_ask_nomatch_event
 
     hangup_and_confirm
   end
