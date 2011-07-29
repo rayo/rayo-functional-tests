@@ -28,6 +28,7 @@ describe "CDR Manager" do
     json = JSON.parse res.body
     activeCdrs = json['value']
 
+    activeCdrs.should have(1).record
     activeCdrs.first['callId'].should eql @call.call_event.call_id
 
     hangup_and_confirm
@@ -53,6 +54,7 @@ describe "CDR Manager" do
     p activeCdrs
     p @call.call_event.call_id
 
+    activeCdrs.should have(1).record
     activeCdrs.first['callId'].should eql @call.call_event.call_id
 
     @call.ring_event.should be_a_valid_ringing_event
@@ -85,6 +87,7 @@ describe "CDR Manager" do
     json = JSON.parse res.body
     activeCdrs = json['value']
 
+    activeCdrs.should have(1).record
     activeCdrs.first['callId'].should eql @call.call_event.call_id
     transcript = activeCdrs.first['transcript'].to_s
 
