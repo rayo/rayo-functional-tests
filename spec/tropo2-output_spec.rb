@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe "Output component" do
   it "should output something with TTS" do
-    pending
     @tropo1.add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -28,7 +27,6 @@ describe "Output component" do
   end
 
   it "should output an audio URL and hangup" do
-    pending
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       wait_to_hangup
@@ -46,7 +44,7 @@ describe "Output component" do
   end
 
   it "should output SSML" do
-    pending
+    pending "Fails with a useless error: https://gist.github.com/784d693c816d428d1e79"
     @tropo1.add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -72,7 +70,6 @@ describe "Output component" do
   end
 
   it "should output some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
-    pending
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       2.times { wait_to_hangup }
@@ -95,7 +92,6 @@ describe "Output component" do
   end
 
   it "should output an audio URL and get a stop event" do
-    pending
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       sleep 2
@@ -111,7 +107,6 @@ describe "Output component" do
   end
 
   it "should error on a output and return a complete event" do
-    pending
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       sleep 2

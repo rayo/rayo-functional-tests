@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:tropo/punchblock.git
-  revision: 88cd88a99540a8305af277d0db325e98ba4451f5
+  revision: 120f9349944a678083e187b1d75c61718b0142f0
   branch: develop
   specs:
     punchblock (0.1.0)
@@ -12,7 +12,7 @@ GIT
 
 GIT
   remote: git@github.com:tropo/rspec-tropo2.git
-  revision: 0b7c11df83cbcccca8818acaed9ee213e137c957
+  revision: af7af0da6d91e5176056af54b0c6902b5a60c04a
   branch: develop
   specs:
     rspec-rayo (0.1.0)
@@ -46,7 +46,7 @@ GEM
     niceogiri (0.0.4)
       nokogiri (>= 1.4.0)
     nokogiri (1.5.0)
-    pry (0.9.2)
+    pry (0.9.3)
       coderay (>= 0.9.8)
       method_source (>= 0.6.0)
       ruby_parser (>= 2.0.5)
