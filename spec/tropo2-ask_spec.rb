@@ -54,31 +54,30 @@ describe "Ask command" do
   end
 
   it "should ask something with DTMF and get the interpretation back" do
-    pending 'Tropo2 does not currently support in-band DTMF' do
-      @tropo1.add_latch :responded
+    pending 'Tropo2 does not currently support in-band DTMF'
+    @tropo1.add_latch :responded
 
-      place_call_with_script <<-SCRIPT_CONTENT
-        call_tropo2
-        sleep_for_media_assertion
-        play_dtmf 3
-        trigger_latch :responded
-        wait_to_hangup
-      SCRIPT_CONTENT
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      sleep_for_media_assertion
+      play_dtmf 3
+      trigger_latch :responded
+      wait_to_hangup
+    SCRIPT_CONTENT
 
-      get_call_and_answer
+    get_call_and_answer
 
-      @call.ask(:prompt  => { :text  => 'One2' },
-                :choices => { :value => '[1 DIGITS]' },
-                :mode    => :dtmf).should be_true
+    @call.ask(:prompt  => { :text  => 'One2' },
+              :choices => { :value => '[1 DIGITS]' },
+              :mode    => :dtmf).should be_true
 
-      @tropo1.wait :responded
+    @tropo1.wait :responded
 
-      ask_event = @call.next_event 2
-      ask_event.should be_a_valid_successful_ask_event
-      ask_event.reason.interpretation.should eql '3'
+    ask_event = @call.next_event 2
+    ask_event.should be_a_valid_successful_ask_event
+    ask_event.reason.interpretation.should eql '3'
 
-      hangup_and_confirm
-    end
+    hangup_and_confirm
   end
 
   it "should ask with an SSML as a prompt" do
@@ -189,21 +188,20 @@ describe "Ask command" do
   end
 
   it "should ask and get a STOP if the farside hangs up before the command complete" do
-    pending 'https://github.com/tropo/tropo2/issues/59' do
-      place_call_with_script <<-SCRIPT_CONTENT
-        call_tropo2
-        wait 8000
-        hangup
-      SCRIPT_CONTENT
+    pending 'https://github.com/tropo/tropo2/issues/59'
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      wait 8000
+      hangup
+    SCRIPT_CONTENT
 
-      get_call_and_answer
+    get_call_and_answer
 
-      @call.ask :prompt  => { :text  => 'Yeap' },
-                :choices => { :value => 'red, green' }
+    @call.ask :prompt  => { :text  => 'Yeap' },
+              :choices => { :value => 'red, green' }
 
-      @call.next_event.should be_a_valid_stopped_ask_event
-      @call.next_event.should be_a_valid_hangup_event
-    end
+    @call.next_event.should be_a_valid_stopped_ask_event
+    @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should ask something with an invalid grammar and get an error back" do

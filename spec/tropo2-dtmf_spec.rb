@@ -2,59 +2,57 @@ require 'spec_helper'
 
 describe "DTMF events" do
   it "should be generated when DTMF tones are detected" do
-    pending "Currently need a running <ask/>" do
-      @tropo1.add_latch :responded
+    pending "Currently need a running <ask/>"
+    @tropo1.add_latch :responded
 
-      place_call_with_script <<-SCRIPT_CONTENT
-        call_tropo2
-        play_dtmf 3
-        trigger_latch :responded
-        wait_to_hangup
-      SCRIPT_CONTENT
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      play_dtmf 3
+      trigger_latch :responded
+      wait_to_hangup
+    SCRIPT_CONTENT
 
-      get_call_and_answer
+    get_call_and_answer
 
-      @tropo1.wait :responded
+    @tropo1.wait :responded
 
-      dtmf_event = @call.next_event 2
-      dtmf_event.should be_a_valid_dtmf_event
-      dtmf_event.signal.should == '3'
+    dtmf_event = @call.next_event 2
+    dtmf_event.should be_a_valid_dtmf_event
+    dtmf_event.signal.should == '3'
 
-      hangup_and_confirm
-    end
+    hangup_and_confirm
   end
 
   it "should be generated when DTMF tones are detected during an <ask/>" do
-    pending 'Tropo2 does not currently support in-band DTMF' do
-      @tropo1.add_latch :responded
+    pending 'Tropo2 does not currently support in-band DTMF'
+    @tropo1.add_latch :responded
 
-      place_call_with_script <<-SCRIPT_CONTENT
-        call_tropo2
-        sleep_for_media_assertion
-        play_dtmf 3
-        trigger_latch :responded
-        wait_to_hangup
-      SCRIPT_CONTENT
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      sleep_for_media_assertion
+      play_dtmf 3
+      trigger_latch :responded
+      wait_to_hangup
+    SCRIPT_CONTENT
 
-      get_call_and_answer
+    get_call_and_answer
 
-      @call.ask(:prompt  => { :text  => 'Three?' },
-                :choices => { :value => '[1 DIGITS]' },
-                :mode    => :dtmf).should be_true
+    @call.ask(:prompt  => { :text  => 'Three?' },
+              :choices => { :value => '[1 DIGITS]' },
+              :mode    => :dtmf).should be_true
 
-      @tropo1.wait :responded
+    @tropo1.wait :responded
 
-      ask_event = @call.next_event 2
-      p ask_event
-      ask_event.should be_a_valid_ask_event
-      ask_event.reason.utterance.should eql '3'
+    ask_event = @call.next_event 2
+    p ask_event
+    ask_event.should be_a_valid_ask_event
+    ask_event.reason.utterance.should eql '3'
 
-      dtmf_event = @call.next_event
-      dtmf_event.should be_a_valid_dtmf_event
-      dtmf_event.signal.should == '3'
+    dtmf_event = @call.next_event
+    dtmf_event.should be_a_valid_dtmf_event
+    dtmf_event.signal.should == '3'
 
-      hangup_and_confirm
-    end
+    hangup_and_confirm
   end
 
   it "should send DTMF tones correctly" do
