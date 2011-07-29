@@ -44,7 +44,6 @@ describe "Output component" do
   end
 
   it "should output SSML" do
-    pending "Fails with a useless error: https://gist.github.com/784d693c816d428d1e79"
     @tropo1.add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -58,7 +57,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:ssml => '<output-as interpret-as="ordinal">100</output-as>').should be_true
+    @call.output(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should be_true
 
     @tropo1.wait :responded
 
