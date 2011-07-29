@@ -29,7 +29,6 @@ describe "Input component" do
   end
 
   it "should input something with ASR and get the utterance back" do
-    pending
     @tropo1.add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -42,8 +41,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:prompt  => { :text  => 'One1' },
-                :choices => { :value => 'yes, no' }).should be_true
+    @call.input(:grammar => { :value => 'yes, no' }).should be_true
 
     @tropo1.wait :responded
 
@@ -68,8 +66,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:prompt  => { :text  => 'One2' },
-                :choices => { :value => '[1 DIGITS]' },
+    @call.input(:grammar => { :value => '[1 DIGITS]' },
                 :mode    => :dtmf).should be_true
 
     @tropo1.wait :responded
@@ -82,7 +79,6 @@ describe "Input component" do
   end
 
   it "should input with an SSML as a prompt" do
-    pending
     @tropo1.add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -95,8 +91,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
-                :choices => { :value => 'yes, no' }).should be_true
+    @call.input(:grammar => { :value => 'yes, no' }).should be_true
 
     @tropo1.wait :responded
 
@@ -108,7 +103,6 @@ describe "Input component" do
   end
 
   it "should input with a GRXML grammar" do
-    pending
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       sleep 3
@@ -118,8 +112,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:prompt  => { :text         => 'One3' },
-                :choices => { :value        =>  grxml,
+    @call.input(:grammar => { :value        =>  grxml,
                               :content_type => 'application/grammar+grxml' } ).should be_true
 
     input_event = @call.next_event
@@ -130,7 +123,6 @@ describe "Input component" do
   end
 
   it "should input with an SSML prompt and a GRXML grammar" do
-    pending
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       sleep 1
@@ -142,8 +134,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
-                :choices => { :value => grxml,
+    @call.input(:grammar => { :value => grxml,
                               :content_type => 'application/grammar+grxml' } ).should be_true
 
     input_event = @call.next_event
@@ -163,11 +154,9 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input :prompt  => { :text  => 'Yeap' },
-                :choices => { :value => 'yes, no' },
-                :timeout => 2000
+    @call.input :grammar => { :value => 'yes, no' }, :complete_timeout => 2000
 
-    @call.next_event.should be_a_valid_noinput_event
+    @call.next_event.should be_a_valid_input_noinput_event
     @call.next_event.should be_a_valid_hangup_event
   end
 
@@ -183,12 +172,11 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input :prompt         => { :text  => 'Yeap' },
-                :choices        => { :value => 'red, green' },
-                :timeout        => 3000,
-                :min_confidence => 1
+    @call.input :grammar          => { :value => 'red, green' },
+                :complete_timeout => 3000,
+                :min_confidence   => 1
 
-    @call.next_event.should be_a_valid_nomatch_event
+    @call.next_event.should be_a_valid_input_nomatch_event
 
     hangup_and_confirm
   end
@@ -203,15 +191,13 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input :prompt  => { :text  => 'Yeap' },
-                :choices => { :value => 'red, green' }
+    @call.input :grammar => { :value => 'red, green' }
 
     @call.next_event.should be_a_valid_stopped_input_event
     @call.next_event.should be_a_valid_hangup_event
   end
 
   it "should input something with an invalid grammar and get an error back" do
-    pending
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       wait 2000
@@ -220,8 +206,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    lambda { @call.input :prompt  => { :text => 'One4' },
-                         :choices => { :value => '<grammar>' } }.should raise_error(Punchblock::Protocol::ProtocolError)
+    lambda { @call.input :grammar => { :value => '<grammar>' } }.should raise_error(Punchblock::Protocol::ProtocolError)
 
     @call.next_event.reason.should eql :error
   end
