@@ -13,7 +13,7 @@ describe "CDR Manager" do
     get_call_and_answer false
     hangup_and_confirm
   end
-  
+
   it "Should create a CDR for an incoming call" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call_tropo2
@@ -32,7 +32,7 @@ describe "CDR Manager" do
 
     hangup_and_confirm
   end
-  
+
   it "Should create a CDR for an outgoing call" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       accept
@@ -58,15 +58,15 @@ describe "CDR Manager" do
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_reject_event
   end
-  
+
   it "Should create a CDR with transcript with all actions" do
     @tropo1.add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       ask 'One7', :choices     => 'yes, no',
-                 :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
-                 :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
+                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
       trigger_latch :responded
       wait_to_hangup
     SCRIPT_CONTENT
@@ -88,16 +88,14 @@ describe "CDR Manager" do
     activeCdrs.first['callId'].should eql @call.call_event.call_id
     transcript = activeCdrs.first['transcript'].to_s
 
-	true.should eql transcript.include? "<offer"
-	true.should eql transcript.include? "<answer"
-	true.should eql transcript.include? "<say"
-	true.should eql transcript.include? "<complete"
-	true.should eql transcript.include? "<success"
-	    
+    transcript.should include("<offer")
+    transcript.should include("<answer")
+    transcript.should include("<say")
+    transcript.should include("<complete")
+    transcript.should include("<success")
+
     hangup_and_confirm
 
     @tropo1.result.should eql 'yes'
-  end  
-  
-  
+  end
 end
