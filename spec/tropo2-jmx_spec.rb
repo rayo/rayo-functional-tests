@@ -51,7 +51,7 @@ describe "JMX Tests" do
       jmx_exec 'Type=Admin,name=Admin/enableQuiesce'
 
       try_call
-
+	  sleep 1
       call_statistics['value']['CallsRejected'].to_i.should == calls_before + 1
       active_cdrs.should have(0).records
     ensure
