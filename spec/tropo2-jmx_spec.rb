@@ -4,103 +4,58 @@ require 'json'
 
 describe "JMX Tests" do
 
+  let(:server)  { @config['tropo2_server']['server'] }
+  let(:port)    { @config['tropo2_server']['port'].to_i }
+
   it "should find JMX MBeans available" do
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)
-    res.code.should eql '200'
+    jmx_read('Type=Info').code.should eql '200'
   end
 
   it "should find Build Number" do
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)
-
-    json = JSON.parse res.body
+    json = JSON.parse jmx_read('Type=Info').body
 
     json['value']['BuildNumber'].should_not eql nil
   end
 
   it "should find all main JMX Beans" do
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Info', port)
-    res.code.should eql '200'
-
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
-    res.code.should eql '200'
-
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Admin,name=Admin', port)
-    res.code.should eql '200'
-
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Calls', port)
-    res.code.should eql '200'
-
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Ozone', port)
-    res.code.should eql '200'
+    %w{Type=Info Type=Call%20Statistics Type=Admin,name=Admin Type=Calls Type=Ozone}.each do |bean|
+      jmx_read(bean).code.should eql '200'
+    end
   end
 
   it "Be able to enable quiesce mode" do
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/enableQuiesce', port)
+    res = jmx_exec 'Type=Admin,name=Admin/enableQuiesce'
     res.code.should eql '200'
     json = JSON.parse res.body
     json['error'].should eql nil
   end
 
   it "Be able to disable quiesce mode" do
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/disableQuiesce', port)
+    res = jmx_exec 'Type=Admin,name=Admin/disableQuiesce'
     res.code.should eql '200'
     json = JSON.parse res.body
     json['error'].should eql nil
   end
 
   it "Does process incoming calls" do
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
-    json = JSON.parse res.body
-    calls = json['value']['IncomingCalls'].to_i
+    calls_before = call_statistics['value']['IncomingCalls'].to_i
 
-    @tropo1.script_content = <<-SCRIPT_CONTENT
-      call_tropo2
-    SCRIPT_CONTENT
-    @tropo1.place_call @config['tropo1']['session_url']
+    try_call
 
-    sleep 10
-
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
-    json = JSON.parse res.body
-    calls2 = json['value']['IncomingCalls'].to_i
-    calls2.should == calls + 1
+    call_statistics['value']['IncomingCalls'].to_i.should == calls_before + 1
   end
 
   it "Do not accept calls on Quiesce enabled" do
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
     begin
-      res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
-      json = JSON.parse res.body
-      calls = json['value']['CallsRejected'].to_i
+      calls_before = call_statistics['value']['CallsRejected'].to_i
 
-      Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/enableQuiesce', port)
+      jmx_exec 'Type=Admin,name=Admin/enableQuiesce'
 
-      @tropo1.script_content = <<-SCRIPT_CONTENT
-        call_tropo2
-      SCRIPT_CONTENT
-      @tropo1.place_call @config['tropo1']['session_url']
+      try_call
 
-      sleep 6
-
-      res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Call%20Statistics', port)
-      json = JSON.parse res.body
-      calls2 = json['value']['CallsRejected'].to_i
-      calls2.should == calls + 1
+      call_statistics['value']['CallsRejected'].to_i.should == calls_before + 1
     ensure
-      Net::HTTP.get_response(server, '/tropo2/jmx/exec/com.tropo:Type=Admin,name=Admin/disableQuiesce', port)
+      jmx_exec 'Type=Admin,name=Admin/disableQuiesce'
     end
   end
 end
