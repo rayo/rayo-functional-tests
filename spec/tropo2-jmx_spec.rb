@@ -20,21 +20,21 @@ describe "JMX Tests" do
     end
   end
 
-  it "Be able to enable quiesce mode" do
+  it "should be able to enable quiesce mode" do
     res = jmx_exec 'Type=Admin,name=Admin/enableQuiesce'
     res.code.should eql '200'
     json = JSON.parse res.body
     json['error'].should eql nil
   end
 
-  it "Be able to disable quiesce mode" do
+  it "should be able to disable quiesce mode" do
     res = jmx_exec 'Type=Admin,name=Admin/disableQuiesce'
     res.code.should eql '200'
     json = JSON.parse res.body
     json['error'].should eql nil
   end
 
-  it "Does process incoming calls" do
+  it "should process incoming calls" do
     calls_before = call_statistics['value']['IncomingCalls'].to_i
 
     try_call
@@ -44,14 +44,14 @@ describe "JMX Tests" do
     get_call_and_answer # Just to clean up the pending call
   end
 
-  it "Do not accept calls on Quiesce enabled" do
+  it "does not accept calls on Quiesce enabled" do
     begin
       calls_before = call_statistics['value']['CallsRejected'].to_i
 
       jmx_exec 'Type=Admin,name=Admin/enableQuiesce'
 
       try_call
-	  sleep 1
+      sleep 1
       call_statistics['value']['CallsRejected'].to_i.should == calls_before + 1
       active_cdrs.should have(0).records
     ensure

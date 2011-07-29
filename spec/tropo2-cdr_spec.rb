@@ -4,7 +4,7 @@ require 'json'
 
 describe "CDR Manager" do
 
-  it "Should create a CDR for an incoming call" do
+  it "should create a CDR for an incoming call" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call_tropo2
       wait_to_hangup
@@ -14,7 +14,7 @@ describe "CDR Manager" do
     hangup_and_confirm
   end
 
-  it "Should create a CDR for an incoming call" do
+  it "should create a CDR for an incoming call" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call_tropo2
       wait_to_hangup
@@ -27,7 +27,7 @@ describe "CDR Manager" do
     hangup_and_confirm
   end
 
-  it "Should create a CDR for an outgoing call" do
+  it "should create a CDR for an outgoing call" do
     pending
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       accept
@@ -48,7 +48,7 @@ describe "CDR Manager" do
     @call.next_event.should be_a_valid_reject_event
   end
 
-  it "Should create a CDR with transcript with all actions" do
+  it "should create a CDR with transcript with all actions" do
     @tropo1.add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
