@@ -4,6 +4,16 @@ require 'json'
 
 describe "CDR Manager" do
 
+  let :active_cdrs do
+    response = Net::HTTP.get_response(@config['tropo2_server']['server'], '/tropo2/jmx/read/com.tropo:Type=Cdrs/ActiveCDRs', @config['tropo2_server']['port'].to_i)
+    JSON.parse(response.body)['value']
+  end
+
+  def check_cdr_is_current_call
+    active_cdrs.should have(1).record
+    active_cdrs.first['callId'].should eql @call.call_event.call_id
+  end
+
   it "Should create a CDR for an incoming call" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call_tropo2
@@ -22,14 +32,7 @@ describe "CDR Manager" do
 
     get_call_and_answer
 
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Cdrs/ActiveCDRs', port)
-    json = JSON.parse res.body
-    activeCdrs = json['value']
-
-    activeCdrs.should have(1).record
-    activeCdrs.first['callId'].should eql @call.call_event.call_id
+    check_cdr_is_current_call
 
     hangup_and_confirm
   end
@@ -45,17 +48,10 @@ describe "CDR Manager" do
                          :from    => 'tel:+14155551212',
                          :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
 
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Cdrs/ActiveCDRs', port)
-    json = JSON.parse res.body
-    activeCdrs = json['value']
-
-    p activeCdrs
+    p active_cdrs
     p @call.call_event.call_id
 
-    activeCdrs.should have(1).record
-    activeCdrs.first['callId'].should eql @call.call_event.call_id
+    check_cdr_is_current_call
 
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_reject_event
@@ -81,15 +77,9 @@ describe "CDR Manager" do
 
     @call.next_event.should be_a_valid_say_event
 
-    server = @config['tropo2_server']['server']
-    port = @config['tropo2_server']['port'].to_i
-    res = Net::HTTP.get_response(server, '/tropo2/jmx/read/com.tropo:Type=Cdrs/ActiveCDRs', port)
-    json = JSON.parse res.body
-    activeCdrs = json['value']
+    check_cdr_is_current_call
 
-    activeCdrs.should have(1).record
-    activeCdrs.first['callId'].should eql @call.call_event.call_id
-    transcript = activeCdrs.first['transcript'].to_s
+    transcript = active_cdrs.first['transcript'].to_s
 
     transcript.should include("<offer")
     transcript.should include("<answer")
