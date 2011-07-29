@@ -30,4 +30,12 @@ describe "Record command" do
   end
 
   it "should record the correct content and return the correct filename"
+
+  it "finishes recording when the maximum duration expires"
+
+  it "finishes early if the initial timeout is exceeded"
+
+  it "finishes early if the final timeout is exceeded"
+
+  it "can be paused, resumed and stopped"
 end
