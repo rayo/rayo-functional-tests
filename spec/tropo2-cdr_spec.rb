@@ -38,23 +38,25 @@ describe "CDR Manager" do
   end
 
   it "Should create a CDR for an outgoing call" do
-    @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
-      accept
-      wait_to_hangup
-      hangup
-    TROPO_SCRIPT_CONTENT
+    pending do
+      @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+        accept
+        wait_to_hangup
+        hangup
+      TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                         :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+      @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
+                           :from    => 'tel:+14155551212',
+                           :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
 
-    p active_cdrs
-    p @call.call_event.call_id
+      p active_cdrs
+      p @call.call_event.call_id
 
-    check_cdr_is_current_call
+      check_cdr_is_current_call
 
-    @call.ring_event.should be_a_valid_ringing_event
-    @call.next_event.should be_a_valid_reject_event
+      @call.ring_event.should be_a_valid_ringing_event
+      @call.next_event.should be_a_valid_reject_event
+    end
   end
 
   it "Should create a CDR with transcript with all actions" do
