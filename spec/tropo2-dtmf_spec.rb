@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "DTMF events" do
   it "should be generated when DTMF tones are detected" do
     pending "Currently need a running <ask/>"
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -14,7 +14,7 @@ describe "DTMF events" do
 
     get_call_and_answer
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     dtmf_event = @call.next_event 2
     dtmf_event.should be_a_valid_dtmf_event
@@ -25,7 +25,7 @@ describe "DTMF events" do
 
   it "should be generated when DTMF tones are detected during an <ask/>" do
     pending 'Tropo2 does not currently support in-band DTMF'
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -41,7 +41,7 @@ describe "DTMF events" do
               :choices => { :value => '[1 DIGITS]' },
               :mode    => :dtmf).should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     ask_event = @call.next_event 2
     p ask_event
@@ -56,7 +56,7 @@ describe "DTMF events" do
   end
 
   it "should send DTMF tones correctly" do
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -71,7 +71,7 @@ describe "DTMF events" do
 
     @call.say(:audio => { :url => 'dtmf:5' }).should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     @call.next_event#.should be_a_valid_say_event
 

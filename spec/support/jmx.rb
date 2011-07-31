@@ -18,11 +18,11 @@ def call_statistics
 end
 
 def try_call
-  @tropo1.add_latch :tropo1_finished
+  add_latch :tropo1_finished
   place_call_with_script <<-SCRIPT_CONTENT
     call_tropo2
     trigger_latch :tropo1_finished
   SCRIPT_CONTENT
 
-  @tropo1.wait :tropo1_finished
+  wait_on_latch :tropo1_finished
 end

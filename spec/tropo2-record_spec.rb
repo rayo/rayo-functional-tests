@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe "Record command" do
   before do
-    @tropo1.add_latch :answered
-    @tropo1.add_latch :spoke
+    add_latch :answered, :spoke
 
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call_tropo2
@@ -15,12 +14,12 @@ describe "Record command" do
 
     get_call_and_answer
 
-    @tropo1.wait :answered
+    wait_on_latch :answered
 
     record_command = @call.record
     record_command.should be_true
 
-    @tropo1.wait :spoke
+    wait_on_latch :spoke
   end
 
   it "should record a call" do

@@ -49,7 +49,7 @@ describe "CDR Manager" do
   end
 
   it "should create a CDR with transcript with all actions" do
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -64,7 +64,7 @@ describe "CDR Manager" do
 
     @call.say(:text => 'yes').should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     @call.next_event.should be_a_valid_say_event
 

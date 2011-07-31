@@ -29,7 +29,7 @@ describe "Ask command" do
   end
 
   it "should ask something with ASR and get the utterance back" do
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -44,7 +44,7 @@ describe "Ask command" do
     @call.ask(:prompt  => { :text  => 'One1' },
               :choices => { :value => 'yes, no' }).should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     ask_event = @call.next_event
     ask_event.should be_a_valid_successful_ask_event
@@ -55,7 +55,7 @@ describe "Ask command" do
 
   it "should ask something with DTMF and get the interpretation back" do
     pending 'Tropo2 does not currently support in-band DTMF'
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -71,7 +71,7 @@ describe "Ask command" do
               :choices => { :value => '[1 DIGITS]' },
               :mode    => :dtmf).should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     ask_event = @call.next_event 2
     ask_event.should be_a_valid_successful_ask_event
@@ -81,7 +81,7 @@ describe "Ask command" do
   end
 
   it "should ask with an SSML as a prompt" do
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -96,7 +96,7 @@ describe "Ask command" do
     @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
               :choices => { :value => 'yes, no' }).should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     ask_event = @call.next_event
     ask_event.should be_a_valid_successful_ask_event

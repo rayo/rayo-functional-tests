@@ -29,7 +29,7 @@ describe "Input component" do
   end
 
   it "should input something with ASR and get the utterance back" do
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -43,7 +43,7 @@ describe "Input component" do
 
     @call.input(:grammar => { :value => 'yes, no' }).should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     input_event = @call.next_event
     input_event.should be_a_valid_successful_input_event
@@ -54,7 +54,7 @@ describe "Input component" do
 
   it "should input something with DTMF and get the interpretation back" do
     pending 'Tropo2 does not currently support in-band DTMF'
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -69,7 +69,7 @@ describe "Input component" do
     @call.input(:grammar => { :value => '[1 DIGITS]' },
                 :mode    => :dtmf).should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     input_event = @call.next_event 2
     input_event.should be_a_valid_successful_input_event
@@ -79,7 +79,7 @@ describe "Input component" do
   end
 
   it "should input with an SSML as a prompt" do
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -93,7 +93,7 @@ describe "Input component" do
 
     @call.input(:grammar => { :value => 'yes, no' }).should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     input_event = @call.next_event
     input_event.should be_a_valid_successful_input_event

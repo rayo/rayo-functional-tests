@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Output component" do
   it "should output something with TTS" do
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -17,7 +17,7 @@ describe "Output component" do
 
     @call.output(:text => 'yes').should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     @call.next_event.should be_a_valid_output_event
 
@@ -44,7 +44,7 @@ describe "Output component" do
   end
 
   it "should output SSML" do
-    @tropo1.add_latch :responded
+    add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -59,7 +59,7 @@ describe "Output component" do
 
     @call.output(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should be_true
 
-    @tropo1.wait :responded
+    wait_on_latch :responded
 
     @call.next_event.should be_a_valid_output_event
 

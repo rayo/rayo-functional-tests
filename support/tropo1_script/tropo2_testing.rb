@@ -24,6 +24,10 @@ def trigger_latch(latch_name)
   $ozone_testing_server.trigger latch_name
 end
 
+def wait_on_latch(latch_name)
+  $ozone_testing_server.wait latch_name
+end
+
 begin
   # Connect to the DRb server on the RSpec instance
   ozone_testing_server = DRbObject.new_with_uri drb_server_address
