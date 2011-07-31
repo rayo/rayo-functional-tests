@@ -1,15 +1,7 @@
 require 'spec_helper'
 
-describe "Join component" do
+describe "Join command" do
   describe "can join a call" do
-    describe "to the media server" do
-      it "in receive mode"
-
-      it "in send mode"
-
-      it "in duplex mode"
-    end
-
     describe "to another call" do
       it "in receive mode"
 
@@ -22,7 +14,7 @@ describe "Join component" do
       it "with bridged media"
     end
 
-    describe "to a conference" do
+    describe "to a mixer" do
       it "in receive mode"
 
       it "in send mode"
@@ -35,16 +27,14 @@ describe "Join component" do
     end
   end
 
+  describe "can unjoin a call" do
+    it "from another call"
+
+    it "from a mixer"
+  end
+
   describe "a nested join" do
     describe "can join a call" do
-      describe "to the media server" do
-        it "in receive mode"
-
-        it "in send mode"
-
-        it "in duplex mode"
-      end
-
       describe "to another call" do
         it "in receive mode"
 
@@ -57,7 +47,7 @@ describe "Join component" do
         it "with bridged media"
       end
 
-      describe "to a conference" do
+      describe "to a mixer" do
         it "in receive mode"
 
         it "in send mode"
