@@ -145,7 +145,6 @@ describe "Input component" do
   end
 
   it "should input and get a NOINPUT event" do
-    pending
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       wait 5000
@@ -154,7 +153,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input :grammar => { :value => 'yes, no' }, :complete_timeout => 2000
+    @call.input :grammar => { :value => 'yes, no' }, :initial_timeout => 2000
 
     @call.next_event.should be_a_valid_input_noinput_event
     @call.next_event.should be_a_valid_hangup_event
