@@ -160,7 +160,7 @@ describe "Input component" do
   end
 
   it "should input and get a NOMATCH event with min_confidence set to 1" do
-    pending
+    pending 'Currently does not respect min-confidence'
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       wait 1000
