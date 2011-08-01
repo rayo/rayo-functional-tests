@@ -45,7 +45,7 @@ describe "Call accept, answer and hangup handling" do
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_call_event
+    @call.call_event.should be_a_valid_offer_event
     @call.accept.should be_true
     hangup_and_confirm
   end
