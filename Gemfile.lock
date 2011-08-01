@@ -12,7 +12,7 @@ GIT
 
 GIT
   remote: git@github.com:tropo/rspec-tropo2.git
-  revision: 40cd1fd6b2c98490901d94028bc64a7c20ec751e
+  revision: 2cb886fb4bcae4003d5fefc94a930d58ff7ab0b2
   branch: develop
   specs:
     rspec-rayo (0.1.0)
