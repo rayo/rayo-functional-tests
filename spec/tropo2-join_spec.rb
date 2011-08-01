@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe "Join command" do
-  describe "can join a call" do
-    let :simple_script do
-      <<-SCRIPT_CONTENT
-        call_tropo2
-        wait_to_hangup
-      SCRIPT_CONTENT
-    end
+  let :simple_script do
+    <<-SCRIPT_CONTENT
+      call_tropo2
+      wait_to_hangup
+    SCRIPT_CONTENT
+  end
 
+  describe "can join a call" do
     describe "to another call" do
       let :calls do
         [].tap do |calls|
