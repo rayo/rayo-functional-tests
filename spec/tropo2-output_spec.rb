@@ -68,6 +68,25 @@ describe "Output component" do
     @tropo1.result.should eql 'one hundred'
   end
 
+  it "should throw an error on invalid SSML" do
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      wait_to_hangup
+    SCRIPT_CONTENT
+
+    get_call_and_answer
+
+    @call.output(:ssml => '<output-as interpret-as="ordinal">100</output-as>').should be_true
+
+    complete = @call.next_event
+    complete.reason.should be_a_valid_complete_error_event
+    complete.reason.details.should == "Invalid SSML: cvc-elt.1: Cannot find the declaration of element 'output-as'."
+
+    hangup_and_confirm
+
+    @tropo1.result.should eql 'one hundred'
+  end
+
   it "should output some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
