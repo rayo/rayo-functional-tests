@@ -83,8 +83,6 @@ describe "Output component" do
     complete.reason.details.should == "Invalid SSML: cvc-elt.1: Cannot find the declaration of element 'output-as'."
 
     hangup_and_confirm
-
-    @tropo1.result.should eql 'one hundred'
   end
 
   it "should output some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
