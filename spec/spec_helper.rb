@@ -28,7 +28,8 @@ RSpec.configure do |config|
                                         :wire_logger      => Logger.new(@config['tropo2_server']['wire_log']),
                                         :transport_logger => Logger.new(@config['tropo2_server']['transport_log']),
                                         :log_level        => Logger::DEBUG,
-                                        :queue_timeout    => @config['tropo2_queue']['connection_timeout']
+                                        :queue_timeout    => @config['tropo2_queue']['connection_timeout'],
+                                        :write_timeout    => @config['tropo2_server']['write_timeout']
 
     @config['tropo2_server']['sip_uri'] ||= ENV['TROPO2_SIP_URI'] || random_jid
 
