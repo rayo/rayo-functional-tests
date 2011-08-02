@@ -13,7 +13,7 @@ require 'rspec/core'
 require 'rspec/core/rake_task'
 require 'ci/reporter/rake/rspec'
 
-task :hudson => ["ci:setup:rspec", :dial, :redirect, :jmx, :cdr, :reject, :say, :ask, :conference, :'answer-hangup', :dtmf, :transfer, :record, :input, :output, :join]
+task :hudson => ["ci:setup:rspec", :dial, :redirect, :jmx, :cdr, :reject, :say, :ask, :conference, :'answer-hangup', :dtmf, :transfer, :record, :input, :output, :join, :scenarios]
 
 RSpec::Core::RakeTask.new(:rspec) do |spec|
   mapper          = { "junit" => "JUnitFormatter", "tap" => "TapFormatter" }
@@ -26,7 +26,7 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-%w{answer-hangup ask cdr conference dial dtmf input jmx join output record redirect reject say transfer}.each do |command|
+%w{answer-hangup ask cdr conference dial dtmf input jmx join output record redirect reject say scenarios transfer}.each do |command|
   RSpec::Core::RakeTask.new(command.to_sym) do |spec|
     spec.pattern = FileList["spec/**/tropo2-#{command}_spec.rb"]
   end
