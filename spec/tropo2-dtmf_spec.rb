@@ -73,7 +73,7 @@ describe "DTMF events" do
 
     wait_on_latch :responded
 
-    @call.next_event#.should be_a_valid_say_event
+    @call.next_event.should be_a_valid_say_event
 
     hangup_and_confirm
 
