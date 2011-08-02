@@ -134,13 +134,74 @@ describe "Output component" do
     @call.next_event.should be_a_valid_hangup_event
   end
 
-  it "can seek within the output"
+  it "can seek within the output" do
+    pending 'Seek not yet implemented'
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      wait_to_hangup
+    SCRIPT_CONTENT
+  
+    get_call_and_answer
+    output_command = @call.output :audio => { :url => @config['audio_url'] }
+    output_command.seek!(:direction => 'forward', :amount => 3000).should be_true
+    output_command.seek!(:direction => 'back', :amount => 3000).should be_true
+    @call.next_event.should be_a_valid_output_event
+    hangup_and_confirm
+  end
 
-  it "can speed up output"
+  it "can speed up output" do
+    pending 'Speed control not yet implemented'
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      wait_to_hangup
+    SCRIPT_CONTENT
+  
+    get_call_and_answer
+    output_command = @call.output :audio => { :url => @config['audio_url'] }
+    output_command.speed_up!.should be_true
+    @call.next_event.should be_a_valid_output_event
+    hangup_and_confirm
+  end
 
-  it "can slow down output"
+  it "can slow down output" do
+    pending 'Speed control not yet implemented'
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      wait_to_hangup
+    SCRIPT_CONTENT
+  
+    get_call_and_answer
+    output_command = @call.output :audio => { :url => @config['audio_url'] }
+    output_command.speed_down!.should be_true
+    @call.next_event.should be_a_valid_output_event
+    hangup_and_confirm
+  end
 
-  it "can increase output volume"
+  it "can increase output volume" do
+    pending 'Volume control not yet implemented'
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      wait_to_hangup
+    SCRIPT_CONTENT
+  
+    get_call_and_answer
+    output_command = @call.output :audio => { :url => @config['audio_url'] }
+    output_command.volume_up!.should be_true
+    @call.next_event.should be_a_valid_output_event
+    hangup_and_confirm
+  end
 
-  it "can decrease output volume"
+  it "can decrease output volume" do
+    pending 'Volume control not yet implemented'
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      wait_to_hangup
+    SCRIPT_CONTENT
+  
+    get_call_and_answer
+    output_command = @call.output :audio => { :url => @config['audio_url'] }
+    output_command.volume_down!.should be_true
+    @call.next_event.should be_a_valid_output_event
+    hangup_and_confirm
+  end
 end
