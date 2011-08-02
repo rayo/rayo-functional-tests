@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe "Join command" do
-  before { pending }
-
   let :simple_script do
     <<-SCRIPT_CONTENT
       call_tropo2
@@ -38,6 +36,7 @@ describe "Join command" do
       end
 
       it "with direct media" do
+        pending
         join :media => :direct
       end
 
