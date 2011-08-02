@@ -2,9 +2,6 @@ require 'spec_helper'
 
 describe "JMX Tests" do
 
-  let(:server)  { @config['tropo2_server']['server'] }
-  let(:port)    { @config['tropo2_server']['port'].to_i }
-
   it "should find JMX MBeans available" do
     jmx_read('Type=Info').code.should eql '200'
   end

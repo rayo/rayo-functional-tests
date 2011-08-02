@@ -2,7 +2,7 @@ require 'net/http'
 require 'json'
 
 def call_jmx(operation, params)
-  Net::HTTP.get_response server, "/#{@config['tropo2_server']['deployed_as'] || 'tropo2'}/jmx/#{operation}/com.tropo:#{params}", port
+  Net::HTTP.get_response @config['tropo2_server']['server'], "/#{@config['tropo2_server']['deployed_as'] || 'tropo2'}/jmx/#{operation}/com.tropo:#{params}", @config['tropo2_server']['port'].to_i
 end
 
 def jmx_read(params)

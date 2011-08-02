@@ -1,7 +1,6 @@
 def active_cdrs(reload = false)
-  response = Net::HTTP.get_response(@config['tropo2_server']['server'], '/tropo2/jmx/read/com.tropo:Type=Cdrs/ActiveCDRs', @config['tropo2_server']['port'].to_i)
   @active_cdrs = nil if reload
-  @active_cdrs ||= JSON.parse(response.body)['value']
+  @active_cdrs ||= JSON.parse(jmx_read('Type=Cdrs/ActiveCDRs').body)['value']
 end
 
 def check_cdr_is_current_call
