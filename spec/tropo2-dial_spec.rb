@@ -44,7 +44,7 @@ describe "Dial command" do
     @tropo1.result.should eql 'booyah!'
   end
 
-  it "should place an outbound call and then hangup", :focus => true do
+  it "should place an outbound call and then hangup" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer
       wait_to_hangup
