@@ -30,7 +30,6 @@ describe "CDR Manager" do
   it "should create a CDR for an outgoing call" do
     pending
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
-      accept
       wait_to_hangup
       hangup
     TROPO_SCRIPT_CONTENT
