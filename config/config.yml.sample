@@ -7,6 +7,7 @@ tropo2_server:
     server: 127.0.0.1
     port: 8080
     write_timeout: 3
+    deployed_as: tropo2
 
 tropo2_queue:
     connection_timeout: 30 # Amount of time waiting to connect to the Ozone server before considering it a timeout
