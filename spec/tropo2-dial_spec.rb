@@ -44,6 +44,20 @@ describe "Dial command" do
     @tropo1.result.should eql 'booyah!'
   end
 
+  it "should place an outbound call and then hangup", :focus => true do
+    @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+      answer
+      wait_to_hangup
+    TROPO_SCRIPT_CONTENT
+
+    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
+                         :from    => 'tel:+14155551212',
+                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    @call.ring_event.should be_a_valid_ringing_event
+    @call.next_event.should be_a_valid_answered_event
+    @call.hangup.should be_true
+  end
+
   it "should dial multiple calls" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer
