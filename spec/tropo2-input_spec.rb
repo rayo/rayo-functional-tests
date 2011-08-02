@@ -45,9 +45,7 @@ describe "Input component" do
 
     wait_on_latch :responded
 
-    input_event = @call.next_event
-    input_event.should be_a_valid_successful_input_event
-    input_event.reason.utterance.should eql 'yes'
+    @call.next_event.should be_a_valid_successful_input_event.with_utterance('yes')
 
     hangup_and_confirm
   end
@@ -71,9 +69,7 @@ describe "Input component" do
 
     wait_on_latch :responded
 
-    input_event = @call.next_event 2
-    input_event.should be_a_valid_successful_input_event
-    input_event.reason.interpretation.should eql '3'
+    @call.next_event(2).should be_a_valid_successful_input_event.with_interpretation('3')
 
     hangup_and_confirm
   end
@@ -95,9 +91,7 @@ describe "Input component" do
 
     wait_on_latch :responded
 
-    input_event = @call.next_event
-    input_event.should be_a_valid_successful_input_event
-    input_event.reason.utterance.should eql 'yes'
+    @call.next_event.should be_a_valid_successful_input_event.with_utterance('yes')
 
     hangup_and_confirm
   end
@@ -115,9 +109,7 @@ describe "Input component" do
     @call.input(:grammar => { :value        =>  grxml,
                               :content_type => 'application/grammar+grxml' } ).should be_true
 
-    input_event = @call.next_event
-    input_event.should be_a_valid_successful_input_event
-    input_event.reason.utterance.should eql 'clue'
+    @call.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
 
     hangup_and_confirm
   end
@@ -137,9 +129,7 @@ describe "Input component" do
     @call.input(:grammar => { :value => grxml,
                               :content_type => 'application/grammar+grxml' } ).should be_true
 
-    input_event = @call.next_event
-    input_event.should be_a_valid_successful_input_event
-    input_event.reason.utterance.should eql 'clue'
+    @call.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
 
     hangup_and_confirm
   end

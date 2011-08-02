@@ -78,9 +78,7 @@ describe "Output component" do
 
     @call.output(:ssml => '<output-as interpret-as="ordinal">100</output-as>').should be_true
 
-    complete = @call.next_event
-    complete.reason.should be_a_valid_complete_error_event
-    complete.reason.details.should == "Invalid SSML: cvc-elt.1: Cannot find the declaration of element 'output-as'."
+    @call.next_event.should be_a_valid_complete_error_event.with_message("Invalid SSML: cvc-elt.1: Cannot find the declaration of element 'output-as'.")
 
     hangup_and_confirm
   end

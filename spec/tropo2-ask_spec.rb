@@ -46,9 +46,7 @@ describe "Ask command" do
 
     wait_on_latch :responded
 
-    ask_event = @call.next_event
-    ask_event.should be_a_valid_successful_ask_event
-    ask_event.reason.utterance.should eql 'yes'
+    @call.next_event.should be_a_valid_successful_ask_event.with_utterance('yes')
 
     hangup_and_confirm
   end
@@ -73,9 +71,7 @@ describe "Ask command" do
 
     wait_on_latch :responded
 
-    ask_event = @call.next_event 2
-    ask_event.should be_a_valid_successful_ask_event
-    ask_event.reason.interpretation.should eql '3'
+    @call.next_event(2).should be_a_valid_successful_ask_event.with_interpretation('3')
 
     hangup_and_confirm
   end
@@ -98,9 +94,7 @@ describe "Ask command" do
 
     wait_on_latch :responded
 
-    ask_event = @call.next_event
-    ask_event.should be_a_valid_successful_ask_event
-    ask_event.reason.utterance.should eql 'yes'
+    @call.next_event.should be_a_valid_successful_ask_event.with_utterance('yes')
 
     hangup_and_confirm
   end
@@ -119,9 +113,7 @@ describe "Ask command" do
               :choices => { :value        =>  grxml,
                             :content_type => 'application/grammar+grxml' } ).should be_true
 
-    ask_event = @call.next_event
-    ask_event.should be_a_valid_successful_ask_event
-    ask_event.reason.utterance.should eql 'clue'
+    @call.next_event.should be_a_valid_successful_ask_event.with_utterance('clue')
 
     hangup_and_confirm
   end
@@ -142,9 +134,7 @@ describe "Ask command" do
               :choices => { :value => grxml,
                             :content_type => 'application/grammar+grxml' } ).should be_true
 
-    ask_event = @call.next_event
-    ask_event.should be_a_valid_successful_ask_event
-    ask_event.reason.utterance.should eql 'clue'
+    @call.next_event.should be_a_valid_successful_ask_event.with_utterance('clue')
 
     hangup_and_confirm
   end
