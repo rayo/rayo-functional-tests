@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Join command" do
+  before { pending }
+
   let :simple_script do
     <<-SCRIPT_CONTENT
       call_tropo2
