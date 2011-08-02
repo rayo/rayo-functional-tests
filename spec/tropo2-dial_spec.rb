@@ -2,33 +2,29 @@ require 'spec_helper'
 
 describe "Dial command" do
   it "should place an outbound call, receive a ring event, receive a reject event and then hangup" do
-    pending 'https://github.com/tropo/tropo2/issues/120' do
-      @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
-        accept
-        hangup
-        wait_to_hangup
-      TROPO_SCRIPT_CONTENT
+    @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+      accept
+      hangup
+      wait_to_hangup
+    TROPO_SCRIPT_CONTENT
 
-      @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                           :from    => 'tel:+14155551212',
-                           :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
-      @call.ring_event.should be_a_valid_ringing_event
-      @call.next_event.should be_a_valid_reject_event
-    end
+    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
+                         :from    => 'tel:+14155551212',
+                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    @call.ring_event.should be_a_valid_ringing_event
+    @call.next_event.should be_a_valid_reject_event
   end
 
   it "should place an outbound call and then receive a reject event" do
-    pending 'https://github.com/tropo/tropo2/issues/120' do
-      @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
-        reject
-      TROPO_SCRIPT_CONTENT
+    @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
+      reject
+    TROPO_SCRIPT_CONTENT
 
-      @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                           :from    => 'tel:+14155551212',
-                           :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
-      @call.ring_event.should be_a_valid_ringing_event
-      @call.next_event.should be_a_valid_reject_event
-    end
+    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
+                         :from    => 'tel:+14155551212',
+                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    @call.ring_event.should be_a_valid_ringing_event
+    @call.next_event.should be_a_valid_reject_event
   end
 
   it "should place an outbound call and send SIP headers" do
