@@ -65,4 +65,89 @@ describe "Call Scenarios" do
       @call.hangup.should be_true
     end
   end
+
+  describe "Transfer of an established call triggered by DTMFs" do
+    before do
+      # 1. A company receives a call in one of the virtual numbers
+      place_call_with_script <<-CALL_SCRIPT
+        call_tropo2
+        sleep 2
+      CALL_SCRIPT
+      get_call_and_answer
+
+      # 2. The call is established end to end between the customer and one of the employees (employee1)
+      #
+      # Here is a simplified example. For a complete multi-party dial example see the use case above.
+      @tropo1.script_content = <<-SCRIPT_CONTENT
+        answer
+        # sleep 1
+        # say '13'
+        wait_to_hangup
+      SCRIPT_CONTENT
+
+      @employee1 = @tropo2.dial(:to       => @config['tropo1']['call_destination'],
+                                :from     => 'tel:+14159998888',
+                                :headers  => { 'x-tropo2-drb-address' => @drb_server_uri}).should be_true
+
+      @employee1.ring_event.should be_a_valid_ringing_event
+      @employee1.next_event.should be_a_valid_answered_event
+
+      @employee1.join(:other_call_id => @call.call_id).should be_true
+      @employee1.next_event.should be_a_valid_joined_event
+
+      # 3. employee1 enters a DTMF sequence (eg. 1)
+      @employee1.input(:grammar => {:value => '1'}).should be_true
+
+      @employee1.next_event.should be_a_valid_successful_input_event.with_interpretation('1')
+
+      # 4. The caller (the customer) is transferred to a new destination (employee2) while listening some music on hold and the call with employee1 is automatically hung up
+
+      # Hangup employee1 (resulting in customer being unjoined)
+      @employee1.hangup.should be_true
+      @call.next_event.should be_a_valid_unjoined_event
+
+      # Play Announcement
+      @call_output = @call.output(:audio => { :url => @config['audio_url'] }).should be_true
+
+      # Dial ‘employee2’
+      @tropo1.script_content = employee2_script
+      @employee2 = @tropo2.dial(:to       => @config['tropo1']['call_destination'],
+                                :from     => 'tel:+14159998888',
+                                :headers  => { 'x-tropo2-drb-address' => @drb_server_uri}).should be_true
+    end
+
+    describe "5.1 If employee2 takes the call" do
+      let :employee2_script do
+        <<-SCRIPT_CONTENT
+          answer
+          wait_to_hangup
+        SCRIPT_CONTENT
+      end
+
+      it "then the call is established between the customer and employee1" do
+        @employee2.next_event.should be_a_valid_answered_event
+        @call_output.stop!.should be_true
+        @employee2.join(:other_call_id => @call.call_id).should be_true
+      end
+    end
+
+    describe "5.2. If employee2 didn't take the call" do
+      let :employee2_script do
+        <<-SCRIPT_CONTENT
+          reject
+          wait_to_hangup
+        SCRIPT_CONTENT
+      end
+
+      it "then play an announcement (selected from a predefined set or from the recordings made by user) and clear the call" do
+        @employee2.next_event.should be_a_valid_reject_event
+        @call_output.stop!.should be_true
+
+        @call.output(:audio => { :url => @config['audio_url'] }).should be_true
+        @call.next_event.should be_a_valid_complete_output_event
+
+        @call.hangup.should be_true
+      end
+    end
+  end
 end
