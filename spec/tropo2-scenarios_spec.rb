@@ -62,19 +62,13 @@ describe "Call Scenarios" do
       let :employee_script do
         <<-SCRIPT_CONTENT
           answer
-          wait_to_hangup
-          wait_to_hangup
-          wait_to_hangup
-          wait_to_hangup
-          wait_to_hangup
-          wait_to_hangup
-          wait_to_hangup
-          trigger_latch :employee_hanging_up
+          sleep 10
+          trigger_latch :employee1_hanging_up
         SCRIPT_CONTENT
       end
 
       it ", and we hangup employee1" do
-        wait_on_latch :employee_hanging_up
+        wait_on_latch :employee1_hanging_up
         p "Customer call ID: #{@call.call_id}"
         p "Employee1 call ID: #{@employee1.call_id}"
         wait_on_latch :customer_hanging_up
