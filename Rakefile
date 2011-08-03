@@ -13,7 +13,7 @@ require 'rspec/core'
 require 'rspec/core/rake_task'
 require 'ci/reporter/rake/rspec'
 
-task :hudson => ["ci:setup:rspec", :dial, :redirect, :jmx, :cdr, :reject, :say, :ask, :conference, :'answer-hangup', :dtmf, :transfer, :record, :input, :output, :join, :scenarios]
+task :hudson => ["ci:setup:rspec", :spec]
 
 RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
