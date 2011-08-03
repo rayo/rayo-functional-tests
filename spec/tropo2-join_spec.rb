@@ -47,7 +47,9 @@ describe "Join command" do
         calls[0].next_event.should be_a_valid_joined_event.with_other_call_id(calls[1].call_id)
         calls[1].next_event.should be_a_valid_joined_event.with_other_call_id(calls[0].call_id)
 
-        hangup_and_confirm calls[0]
+        hangup_and_confirm calls[0] do
+          calls[0].next_event.should be_a_valid_unjoined_event.with_other_call_id(calls[1].call_id)
+        end
         calls[1].next_event.should be_a_valid_unjoined_event.with_other_call_id(calls[0].call_id)
         hangup_and_confirm calls[1]
       end
