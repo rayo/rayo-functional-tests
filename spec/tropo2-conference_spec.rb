@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe "Conference command" do
-  before { pending }
   it "should put one caller in conference and then hangup" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
