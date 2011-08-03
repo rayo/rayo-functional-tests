@@ -70,6 +70,7 @@ describe "Call Scenarios" do
     before do
       # 1. A company receives a call in one of the virtual numbers
       place_call_with_script <<-CALL_SCRIPT
+        # Customer script
         call_tropo2
         wait_to_hangup
       CALL_SCRIPT
@@ -79,6 +80,7 @@ describe "Call Scenarios" do
       #
       # Here is a simplified example. For a complete multi-party dial example see the use case above.
       @tropo1.script_content = <<-SCRIPT_CONTENT
+        # Employee1 Script
         answer
         sleep_for_media_assertion
         say 'transfer'
@@ -120,6 +122,7 @@ describe "Call Scenarios" do
     describe "5.1 If employee2 takes the call" do
       let :employee2_script do
         <<-SCRIPT_CONTENT
+          # Employee2 Script
           answer
           wait_to_hangup
         SCRIPT_CONTENT
@@ -135,6 +138,7 @@ describe "Call Scenarios" do
     describe "5.2. If employee2 didn't take the call" do
       let :employee2_script do
         <<-SCRIPT_CONTENT
+          # Employee2 Script
           reject
           wait_to_hangup
         SCRIPT_CONTENT
