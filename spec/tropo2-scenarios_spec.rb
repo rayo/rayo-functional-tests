@@ -71,7 +71,7 @@ describe "Call Scenarios" do
       # 1. A company receives a call in one of the virtual numbers
       place_call_with_script <<-CALL_SCRIPT
         call_tropo2
-        sleep 2
+        wait_to_hangup
       CALL_SCRIPT
       get_call_and_answer
 
@@ -80,8 +80,8 @@ describe "Call Scenarios" do
       # Here is a simplified example. For a complete multi-party dial example see the use case above.
       @tropo1.script_content = <<-SCRIPT_CONTENT
         answer
-        # sleep 1
-        # say '13'
+        sleep_for_media_assertion
+        say 'transfer'
         wait_to_hangup
       SCRIPT_CONTENT
 
@@ -94,11 +94,12 @@ describe "Call Scenarios" do
 
       @employee1.join(:other_call_id => @call.call_id).should be_true
       @employee1.next_event.should be_a_valid_joined_event # TODO: Assert the correct call ID
+      @call.next_event.should be_a_valid_joined_event # TODO: Assert the correct call ID
 
       # 3. employee1 enters a DTMF sequence (eg. 1)
-      @employee1.input(:grammar => {:value => '1'}).should be_true
+      @employee1.input(:grammar => { :value => 'transfer' }).should be_true
 
-      @employee1.next_event.should be_a_valid_successful_input_event.with_interpretation('1')
+      @employee1.next_event.should be_a_valid_successful_input_event.with_interpretation('transfer')
 
       # 4. The caller (the customer) is transferred to a new destination (employee2) while listening some music on hold and the call with employee1 is automatically hung up
 
