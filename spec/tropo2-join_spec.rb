@@ -36,7 +36,6 @@ describe "Join command" do
       end
 
       it "with direct media" do
-        pending
         join :media => :direct
       end
 
