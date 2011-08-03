@@ -52,7 +52,9 @@ describe "Join command" do
         call2_joined.should be_a_valid_joined_event
         call2_joined.other_call_id.should == calls[0].call_id
 
-        calls.each { |call| hangup_and_confirm call }
+        hangup_and_confirm calls[0]
+        calls[1].next_event.should be_a_valid_unjoined_event
+        hangup_and_confirm calls[1]
       end
     end
 
