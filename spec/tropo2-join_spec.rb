@@ -45,15 +45,15 @@ describe "Join command" do
 
       after :each do
         call1_joined = calls[0].next_event
-        call1_joined.should be_a_valid_joined_event
+        call1_joined.should be_a_valid_joined_event # TODO: Assert the correct call ID
         call1_joined.other_call_id.should == calls[1].call_id
 
         call2_joined = calls[1].next_event
-        call2_joined.should be_a_valid_joined_event
+        call2_joined.should be_a_valid_joined_event # TODO: Assert the correct call ID
         call2_joined.other_call_id.should == calls[0].call_id
 
         hangup_and_confirm calls[0]
-        calls[1].next_event.should be_a_valid_unjoined_event
+        calls[1].next_event.should be_a_valid_unjoined_event # TODO: Assert the correct call ID
         hangup_and_confirm calls[1]
       end
     end
@@ -93,7 +93,7 @@ describe "Join command" do
 
       after :each do
         # joined = @call.next_event
-        # joined.should be_a_valid_joined_event
+        # joined.should be_a_valid_joined_event # TODO: Assert the correct call ID
         # joined.mixer_id.should == mixer_id
         #
         # hangup_and_confirm
@@ -113,21 +113,21 @@ describe "Join command" do
       calls[0].join(:other_call_id => calls[1].call_id).should be_true
 
       call1_joined = calls[0].next_event
-      call1_joined.should be_a_valid_joined_event
+      call1_joined.should be_a_valid_joined_event # TODO: Assert the correct call ID
       call1_joined.other_call_id.should == calls[1].call_id
 
       call2_joined = calls[1].next_event
-      call2_joined.should be_a_valid_joined_event
+      call2_joined.should be_a_valid_joined_event # TODO: Assert the correct call ID
       call2_joined.other_call_id.should == calls[0].call_id
 
       calls[0].unjoin(:other_call_id => calls[1].call_id).should be_true
 
       call1_unjoined = calls[0].next_event
-      call1_unjoined.should be_a_valid_unjoined_event
+      call1_unjoined.should be_a_valid_unjoined_event # TODO: Assert the correct call ID
       call1_unjoined.other_call_id.should == calls[1].call_id
 
       call2_unjoined = calls[1].next_event
-      call2_unjoined.should be_a_valid_unjoined_event
+      call2_unjoined.should be_a_valid_unjoined_event # TODO: Assert the correct call ID
       call2_unjoined.other_call_id.should == calls[0].call_id
 
       calls.each { |call| hangup_and_confirm call }
@@ -143,13 +143,13 @@ describe "Join command" do
       @call.join(:mixer_id => mixer_id).should be_true
 
       joined = @call.next_event
-      joined.should be_a_valid_joined_event
+      joined.should be_a_valid_joined_event # TODO: Assert the correct call ID
       joined.mixer_id.should == mixer_id
 
       @call.unjoin(:mixer_id => mixer_id).should be_true
 
       unjoined = @call.next_event
-      unjoined.should be_a_valid_unjoined_event
+      unjoined.should be_a_valid_unjoined_event # TODO: Assert the correct call ID
       unjoined.mixer_id.should == mixer_id
 
       hangup_and_confirm

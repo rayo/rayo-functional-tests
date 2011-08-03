@@ -51,8 +51,8 @@ describe "Call Scenarios" do
 
       # Join employee1 to the customer
       @employee1.join(:other_call_id => @call.call_id).should be_true
-      @call.next_event.should be_a_valid_joined_event
-      @employee1.next_event.should be_a_valid_joined_event
+      @call.next_event.should be_a_valid_joined_event # TODO: Assert the correct call ID
+      @employee1.next_event.should be_a_valid_joined_event # TODO: Assert the correct call ID
     end
 
     it "8.1. The customer hangs up, and we hangup employee1" do
@@ -93,7 +93,7 @@ describe "Call Scenarios" do
       @employee1.next_event.should be_a_valid_answered_event
 
       @employee1.join(:other_call_id => @call.call_id).should be_true
-      @employee1.next_event.should be_a_valid_joined_event
+      @employee1.next_event.should be_a_valid_joined_event # TODO: Assert the correct call ID
 
       # 3. employee1 enters a DTMF sequence (eg. 1)
       @employee1.input(:grammar => {:value => '1'}).should be_true
@@ -104,7 +104,7 @@ describe "Call Scenarios" do
 
       # Hangup employee1 (resulting in customer being unjoined)
       @employee1.hangup.should be_true
-      @call.next_event.should be_a_valid_unjoined_event
+      @call.next_event.should be_a_valid_unjoined_event # TODO: Assert the correct call ID
 
       # Play Announcement
       @call_output = @call.output(:audio => { :url => @config['audio_url'] }).should be_true
