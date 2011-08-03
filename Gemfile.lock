@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:tropo/punchblock.git
-  revision: 280ec24ca06b3d1ba971132191afb2e6f3ae033d
+  revision: dea20da20c7a3b99b2ba2cae60ac0b89f4102323
   branch: develop
   specs:
     punchblock (0.1.0)
@@ -12,7 +12,7 @@ GIT
 
 GIT
   remote: git@github.com:tropo/rspec-tropo2.git
-  revision: 8ae6b6117c1446189d2722ef3530d5450d505f5a
+  revision: 90d1df2a9dee3092a1b9a905affcb749b74c8747
   branch: develop
   specs:
     rspec-rayo (0.1.0)
