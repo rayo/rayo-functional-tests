@@ -3,7 +3,6 @@ require 'spec_helper'
 describe "Call Scenarios" do
   describe "Incoming call transferred in parallel" do
     before do
-      pending
       # 1. A company receives a call in one of the virtual numbers (1.800.555.1212)
       add_latch :customer_hanging_up, :employee1_hanging_up
       place_call_with_script customer_script
@@ -56,26 +55,19 @@ describe "Call Scenarios" do
         <<-CALL_SCRIPT
           call_tropo2
           sleep 5
-          trigger_latch :customer_hanging_up
         CALL_SCRIPT
       end
 
       let :employee_script do
         <<-SCRIPT_CONTENT
           answer
-          sleep 10
-          trigger_latch :employee1_hanging_up
+          wait_to_hangup
         SCRIPT_CONTENT
       end
 
       it ", and we hangup employee1" do
-        wait_on_latch :employee1_hanging_up
-        p "Customer call ID: #{@call.call_id}"
-        p "Employee1 call ID: #{@employee1.call_id}"
-        wait_on_latch :customer_hanging_up
         @call.next_event.should be_a_valid_hangup_event
-        p @employee1.next_event
-        @employee1.hangup.should be_true
+        hangup_and_confirm @employee1
       end
     end
 
@@ -91,21 +83,18 @@ describe "Call Scenarios" do
         <<-SCRIPT_CONTENT
           answer
           sleep 5
-          trigger_latch :employee_hanging_up
         SCRIPT_CONTENT
       end
 
       it ", and we hangup the customer" do
-        wait_on_latch :employee_hanging_up
         @employee1.next_event.should be_a_valid_hangup_event
-        p @call.next_event
-        @call.hangup.should be_true
+        hangup_and_confirm @call
       end
     end
 
     after :each do
-      # @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
-      # @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
     end
   end
 
