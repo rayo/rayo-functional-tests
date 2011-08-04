@@ -16,15 +16,12 @@ describe "DTMF events" do
 
     wait_on_latch :responded
 
-    dtmf_event = @call.next_event 2
-    dtmf_event.should be_a_valid_dtmf_event
-    dtmf_event.signal.should == '3'
+    @call.next_event.should be_a_valid_dtmf_event.with_signal('3')
 
     hangup_and_confirm
   end
 
-  it "should be generated when DTMF tones are detected during an <ask/>" do
-    pending 'Tropo2 does not currently support in-band DTMF'
+  it "should be generated when DTMF tones are detected during an Input" do
     add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -37,20 +34,13 @@ describe "DTMF events" do
 
     get_call_and_answer
 
-    @call.ask(:prompt  => { :text  => 'Three?' },
-              :choices => { :value => '[1 DIGITS]' },
-              :mode    => :dtmf).should be_true
+    @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should be_true
 
     wait_on_latch :responded
 
-    ask_event = @call.next_event 2
-    p ask_event
-    ask_event.should be_a_valid_ask_event
-    ask_event.reason.utterance.should eql '3'
+    @call.next_event.should be_a_valid_successful_input_event.with_interpretation('3')
 
-    dtmf_event = @call.next_event
-    dtmf_event.should be_a_valid_dtmf_event
-    dtmf_event.signal.should == '3'
+    @call.next_event.should be_a_valid_dtmf_event.with_signal('3')
 
     hangup_and_confirm
   end

@@ -17,7 +17,7 @@ def sleep_for_media_assertion
 end
 
 def play_dtmf(digit)
-  say $ozone_testing_server.config['dtmf_tone_files'][digit]
+  say "<speak><audio src='dtmf:#{digit}' /></speak>"
 end
 
 def trigger_latch(latch_name)

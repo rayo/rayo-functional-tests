@@ -115,7 +115,7 @@ describe "Call Scenarios" do
         # Employee1 Script
         answer
         sleep_for_media_assertion
-        say 'transfer'
+        play_dtmf 1
         wait_to_hangup
       SCRIPT_CONTENT
 
@@ -131,9 +131,9 @@ describe "Call Scenarios" do
       @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee1.call_id)
 
       # 3. employee1 enters a DTMF sequence (eg. 1)
-      @employee1.input(:grammar => { :value => 'transfer' }).should be_true
+      @employee1.input(:grammar => { :value => '1' }).should be_true
 
-      @employee1.next_event.should be_a_valid_successful_input_event.with_interpretation('transfer')
+      @employee1.next_event.should be_a_valid_successful_input_event.with_interpretation('1')
 
       # 4. The caller (the customer) is transferred to a new destination (employee2) while listening some music on hold and the call with employee1 is automatically hung up
 

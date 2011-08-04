@@ -52,7 +52,6 @@ describe "Ask command" do
   end
 
   it "should ask something with DTMF and get the interpretation back" do
-    pending 'Tropo2 does not currently support in-band DTMF'
     add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -71,7 +70,7 @@ describe "Ask command" do
 
     wait_on_latch :responded
 
-    @call.next_event(2).should be_a_valid_successful_ask_event.with_interpretation('3')
+    @call.next_event.should be_a_valid_successful_ask_event.with_interpretation('3')
 
     hangup_and_confirm
   end
