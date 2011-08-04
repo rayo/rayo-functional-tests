@@ -13,14 +13,7 @@ require 'rspec/core'
 require 'rspec/core/rake_task'
 require 'ci/reporter/rake/rspec'
 
-task :hudson => ["ci:setup:rspec", :dial, :redirect, :jmx, :cdr, :reject, :say, :ask, :conference, :'answer-hangup', :dtmf, :transfer, :record, :input, :output, :join, :scenarios]
-
-RSpec::Core::RakeTask.new(:rspec) do |spec|
-  mapper          = { "junit" => "JUnitFormatter", "tap" => "TapFormatter" }
-  format          = mapper[ENV["format"]] || "progress"
-  spec.rspec_opts = ["-r lib/j_unit_formatter.rb", "-r lib/tap_formatter.rb", "-f \"#{format}\""]
-  spec.pattern    = "spec/**/*_spec.rb"
-end
+task :hudson => ["ci:setup:rspec", :spec]
 
 RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
@@ -32,5 +25,5 @@ end
   end
 end
 
-task :default => :rspec
+task :default => :spec
 

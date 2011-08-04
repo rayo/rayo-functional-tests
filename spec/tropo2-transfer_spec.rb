@@ -19,7 +19,8 @@ describe "Transfer verb" do
     @call.transfer(:to      => @config['tropo1']['call_destination'],
                    :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should be_true
 
-    @call.next_event.should be_a_valid_answered_event
+    # The spec does not call for an <answered/> event here but may soon
+    #@call.next_event.should be_a_valid_answered_event
 
     @call.next_event.should be_a_valid_transfer_event
     @call.next_event.should be_a_valid_hangup_event

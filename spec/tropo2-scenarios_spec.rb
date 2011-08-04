@@ -4,20 +4,15 @@ describe "Call Scenarios" do
   describe "Incoming call transferred in parallel" do
     before do
       # 1. A company receives a call in one of the virtual numbers (1.800.555.1212)
-      place_call_with_script <<-CALL_SCRIPT
-        call_tropo2
-        sleep 3
-      CALL_SCRIPT
+      add_latch :customer_hanging_up, :employee1_hanging_up
+      place_call_with_script customer_script
 
       # 2. One number service answers the call and plays an announcement (selected from a predefined set or from the recordings made by user)
       get_call_and_answer
       call_output = @call.output(:audio => { :url => @config['audio_url'] }).should be_true
 
       # 3. While the announcement is being played the call is transferred to N employees in parallel (all the employees’ phones ring in parallel)
-      @tropo1.script_content = <<-SCRIPT_CONTENT
-        answer
-        wait_to_hangup
-      SCRIPT_CONTENT
+      @tropo1.script_content = employee_script
 
       @employee1 = @tropo2.dial(:to       => @config['tropo1']['call_destination'],
                                 :from     => 'tel:+14159998888',
@@ -51,18 +46,55 @@ describe "Call Scenarios" do
 
       # Join employee1 to the customer
       @employee1.join(:other_call_id => @call.call_id).should be_true
-      @call.next_event.should be_a_valid_joined_event
-      @employee1.next_event.should be_a_valid_joined_event
+      @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee1.call_id)
+      @employee1.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
     end
 
-    it "8.1. The customer hangs up, and we hangup employee1" do
-      @call.next_event.should be_a_valid_hangup_event
-      @employee1.hangup.should be_true
+    describe "8.1. The customer hangs up" do
+      let :customer_script do
+        <<-CALL_SCRIPT
+          call_tropo2
+          sleep 5
+        CALL_SCRIPT
+      end
+
+      let :employee_script do
+        <<-SCRIPT_CONTENT
+          answer
+          wait_to_hangup
+        SCRIPT_CONTENT
+      end
+
+      it ", and we hangup employee1" do
+        @call.next_event.should be_a_valid_hangup_event
+        hangup_and_confirm @employee1
+      end
     end
 
-    it "8.2 The employee hangs up, and we hangup the customer" do
-      @employee1.next_event.should be_a_valid_hangup_event
-      @call.hangup.should be_true
+    describe "8.2 The employee hangs up" do
+      let :customer_script do
+        <<-CALL_SCRIPT
+          call_tropo2
+          wait_to_hangup
+        CALL_SCRIPT
+      end
+
+      let :employee_script do
+        <<-SCRIPT_CONTENT
+          answer
+          sleep 5
+        SCRIPT_CONTENT
+      end
+
+      it ", and we hangup the customer" do
+        @employee1.next_event.should be_a_valid_hangup_event
+        hangup_and_confirm @call
+      end
+    end
+
+    after :each do
+      @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
     end
   end
 
@@ -70,8 +102,9 @@ describe "Call Scenarios" do
     before do
       # 1. A company receives a call in one of the virtual numbers
       place_call_with_script <<-CALL_SCRIPT
+        # Customer script
         call_tropo2
-        sleep 2
+        wait_to_hangup
       CALL_SCRIPT
       get_call_and_answer
 
@@ -79,9 +112,10 @@ describe "Call Scenarios" do
       #
       # Here is a simplified example. For a complete multi-party dial example see the use case above.
       @tropo1.script_content = <<-SCRIPT_CONTENT
+        # Employee1 Script
         answer
-        # sleep 1
-        # say '13'
+        sleep_for_media_assertion
+        say 'transfer'
         wait_to_hangup
       SCRIPT_CONTENT
 
@@ -93,18 +127,21 @@ describe "Call Scenarios" do
       @employee1.next_event.should be_a_valid_answered_event
 
       @employee1.join(:other_call_id => @call.call_id).should be_true
-      @employee1.next_event.should be_a_valid_joined_event
+      @employee1.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
+      @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee1.call_id)
 
       # 3. employee1 enters a DTMF sequence (eg. 1)
-      @employee1.input(:grammar => {:value => '1'}).should be_true
+      @employee1.input(:grammar => { :value => 'transfer' }).should be_true
 
-      @employee1.next_event.should be_a_valid_successful_input_event.with_interpretation('1')
+      @employee1.next_event.should be_a_valid_successful_input_event.with_interpretation('transfer')
 
       # 4. The caller (the customer) is transferred to a new destination (employee2) while listening some music on hold and the call with employee1 is automatically hung up
 
       # Hangup employee1 (resulting in customer being unjoined)
       @employee1.hangup.should be_true
-      @call.next_event.should be_a_valid_unjoined_event
+      @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@employee1.call_id)
+
+      @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
 
       # Play Announcement
       @call_output = @call.output(:audio => { :url => @config['audio_url'] }).should be_true
@@ -119,6 +156,7 @@ describe "Call Scenarios" do
     describe "5.1 If employee2 takes the call" do
       let :employee2_script do
         <<-SCRIPT_CONTENT
+          # Employee2 Script
           answer
           wait_to_hangup
         SCRIPT_CONTENT
@@ -127,13 +165,21 @@ describe "Call Scenarios" do
       it "then the call is established between the customer and employee1" do
         @employee2.next_event.should be_a_valid_answered_event
         @call_output.stop!.should be_true
+        @call.next_event.should be_a_valid_stopped_output_event
+
         @employee2.join(:other_call_id => @call.call_id).should be_true
+        @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee2.call_id)
+        @employee2.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
+
+        @call.hangup.should be_true
+        @employee2.hangup.should be_true
       end
     end
 
     describe "5.2. If employee2 didn't take the call" do
       let :employee2_script do
         <<-SCRIPT_CONTENT
+          # Employee2 Script
           reject
           wait_to_hangup
         SCRIPT_CONTENT
@@ -142,12 +188,17 @@ describe "Call Scenarios" do
       it "then play an announcement (selected from a predefined set or from the recordings made by user) and clear the call" do
         @employee2.next_event.should be_a_valid_reject_event
         @call_output.stop!.should be_true
+        @call.next_event.should be_a_valid_stopped_output_event
 
         @call.output(:audio => { :url => @config['audio_url'] }).should be_true
-        @call.next_event.should be_a_valid_complete_output_event
+        @call.next_event.should be_a_valid_output_event
 
         @call.hangup.should be_true
       end
+    end
+
+    after :each do
+      @employee2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
     end
   end
 end
