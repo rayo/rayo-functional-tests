@@ -139,15 +139,60 @@ describe "Join command" do
   describe "a nested join" do
     describe "can join a call" do
       describe "to another call" do
-        it "in receive mode"
+        before do
+          place_call_with_script simple_script
+          get_call_and_answer
+          @tropo1.script_content = <<-SCRIPT_CONTENT
+            answer
+            wait_to_hangup
+          SCRIPT_CONTENT
+        end
 
-        it "in send mode"
+        let :dial_options do
+          {
+            :to      => @config['tropo1']['call_destination'],
+            :from    => 'tel:+14155551212',
+            :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+          }
+        end
 
-        it "in duplex mode"
+        def dial_join(opts = {})
+          @call2 = @tropo2.dial(dial_options.merge(:join => { :other_call_id => @call.call_id }.merge(opts))).should be_true
+        end
 
-        it "with direct media"
+        it "in receive mode" do
+          dial_join :direction => :recv
+        end
 
-        it "with bridged media"
+        it "in send mode" do
+          dial_join :direction => :send
+        end
+
+        it "in duplex mode" do
+          dial_join :direction => :duplex
+        end
+
+        it "with direct media" do
+          dial_join :media => :direct
+        end
+
+        it "with bridged media" do
+          dial_join :media => :bridge
+        end
+
+        after :each do
+          @call2.ring_event.should be_a_valid_ringing_event
+          @call2.next_event.should be_a_valid_answered_event
+          @call2.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
+
+          @call.next_event.should be_a_valid_joined_event.with_other_call_id(@call2.call_id)
+
+          hangup_and_confirm @call do
+            @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call2.call_id)
+          end
+          @call2.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call.call_id)
+          hangup_and_confirm @call2
+        end
       end
 
       describe "to a busy callee" do
@@ -164,15 +209,48 @@ describe "Join command" do
       end
 
       describe "to a mixer" do
-        it "in receive mode"
+        let :dial_options do
+          {
+            :to      => @config['tropo1']['call_destination'],
+            :from    => 'tel:+14155551212',
+            :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+          }
+        end
 
-        it "in send mode"
+        def dial_join(opts = {})
+          @call = @tropo2.dial(dial_options.merge(:join => { :mixer_id => mixer_id }.merge(opts))).should be_true
+        end
 
-        it "in duplex mode"
+        let(:mixer_id) { 'abc123' }
 
-        it "with direct media"
+        before { pending }
 
-        it "with bridged media"
+        it "in receive mode" do
+          dial_join :direction => :recv
+        end
+
+        it "in send mode" do
+          dial_join :direction => :send
+        end
+
+        it "in duplex mode" do
+          dial_join :direction => :duplex
+        end
+
+        it "with direct media" do
+          dial_join :media => :direct
+        end
+
+        it "with bridged media" do
+          dial_join :media => :bridge
+        end
+
+        after :each do
+          # @call.ring_event.should be_a_valid_ringing_event
+          # @call.next_event.should be_a_valid_answered_event
+          # @call.next_event.should be_a_valid_joined_event.with_mixer_id(mixer_id)
+          # hangup_and_confirm
+        end
       end
     end
   end
