@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Misc commands" do
-  it "can mute & unmute the call", :focus => true do
+  it "can mute & unmute the call" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       wait_to_hangup
