@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:tropo/punchblock.git
-  revision: d3f35787fe191b350fb75d72ed99c05dfba16144
+  revision: 454e01401eb409a66eb24a87d2fea90fa72a7379
   branch: develop
   specs:
     punchblock (0.1.0)
