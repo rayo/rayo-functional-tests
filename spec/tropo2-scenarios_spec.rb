@@ -133,7 +133,9 @@ describe "Call Scenarios" do
       # 4. The caller (the customer) is transferred to a new destination (employee2) while listening some music on hold and the call with employee1 is automatically hung up
 
       # Hangup employee1 (resulting in customer being unjoined)
-      @employee1.hangup.should be_true
+      hangup_and_confirm @employee1 do
+        @employee1.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call.call_id)
+      end
       @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@employee1.call_id)
 
       @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
@@ -164,8 +166,12 @@ describe "Call Scenarios" do
         @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee2.call_id)
         @employee2.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
 
-        @call.hangup.should be_true
-        @employee2.hangup.should be_true
+        hangup_and_confirm do
+          @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@employee2.call_id)
+        end
+
+        @employee2.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call.call_id)
+        hangup_and_confirm @employee2
       end
     end
 
@@ -186,7 +192,7 @@ describe "Call Scenarios" do
         @call.output(:audio => { :url => @config['audio_url'] }).should be_true
         @call.next_event.should be_a_valid_output_event
 
-        @call.hangup.should be_true
+        hangup_and_confirm
       end
     end
 
