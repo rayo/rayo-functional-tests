@@ -46,8 +46,8 @@ describe "Conference command" do
     call_2.next_event.should be_a_valid_complete_hangup_event
     call_2.next_event.should be_a_valid_hangup_event
 
-    call_1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
-    call_2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    call_1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
+    call_2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
   end
 
   it "should put two callers into a conference, validate media and hangup" do
@@ -89,7 +89,7 @@ describe "Conference command" do
 
     @tropo1.result.should == 'yes'
 
-    call_1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
-    call_2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    call_1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
+    call_2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
   end
 end

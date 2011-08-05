@@ -77,7 +77,7 @@ describe "Dial command" do
     call1.ring_event.should be_a_valid_ringing_event
     call1.next_event.should be_a_valid_answered_event
     call1.next_event.should be_a_valid_hangup_event
-    call1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+    call1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
 
     call2.ring_event.should be_a_valid_ringing_event
     call2.next_event.should be_a_valid_answered_event

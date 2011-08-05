@@ -96,8 +96,8 @@ describe "Call Scenarios" do
     end
 
     after :each do
-      @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
-      @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
+      @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
     end
   end
 
@@ -144,7 +144,7 @@ describe "Call Scenarios" do
       @employee1.hangup.should be_true
       @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@employee1.call_id)
 
-      @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
 
       # Play Announcement
       @call_output = @call.output(:audio => { :url => @config['audio_url'] }).should be_true
@@ -201,7 +201,7 @@ describe "Call Scenarios" do
     end
 
     after :each do
-      @employee2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true
+      @employee2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
     end
   end
 end

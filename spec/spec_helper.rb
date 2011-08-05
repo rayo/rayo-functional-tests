@@ -52,7 +52,7 @@ RSpec.configure do |config|
   config.after :each do
     begin
       @tropo1.reset!
-      @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should be_true if @call
+      @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true if @call
       check_no_remaining_calls
       @tropo2.read_event_queue(@config['tropo2_queue']['last_stanza_timeout']) until @tropo2.event_queue.empty?
     ensure
