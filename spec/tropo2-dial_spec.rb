@@ -55,7 +55,7 @@ describe "Dial command" do
                          :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_answered_event
-    @call.hangup.should be_true
+    hangup_and_confirm
   end
 
   it "should dial multiple calls" do
@@ -67,12 +67,10 @@ describe "Dial command" do
 
     call1 = @tropo2.dial :to      => @config['tropo1']['call_destination'],
                          :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri,
-                                       'x-tropo2-test'        => 'booyah!' }
+                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
     call2 = @tropo2.dial :to      => @config['tropo1']['call_destination'],
                          :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri,
-                                       'x-tropo2-test'        => 'booyah!' }
+                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
 
     call1.ring_event.should be_a_valid_ringing_event
     call1.next_event.should be_a_valid_answered_event
@@ -82,12 +80,12 @@ describe "Dial command" do
     call2.ring_event.should be_a_valid_ringing_event
     call2.next_event.should be_a_valid_answered_event
     call2.next_event.should be_a_valid_hangup_event
+    call2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
   end
 
   it "should get an error if we dial an invalid address" do
     lambda { @tropo2.dial :to      => 'foobar',
                           :from    => 'tel:+14155551212',
-                          :headers => { 'x-tropo2-drb-address' => @drb_server_uri,
-                                        'x-tropo2-test'        => 'booyah!' } }.should raise_error(Punchblock::Protocol::ProtocolError)
+                          :headers => { 'x-tropo2-drb-address' => @drb_server_uri } }.should raise_error(Punchblock::Protocol::ProtocolError)
   end
 end
