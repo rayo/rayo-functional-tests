@@ -22,6 +22,7 @@ describe "DTMF events" do
   end
 
   it "should be generated when DTMF tones are detected during an Input" do
+    pending 'https://github.com/tropo/tropo2/issues/135'
     add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
