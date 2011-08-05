@@ -16,7 +16,6 @@ describe "Call accept, answer and hangup handling" do
   it "should answer and hangup" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call_tropo2
-      say 'Hello world'
       wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
@@ -27,25 +26,22 @@ describe "Call accept, answer and hangup handling" do
   it "should throw an error if we try to answer a call that is hungup" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call_tropo2
-      say 'Hello world'
       wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer
     hangup_and_confirm
 
-    lambda {@call.answer}.should raise_error(Punchblock::Protocol::ProtocolError)
+    lambda { @call.answer }.should raise_error(Punchblock::Protocol::ProtocolError)
   end
 
   it "should accept and hangup" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call_tropo2
-      say 'Hello world'
       wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.get_call
-    @call.call_event.should be_a_valid_offer_event
+    get_call_and_answer false
     @call.accept.should be_true
     hangup_and_confirm
   end
