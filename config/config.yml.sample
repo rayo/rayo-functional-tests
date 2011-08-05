@@ -28,17 +28,3 @@ tropo1:
 audio_url: http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3
 
 media_assertion_timeout: 3
-
-dtmf_tone_files:
-  0: http://dl.dropbox.com/u/25511/Voxeo/dtmf-0.mp3
-  1: http://dl.dropbox.com/u/25511/Voxeo/dtmf-1.mp3
-  2: http://dl.dropbox.com/u/25511/Voxeo/dtmf-2.mp3
-  3: http://dl.dropbox.com/u/25511/Voxeo/dtmf-3.mp3
-  4: http://dl.dropbox.com/u/25511/Voxeo/dtmf-4.mp3
-  5: http://dl.dropbox.com/u/25511/Voxeo/dtmf-5.mp3
-  6: http://dl.dropbox.com/u/25511/Voxeo/dtmf-6.mp3
-  7: http://dl.dropbox.com/u/25511/Voxeo/dtmf-7.mp3
-  8: http://dl.dropbox.com/u/25511/Voxeo/dtmf-8.mp3
-  9: http://dl.dropbox.com/u/25511/Voxeo/dtmf-9.mp3
-  hash: http://dl.dropbox.com/u/25511/Voxeo/dtmf-hash.mp3
-  star: http://dl.dropbox.com/u/25511/Voxeo/dtmf-star.mp3
