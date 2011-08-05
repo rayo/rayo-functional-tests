@@ -174,17 +174,21 @@ describe "Join command" do
         end
 
         after :each do
-          @call2.ring_event.should be_a_valid_ringing_event
-          @call2.next_event.should be_a_valid_answered_event
-          @call2.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
+          if @call2
+            @call2.ring_event.should be_a_valid_ringing_event
+            @call2.next_event.should be_a_valid_answered_event
+            @call2.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
 
-          @call.next_event.should be_a_valid_joined_event.with_other_call_id(@call2.call_id)
+            @call.next_event.should be_a_valid_joined_event.with_other_call_id(@call2.call_id)
 
-          hangup_and_confirm @call do
-            @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call2.call_id)
+            hangup_and_confirm @call do
+              @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call2.call_id)
+            end
+            @call2.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call.call_id)
+            hangup_and_confirm @call2
+          else
+            hangup_and_confirm
           end
-          @call2.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call.call_id)
-          hangup_and_confirm @call2
         end
       end
 
