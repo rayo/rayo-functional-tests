@@ -54,8 +54,8 @@ describe "Conference command" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       ask 'One5', :choices     => 'yes, no',
-                 :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
-                 :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
+                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
       wait_to_hangup
     SCRIPT_CONTENT
 
