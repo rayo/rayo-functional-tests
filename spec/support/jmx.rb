@@ -17,12 +17,14 @@ def call_statistics
   JSON.parse jmx_read('Type=Call%20Statistics').body
 end
 
-def try_call
-  add_latch :tropo1_finished
+def try_call(should_get_call = true)
   place_call_with_script <<-SCRIPT_CONTENT
     call_tropo2
-    trigger_latch :tropo1_finished
+    wait_to_hangup
   SCRIPT_CONTENT
 
-  wait_on_latch :tropo1_finished
+  if should_get_call
+    get_call_and_answer
+    hangup_and_confirm
+  end
 end

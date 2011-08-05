@@ -37,8 +37,6 @@ describe "JMX Tests" do
     try_call
 
     call_statistics['value']['IncomingCalls'].to_i.should == calls_before + 1
-
-    get_call_and_answer # Just to clean up the pending call
   end
 
   it "does not accept calls on Quiesce enabled" do
@@ -47,7 +45,7 @@ describe "JMX Tests" do
 
       jmx_exec 'Type=Admin,name=Admin/enableQuiesce'
 
-      try_call
+      try_call false
       sleep 1
       call_statistics['value']['CallsRejected'].to_i.should == calls_before + 1
       active_cdrs.should have(0).records
