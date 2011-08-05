@@ -60,7 +60,11 @@ describe "Call Scenarios" do
       end
 
       it ", and we hangup employee1" do
+        @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@employee1.call_id)
         @call.next_event.should be_a_valid_hangup_event
+
+        @employee1.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call.call_id)
+
         hangup_and_confirm @employee1
       end
     end
