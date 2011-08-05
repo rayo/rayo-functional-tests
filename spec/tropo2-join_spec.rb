@@ -90,6 +90,41 @@ describe "Join command" do
       end
     end
 
+    describe "to another call and hangs up on the remote end" do
+      let :calls do
+        [].tap do |calls|
+          add_latch :call1_hanging_up
+          place_call_with_script <<-SCRIPT_CONTENT
+            call_tropo2
+            sleep 3
+            trigger_latch :call1_hanging_up
+          SCRIPT_CONTENT
+          calls << get_call_and_answer
+
+          place_call_with_script <<-SCRIPT_CONTENT
+            call_tropo2
+            sleep 30
+          SCRIPT_CONTENT
+          calls << get_call_and_answer
+        end
+      end
+
+      it "gets the correct events" do
+        join
+
+        calls[0].next_event.should be_a_valid_joined_event.with_other_call_id(calls[1].call_id)
+        calls[1].next_event.should be_a_valid_joined_event.with_other_call_id(calls[0].call_id)
+
+        wait_on_latch :call1_hanging_up
+
+        calls[0].next_event.should be_a_valid_unjoined_event.with_other_call_id(calls[1].call_id)
+        calls[0].next_event.should be_a_valid_hangup_event
+
+        calls[1].next_event.should be_a_valid_unjoined_event.with_other_call_id(calls[0].call_id)
+        hangup_and_confirm calls[1]
+      end
+    end
+
     describe "to a mixer" do
       def join(opts = {})
         @call.join({:mixer_id => mixer_id}.merge(opts)).should be_true
