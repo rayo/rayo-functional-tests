@@ -51,7 +51,6 @@ describe "Input component" do
   end
 
   it "should input something with DTMF and get the interpretation back" do
-    pending 'Tropo2 does not currently support in-band DTMF'
     add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -64,12 +63,11 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => '[1 DIGITS]' },
-                :mode    => :dtmf).should be_true
+    @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should be_true
 
     wait_on_latch :responded
 
-    @call.next_event(2).should be_a_valid_successful_input_event.with_interpretation('3')
+    @call.next_event.should be_a_valid_successful_input_event.with_interpretation('3')
 
     hangup_and_confirm
   end
@@ -150,7 +148,6 @@ describe "Input component" do
   end
 
   it "should input and get a NOMATCH event with min_confidence set to 1" do
-    pending 'Currently does not respect min-confidence'
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       wait 1000
