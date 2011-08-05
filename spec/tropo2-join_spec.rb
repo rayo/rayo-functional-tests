@@ -9,6 +9,10 @@ describe "Join command" do
   end
 
   describe "can join a call" do
+    def join(opts = {})
+      calls[0].join({:other_call_id => calls[1].call_id}.merge(opts)).should be_true
+    end
+
     describe "to another call" do
       let :calls do
         [].tap do |calls|
@@ -17,10 +21,6 @@ describe "Join command" do
             calls << get_call_and_answer
           end
         end
-      end
-
-      def join(opts = {})
-        calls[0].join({:other_call_id => calls[1].call_id}.merge(opts)).should be_true
       end
 
       it "in receive mode" do
@@ -52,6 +52,41 @@ describe "Join command" do
         end
         calls[1].next_event.should be_a_valid_unjoined_event.with_other_call_id(calls[0].call_id)
         hangup_and_confirm calls[1]
+      end
+    end
+
+    describe "to another call which hangs up" do
+      let :calls do
+        [].tap do |calls|
+          place_call_with_script <<-SCRIPT_CONTENT
+            call_tropo2
+            sleep 30
+          SCRIPT_CONTENT
+          calls << get_call_and_answer
+
+          add_latch :call2_hanging_up
+          place_call_with_script <<-SCRIPT_CONTENT
+            call_tropo2
+            sleep 3
+            trigger_latch :call2_hanging_up
+          SCRIPT_CONTENT
+          calls << get_call_and_answer
+        end
+      end
+
+      it "gets the correct events" do
+        join
+
+        calls[0].next_event.should be_a_valid_joined_event.with_other_call_id(calls[1].call_id)
+        calls[1].next_event.should be_a_valid_joined_event.with_other_call_id(calls[0].call_id)
+
+        wait_on_latch :call2_hanging_up
+
+        calls[1].next_event.should be_a_valid_unjoined_event.with_other_call_id(calls[0].call_id)
+        calls[1].next_event.should be_a_valid_hangup_event
+
+        calls[0].next_event.should be_a_valid_unjoined_event.with_other_call_id(calls[1].call_id)
+        hangup_and_confirm calls[0]
       end
     end
 

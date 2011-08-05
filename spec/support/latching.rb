@@ -3,7 +3,7 @@ def add_latch(*latch_names)
 end
 
 def wait_on_latch(latch_name)
-  @tropo1.wait latch_name
+  @tropo1.wait(latch_name).should == true
 end
 
 def trigger_latch(latch_name)
