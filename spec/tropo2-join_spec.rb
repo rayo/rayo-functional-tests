@@ -173,6 +173,7 @@ describe "Join command" do
         end
 
         it "with direct media" do
+          pending
           dial_join :media => :direct
         end
 
