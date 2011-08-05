@@ -54,10 +54,10 @@ describe "Record command" do
 
     get_call_and_answer
 
-    @call.say(:audio => {:url => @recording.recording.uri}).should be_true
+    @call.output(:audio => {:url => @recording.recording.uri}).should be_true
 
     wait_on_latch :responded
-    @call.next_event.should be_a_valid_say_event
+    @call.next_event.should be_a_valid_output_event
     hangup_and_confirm
     @tropo1.result.should == 'hello world'
   end
