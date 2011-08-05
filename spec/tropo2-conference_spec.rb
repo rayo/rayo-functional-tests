@@ -12,10 +12,8 @@ describe "Conference command" do
     @call.conference(:name => '1234').should be_true
 
     @call.next_event.should be_a_valid_conference_command
-    @call.next_event.should be_a_valid_joined_event.with_mixer_id('1234')
 
     hangup_and_confirm do
-      @call.next_event.should be_a_valid_unjoined_event.with_mixer_id('1234')
       @call.next_event.should be_a_valid_complete_hangup_event
     end
   end
@@ -31,7 +29,6 @@ describe "Conference command" do
     call_1.answer.should be_true
     call_1.conference(:name => '1234').should be_true
     call_1.next_event.should be_a_valid_conference_command
-    call_1.next_event.should be_a_valid_joined_event.with_mixer_id('1234')
 
     @tropo1.place_call @config['tropo1']['session_url']
 
@@ -40,15 +37,12 @@ describe "Conference command" do
     call_2.answer.should be_true
     call_2.conference(:name => '1234').should be_true
     call_2.next_event.should be_a_valid_conference_command
-    call_2.next_event.should be_a_valid_joined_event.with_mixer_id('1234')
 
     call_1.hangup.should be_true
-    call_1.next_event.should be_a_valid_unjoined_event.with_mixer_id('1234')
     call_1.next_event.should be_a_valid_complete_hangup_event
     call_1.next_event.should be_a_valid_hangup_event
 
     call_2.hangup.should be_true
-    call_2.next_event.should be_a_valid_unjoined_event.with_mixer_id('1234')
     call_2.next_event.should be_a_valid_complete_hangup_event
     call_2.next_event.should be_a_valid_hangup_event
 
@@ -70,7 +64,6 @@ describe "Conference command" do
     call_1.answer.should be_true
     call_1.conference(:name => '1234').should be_true
     call_1.next_event.should be_a_valid_conference_command
-    call_1.next_event.should be_a_valid_joined_event.with_mixer_id('1234')
 
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
@@ -83,17 +76,14 @@ describe "Conference command" do
     call_2.answer.should be_true
     call_2.conference(:name => '1234').should be_true
     call_2.next_event.should be_a_valid_conference_command
-    call_2.next_event.should be_a_valid_joined_event.with_mixer_id('1234')
 
     sleep @config['media_assertion_timeout'] + 2
 
     call_1.hangup.should be_true
-    call_1.next_event.should be_a_valid_unjoined_event.with_mixer_id('1234')
     call_1.next_event.should be_a_valid_complete_hangup_event
     call_1.next_event.should be_a_valid_hangup_event
 
     call_2.hangup.should be_true
-    call_2.next_event.should be_a_valid_unjoined_event.with_mixer_id('1234')
     call_2.next_event.should be_a_valid_complete_hangup_event
     call_2.next_event.should be_a_valid_hangup_event
 
