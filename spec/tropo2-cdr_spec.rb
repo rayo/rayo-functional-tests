@@ -34,9 +34,7 @@ describe "CDR Manager" do
       hangup
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                         :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    @call = @tropo2.dial tropo1_dial_options
 
     p active_cdrs
     p @call.call_event.call_id

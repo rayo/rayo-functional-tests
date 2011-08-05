@@ -148,16 +148,8 @@ describe "Join command" do
           SCRIPT_CONTENT
         end
 
-        let :dial_options do
-          {
-            :to      => @config['tropo1']['call_destination'],
-            :from    => 'tel:+14155551212',
-            :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
-          }
-        end
-
         def dial_join(opts = {})
-          @call2 = @tropo2.dial(dial_options.merge(:join => { :other_call_id => @call.call_id }.merge(opts))).should be_true
+          @call2 = @tropo2.dial(tropo1_dial_options.merge(:join => { :other_call_id => @call.call_id }.merge(opts))).should be_true
         end
 
         it "in receive mode" do
@@ -201,25 +193,15 @@ describe "Join command" do
           pending
           @tropo1.script_content = 'reject'
 
-          @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                               :from    => 'tel:+14155551212',
-                               :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+          @call = @tropo2.dial tropo1_dial_options
           @call.ring_event.should be_a_valid_ringing_event
           @call.next_event.should be_a_valid_reject_event
         end
       end
 
       describe "to a mixer" do
-        let :dial_options do
-          {
-            :to      => @config['tropo1']['call_destination'],
-            :from    => 'tel:+14155551212',
-            :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
-          }
-        end
-
         def dial_join(opts = {})
-          @call = @tropo2.dial(dial_options.merge(:join => { :mixer_id => mixer_id }.merge(opts))).should be_true
+          @call = @tropo2.dial(tropo1_dial_options.merge(:join => { :mixer_id => mixer_id }.merge(opts))).should be_true
         end
 
         let(:mixer_id) { 'abc123' }

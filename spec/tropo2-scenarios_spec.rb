@@ -14,17 +14,11 @@ describe "Call Scenarios" do
       # 3. While the announcement is being played the call is transferred to N employees in parallel (all the employees’ phones ring in parallel)
       @tropo1.script_content = employee_script
 
-      @employee1 = @tropo2.dial(:to       => @config['tropo1']['call_destination'],
-                                :from     => 'tel:+14159998888',
-                                :headers  => { 'x-tropo2-drb-address' => @drb_server_uri}).should be_true
+      @employee1 = @tropo2.dial(tropo1_dial_options).should be_true
 
-      @employee2 = @tropo2.dial(:to       => @config['tropo1']['call_destination'],
-                                :from     => 'tel:+14159998888',
-                                :headers  => { 'x-tropo2-drb-address' => @drb_server_uri}).should be_true
+      @employee2 = @tropo2.dial(tropo1_dial_options).should be_true
 
-      @employee3 = @tropo2.dial(:to       => @config['tropo1']['call_destination'],
-                                :from     => 'tel:+14159998888',
-                                :headers  => { 'x-tropo2-drb-address' => @drb_server_uri}).should be_true
+      @employee3 = @tropo2.dial(tropo1_dial_options).should be_true
 
       # 4. The possible answers for each of the phones are reject, busy, timeout (no answer), cancelled (connFu hangs that call before any other answer) or accepted
       #
@@ -122,9 +116,7 @@ describe "Call Scenarios" do
         wait_to_hangup
       SCRIPT_CONTENT
 
-      @employee1 = @tropo2.dial(:to       => @config['tropo1']['call_destination'],
-                                :from     => 'tel:+14159998888',
-                                :headers  => { 'x-tropo2-drb-address' => @drb_server_uri}).should be_true
+      @employee1 = @tropo2.dial(tropo1_dial_options).should be_true
 
       @employee1.ring_event.should be_a_valid_ringing_event
       @employee1.next_event.should be_a_valid_answered_event
@@ -151,9 +143,7 @@ describe "Call Scenarios" do
 
       # Dial ‘employee2’
       @tropo1.script_content = employee2_script
-      @employee2 = @tropo2.dial(:to       => @config['tropo1']['call_destination'],
-                                :from     => 'tel:+14159998888',
-                                :headers  => { 'x-tropo2-drb-address' => @drb_server_uri}).should be_true
+      @employee2 = @tropo2.dial(tropo1_dial_options).should be_true
     end
 
     describe "5.1 If employee2 takes the call" do

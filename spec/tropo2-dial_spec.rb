@@ -7,9 +7,7 @@ describe "Dial command" do
       wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                         :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    @call = @tropo2.dial tropo1_dial_options
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_reject_event
   end
@@ -19,9 +17,7 @@ describe "Dial command" do
       reject
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                         :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    @call = @tropo2.dial tropo1_dial_options
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_reject_event
   end
@@ -34,10 +30,10 @@ describe "Dial command" do
       hangup
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                         :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri,
-                                       'x-tropo2-test'        => 'booyah!' }
+    dial_options = tropo1_dial_options
+    dial_options[:headers]['x-tropo2-test'] = 'booyah!'
+
+    @call = @tropo2.dial dial_options
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_answered_event
     @call.next_event.should be_a_valid_hangup_event
@@ -50,9 +46,7 @@ describe "Dial command" do
       wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                         :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    @call = @tropo2.dial tropo1_dial_options
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_answered_event
     hangup_and_confirm
@@ -65,12 +59,8 @@ describe "Dial command" do
       hangup
     TROPO_SCRIPT_CONTENT
 
-    call1 = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                         :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
-    call2 = @tropo2.dial :to      => @config['tropo1']['call_destination'],
-                         :from    => 'tel:+14155551212',
-                         :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    call1 = @tropo2.dial tropo1_dial_options
+    call2 = @tropo2.dial tropo1_dial_options
 
     call1.ring_event.should be_a_valid_ringing_event
     call1.next_event.should be_a_valid_answered_event
@@ -84,8 +74,6 @@ describe "Dial command" do
   end
 
   it "should get an error if we dial an invalid address" do
-    lambda { @tropo2.dial :to      => 'foobar',
-                          :from    => 'tel:+14155551212',
-                          :headers => { 'x-tropo2-drb-address' => @drb_server_uri } }.should raise_error(Punchblock::Protocol::ProtocolError)
+    lambda { @tropo2.dial tropo1_dial_options.merge(:to => 'foobar') }.should raise_error(Punchblock::Protocol::ProtocolError)
   end
 end
