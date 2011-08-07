@@ -23,7 +23,7 @@ describe "Transfer verb" do
     #@call.next_event.should be_a_valid_answered_event
 
     @call.next_event.should be_a_valid_transfer_event
-    @call.next_event.should be_a_valid_hangup_event
+    hangup_and_confirm
   end
 
   it "should try to transfer but get a timeout" do
