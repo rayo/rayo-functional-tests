@@ -21,7 +21,7 @@ tropo1:
     call_destination: sip:tropo2_testing.rb@127.0.0.1:5061
     druby_host: 0.0.0.0
     druby_port: 8787
-    wait_to_hangup: 30000
+    wait_to_hangup: 30
     latch_timeout: 5 # The amount of time to wait for a latch to release
 
 # Audio file to use for testing

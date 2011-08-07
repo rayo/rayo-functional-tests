@@ -9,7 +9,7 @@ def call_tropo2
 end
 
 def wait_to_hangup
-  wait $ozone_testing_server.config['tropo1']['wait_to_hangup']
+  sleep $ozone_testing_server.config['tropo1']['wait_to_hangup']
 end
 
 def sleep_for_media_assertion
