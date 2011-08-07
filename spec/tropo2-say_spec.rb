@@ -114,7 +114,7 @@ describe "Say command" do
 
     get_call_and_answer
 
-    lambda { @call.say :text => '' }.should raise_error(Punchblock::Protocol::ProtocolError)
+    lambda { @call.say :text => '' }.should raise_error(Punchblock::ProtocolError)
 
     @call.next_event.should be_a_valid_hangup_event
   end

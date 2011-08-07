@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:tropo/punchblock.git
-  revision: 1fae182c8a09171070fbe32b835ae6794d5346a4
+  revision: a013513e630951aadf07e97dcd8e475a949e94cf
   branch: develop
   specs:
     punchblock (0.1.0)
@@ -12,7 +12,7 @@ GIT
 
 GIT
   remote: git@github.com:tropo/rspec-tropo2.git
-  revision: 786fc8414e33fc0a5a088d3f9691db57547f165c
+  revision: 6558639da3b92af5d61f04d174b41bee546348da
   branch: develop
   specs:
     rspec-rayo (0.1.0)
@@ -52,7 +52,7 @@ GEM
       ruby_parser (>= 2.0.5)
       slop (~> 1.9.0)
     rake (0.9.2)
-    rcov (0.9.9)
+    rcov (0.9.10)
     rspec (2.6.0)
       rspec-core (~> 2.6.0)
       rspec-expectations (~> 2.6.0)

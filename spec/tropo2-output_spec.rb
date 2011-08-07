@@ -129,7 +129,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    lambda { @call.output :text => '' }.should raise_error(Punchblock::Protocol::ProtocolError)
+    lambda { @call.output :text => '' }.should raise_error(Punchblock::ProtocolError)
 
     @call.next_event.should be_a_valid_hangup_event
   end

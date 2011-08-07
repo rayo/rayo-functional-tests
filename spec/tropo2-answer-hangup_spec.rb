@@ -32,7 +32,7 @@ describe "Call accept, answer and hangup handling" do
     get_call_and_answer
     hangup_and_confirm
 
-    lambda { @call.answer }.should raise_error(Punchblock::Protocol::ProtocolError)
+    lambda { @call.answer }.should raise_error(Punchblock::ProtocolError)
   end
 
   it "should accept and hangup" do

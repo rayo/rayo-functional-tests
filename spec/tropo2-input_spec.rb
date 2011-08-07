@@ -192,7 +192,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    lambda { @call.input :grammar => { :value => '<grammar>' } }.should raise_error(Punchblock::Protocol::ProtocolError)
+    lambda { @call.input :grammar => { :value => '<grammar>' } }.should raise_error(Punchblock::ProtocolError)
 
     @call.next_event.reason.should eql :error
   end

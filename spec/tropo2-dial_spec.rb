@@ -74,6 +74,6 @@ describe "Dial command" do
   end
 
   it "should get an error if we dial an invalid address" do
-    lambda { @tropo2.dial tropo1_dial_options.merge(:to => 'foobar') }.should raise_error(Punchblock::Protocol::ProtocolError)
+    lambda { @tropo2.dial tropo1_dial_options.merge(:to => 'foobar') }.should raise_error(Punchblock::ProtocolError)
   end
 end

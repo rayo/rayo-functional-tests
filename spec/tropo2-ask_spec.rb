@@ -203,7 +203,7 @@ describe "Ask command" do
     get_call_and_answer
 
     lambda { @call.ask :prompt  => { :text => 'One4' },
-                       :choices => { :value => '<grammar>' } }.should raise_error(Punchblock::Protocol::ProtocolError)
+                       :choices => { :value => '<grammar>' } }.should raise_error(Punchblock::ProtocolError)
 
     @call.next_event.reason.should eql :error
   end
