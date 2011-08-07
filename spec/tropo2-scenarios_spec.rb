@@ -184,7 +184,7 @@ describe "Call Scenarios" do
         <<-SCRIPT_CONTENT
           # Employee2 Script
           reject
-          wait_to_hangup
+          2.times { wait_to_hangup }
         SCRIPT_CONTENT
       end
 
