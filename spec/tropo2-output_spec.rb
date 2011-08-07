@@ -29,7 +29,7 @@ describe "Output component" do
   it "should output an audio URL and hangup" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
-      2.times { wait_to_hangup }
+      wait_to_hangup 2
     SCRIPT_CONTENT
 
     get_call_and_answer
@@ -86,7 +86,7 @@ describe "Output component" do
   it "should output some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
-      2.times { wait_to_hangup }
+      wait_to_hangup 2
     SCRIPT_CONTENT
 
     get_call_and_answer

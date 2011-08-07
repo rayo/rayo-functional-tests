@@ -8,8 +8,8 @@ def call_tropo2
   call "sip:#{$ozone_testing_server.config['tropo2_server']['sip_uri']}"
 end
 
-def wait_to_hangup
-  sleep $ozone_testing_server.config['tropo1']['wait_to_hangup']
+def wait_to_hangup(times = 1)
+  times.times { sleep $ozone_testing_server.config['tropo1']['wait_to_hangup'] }
 end
 
 def sleep_for_media_assertion
