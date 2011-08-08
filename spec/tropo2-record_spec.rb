@@ -49,7 +49,7 @@ describe "Record command" do
                   :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
                   :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
       trigger_latch :responded
-      wait_to_hangup
+      wait_to_hangup 2
     SCRIPT_CONTENT
 
     get_call_and_answer

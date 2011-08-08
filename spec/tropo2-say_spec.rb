@@ -29,7 +29,7 @@ describe "Say command" do
   it "should say an audio URL and hangup" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
-      wait_to_hangup
+      wait_to_hangup 3
     SCRIPT_CONTENT
 
     get_call_and_answer

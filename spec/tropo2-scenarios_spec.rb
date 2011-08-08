@@ -55,7 +55,7 @@ describe "Call Scenarios" do
       let :employee_script do
         <<-SCRIPT_CONTENT
           answer
-          wait_to_hangup
+          sleep 15
         SCRIPT_CONTENT
       end
 
@@ -73,7 +73,7 @@ describe "Call Scenarios" do
       let :customer_script do
         <<-CALL_SCRIPT
           call_tropo2
-          wait_to_hangup
+          sleep 15
         CALL_SCRIPT
       end
 
@@ -105,7 +105,7 @@ describe "Call Scenarios" do
       place_call_with_script <<-CALL_SCRIPT
         # Customer script
         call_tropo2
-        wait_to_hangup 2
+        wait_to_hangup 4
       CALL_SCRIPT
       get_call_and_answer
 
@@ -117,7 +117,7 @@ describe "Call Scenarios" do
         answer
         sleep_for_media_assertion
         play_dtmf 1
-        wait_to_hangup 2
+        wait_to_hangup 4
       SCRIPT_CONTENT
 
       @employee1 = @tropo2.dial(tropo1_dial_options).should be_true
@@ -157,7 +157,7 @@ describe "Call Scenarios" do
         <<-SCRIPT_CONTENT
           # Employee2 Script
           answer
-          wait_to_hangup
+          wait_to_hangup 4
         SCRIPT_CONTENT
       end
 
@@ -184,7 +184,7 @@ describe "Call Scenarios" do
         <<-SCRIPT_CONTENT
           # Employee2 Script
           reject
-          2.times { wait_to_hangup }
+          wait_to_hangup
         SCRIPT_CONTENT
       end
 
