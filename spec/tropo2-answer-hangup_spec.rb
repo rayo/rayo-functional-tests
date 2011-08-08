@@ -50,8 +50,6 @@ describe "Call accept, answer and hangup handling" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
       call_tropo2
       sleep 1
-      hangup
-      wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer

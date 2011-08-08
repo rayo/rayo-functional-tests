@@ -25,6 +25,9 @@ $tropo2 = RSpecRayo::RayoDriver.new :username         => ENV['TROPO2_JID'] || $c
                                     :queue_timeout    => $config['tropo2_queue']['connection_timeout'],
                                     :write_timeout    => $config['tropo2_server']['write_timeout']
 
+$config['media_server_port_limit'] ||= 10
+$config['call_pruning_timeout'] ||= 15
+
 $config['tropo2_server']['sip_uri'] ||= ENV['TROPO2_SIP_URI'] || random_jid
 
 drb_server_host_and_port = [$config['tropo1']['druby_host'], ENV['TROPO1_DRB_PORT'] || $config['tropo1']['druby_port']].join ':'
@@ -51,6 +54,12 @@ RSpec.configure do |config|
 
   config.after :each do
     begin
+      checks = 0
+      begin
+        checks += 1
+        sleep 1
+      end while active_sessions > @config['media_server_port_limit'] && checks < @config['call_pruning_timeout']
+      active_sessions.should <= @config['media_server_port_limit']
       @tropo1.reset!
       @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true if @call
       check_no_remaining_calls

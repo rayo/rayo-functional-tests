@@ -28,3 +28,6 @@ tropo1:
 audio_url: http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3
 
 media_assertion_timeout: 3
+
+media_server_port_limit: 10 # The target limit for media server ports we can use
+call_pruning_timeout: 15 # The time to wait for calls to drop below the port limit
