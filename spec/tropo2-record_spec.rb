@@ -25,7 +25,7 @@ describe "Record command" do
     @record_command.should be_true
   end
 
-  it "should record a call" do
+  it "should record a call",load-suite => true do
     wait_on_latch :spoke
     hangup_and_confirm do
       @call.next_event.should be_a_valid_complete_recording_event

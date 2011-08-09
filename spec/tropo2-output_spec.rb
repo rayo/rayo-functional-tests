@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Output component" do
-  it "should output something with TTS" do
+  it "should output something with TTS",load-suite => true do
     add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -26,7 +26,7 @@ describe "Output component" do
     @tropo1.result.should eql 'yes'
   end
 
-  it "should output an audio URL and hangup" do
+  it "should output an audio URL and hangup",load-suite => true do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       wait_to_hangup 4
@@ -43,7 +43,7 @@ describe "Output component" do
     hangup_and_confirm
   end
 
-  it "should output SSML" do
+  it "should output SSML",load-suite => true do
     add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
