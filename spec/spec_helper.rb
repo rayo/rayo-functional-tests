@@ -25,6 +25,7 @@ $tropo2 = RSpecRayo::RayoDriver.new :username         => ENV['TROPO2_JID'] || $c
                                     :queue_timeout    => $config['tropo2_queue']['connection_timeout'],
                                     :write_timeout    => $config['tropo2_server']['write_timeout']
 
+$config['max_calls_per_test'] ||= 5
 $config['media_server_port_limit'] ||= 10
 $config['call_pruning_timeout'] ||= 15
 
