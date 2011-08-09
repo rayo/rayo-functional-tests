@@ -8,7 +8,7 @@ describe "Join command" do
     SCRIPT_CONTENT
   end
 
-  describe "can join a call",load-suite => true do
+  describe "can join a call", :'load-suite' => true do
     def join(opts = {})
       calls[0].join({:other_call_id => calls[1].call_id}.merge(opts)).should be_true
     end
@@ -165,7 +165,7 @@ describe "Join command" do
     end
   end
 
-  describe "can unjoin a call",load-suite => true do
+  describe "can unjoin a call", :'load-suite' => true do
     it "from another call" do
       calls = [].tap do |calls|
         2.times do
@@ -230,7 +230,7 @@ describe "Join command" do
           dial_join :direction => :send
         end
 
-        it "in duplex mode",load-suite => true do
+        it "in duplex mode", :'load-suite' => true do
           dial_join :direction => :duplex
         end
 

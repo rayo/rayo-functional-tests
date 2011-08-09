@@ -28,7 +28,7 @@ describe "Input component" do
     GRXML
   end
 
-  it "should input something with ASR and get the utterance back",load-suite => true do
+  it "should input something with ASR and get the utterance back", :'load-suite' => true do
     add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -50,7 +50,7 @@ describe "Input component" do
     hangup_and_confirm
   end
 
-  it "should input something with DTMF and get the interpretation back",load-suite => true do
+  it "should input something with DTMF and get the interpretation back", :'load-suite' => true do
     add_latch :responded
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -112,7 +112,7 @@ describe "Input component" do
     hangup_and_confirm
   end
 
-  it "should input with an SSML prompt and a GRXML grammar",load-suite => true do
+  it "should input with an SSML prompt and a GRXML grammar", :'load-suite' => true do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       sleep 1
