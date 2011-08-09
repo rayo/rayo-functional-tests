@@ -19,6 +19,11 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
+RSpec::Core::RakeTask.new(:load_spec) do |spec|
+  spec.pattern = FileList['spec/**/*_spec.rb']
+  spec.rspec_opts = ['--tag load-suite']
+end
+
 %w{answer-hangup ask cdr conference dial dtmf input jmx join misc output record redirect reject say scenarios transfer}.each do |command|
   RSpec::Core::RakeTask.new(command.to_sym) do |spec|
     spec.pattern = FileList["spec/**/tropo2-#{command}_spec.rb"]
