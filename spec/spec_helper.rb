@@ -54,12 +54,13 @@ RSpec.configure do |config|
 
   config.after :each do
     begin
+      session_limit = @config['media_server_port_limit'] - @config['max_calls_per_test']
       checks = 0
       begin
+        sleep 1 if checks > 0
         checks += 1
-        sleep 1
-      end while active_sessions > @config['media_server_port_limit'] && checks < @config['call_pruning_timeout']
-      active_sessions.should <= @config['media_server_port_limit']
+      end while active_sessions > session_limit && checks < @config['call_pruning_timeout']
+      active_sessions.should <= session_limit
       @tropo1.reset!
       @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true if @call
       check_no_remaining_calls

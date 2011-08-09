@@ -21,7 +21,7 @@ tropo1:
     call_destination: sip:tropo2_testing.rb@127.0.0.1:5061
     druby_host: 0.0.0.0
     druby_port: 8787
-    wait_to_hangup: 30
+    wait_to_hangup: 5
     latch_timeout: 5 # The amount of time to wait for a latch to release
 
 # Audio file to use for testing
@@ -29,5 +29,6 @@ audio_url: http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3
 
 media_assertion_timeout: 3
 
-media_server_port_limit: 10 # The target limit for media server ports we can use
-call_pruning_timeout: 15 # The time to wait for calls to drop below the port limit
+max_calls_per_test: 5 # This is the maximum number of calls expected in each test. Artificial pauses will be inserted in the tests to ensure there are always this number of ports available for use.
+media_server_port_limit: 10 # The target limit for media server ports we can use. This will artificially slow down the tests to wait for ports to become available. The port count will be held below the difference between this value and the max calls per test count
+call_pruning_timeout: 15 # The time to wait for calls to drop below the port limit. This should be at least 3x the Tropo1 wait_to_hangup timeout
