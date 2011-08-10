@@ -24,10 +24,6 @@ RSpec::Core::RakeTask.new(:load_spec) do |spec|
   spec.rspec_opts = ['--tag load-suite']
 end
 
-RSpec::Core::RakeTask.new(:load_spec2) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
-  spec.rspec_opts = ['--tag load-suite2']
-end
 
 %w{answer-hangup ask cdr conference dial dtmf input jmx join misc output record redirect reject say scenarios transfer}.each do |command|
   RSpec::Core::RakeTask.new(command.to_sym) do |spec|
