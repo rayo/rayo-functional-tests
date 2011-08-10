@@ -50,7 +50,7 @@ describe "Conference command" do
     call_2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
   end
 
-  it "should put two callers into a conference, validate media and hangup" do
+  it "should put two callers into a conference, validate media and hangup", :'load-suite' => true do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       ask 'One5', :choices     => 'yes, no',

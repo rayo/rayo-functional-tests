@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Dial command" do
-  it "should place an outbound call, receive a ring event, receive a reject event and then hangup" do
+  it "should place an outbound call, receive a ring event, receive a reject event and then hangup", :'load-suite' => true do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       hangup
       wait_to_hangup
