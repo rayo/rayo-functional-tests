@@ -64,7 +64,7 @@ RSpec.configure do |config|
       active_sessions.should <= session_limit
       @tropo1.reset!
       @call.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true if @call
-      check_no_remaining_calls
+      check_no_remaining_calls unless ENV['TROPO2_CONCURRENT_TESTS']
       @tropo2.read_event_queue(@config['tropo2_queue']['last_stanza_timeout']) until @tropo2.event_queue.empty?
     ensure
       @tropo2.cleanup_calls
