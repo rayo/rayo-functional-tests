@@ -31,7 +31,7 @@ describe "Join command" do
         join :direction => :send
       end
 
-      it "in duplex mode" do
+      it "in duplex mode", :'load-suite' => true do
         join :direction => :duplex
       end
 
@@ -230,7 +230,7 @@ describe "Join command" do
           dial_join :direction => :send
         end
 
-        it "in duplex mode" do
+        it "in duplex mode", :'load-suite' => true do
           dial_join :direction => :duplex
         end
 
