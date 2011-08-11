@@ -12,7 +12,7 @@ GIT
 
 GIT
   remote: git@github.com:tropo/rspec-tropo2.git
-  revision: 6558639da3b92af5d61f04d174b41bee546348da
+  revision: 6bd236ff48c58b7cacd6d12a73c4e405b699c7a3
   branch: develop
   specs:
     rspec-rayo (0.1.0)
@@ -26,12 +26,12 @@ GEM
   specs:
     activesupport (3.0.9)
     awesome_print (0.4.0)
-    blather (0.5.3)
+    blather (0.5.4)
       activesupport (>= 3.0.7)
       eventmachine (~> 0.12.6)
       minitest (>= 1.7.1)
       niceogiri (>= 0.0.4)
-      nokogiri (>= 1.4.0)
+      nokogiri (~> 1.4.0)
     builder (3.0.0)
     ci_reporter (1.6.5)
       builder (>= 2.1.2)
@@ -42,10 +42,10 @@ GEM
     json (1.5.3)
     method_source (0.6.0)
       ruby_parser (>= 2.0.5)
-    minitest (2.3.1)
+    minitest (2.4.0)
     niceogiri (0.0.4)
       nokogiri (>= 1.4.0)
-    nokogiri (1.5.0)
+    nokogiri (1.4.7)
     pry (0.9.3)
       coderay (>= 0.9.8)
       method_source (>= 0.6.0)
@@ -65,7 +65,7 @@ GEM
       sexp_processor (~> 3.0)
     sexp_processor (3.0.5)
     slop (1.9.1)
-    state_machine (1.0.1)
+    state_machine (1.0.2)
 
 PLATFORMS
   ruby
