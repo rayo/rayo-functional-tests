@@ -24,17 +24,15 @@ Installation
 Configuration
 -------------
 
-* voxeo/prism/conf/portmappings.properties (both Tropo versions may run in the same Prism instance):
+* /opt/voxeo/prism/conf/portmappings.properties (both Tropo versions may run in the same Prism instance):
 
     * 5060:tropo2
     * 5061:tropo
 
-* voxeo/prism/conf/sipmethod.xml (ensure both 5060 and 5061 are configured to listen)
-* voxeo/prism/apps/tropo/WEB-INF/classes/tropo.xml (in the <mediaServer/> section you should have <bangSyntax>false</bangSyntax>)
+* /opt/voxeo/prism/conf/sipmethod.xml (ensure both 5060 and 5061 are configured to listen)
+* /opt/voxeo/prism/apps/tropo/WEB-INF/classes/tropo.xml (in the `<mediaServer/>` section you should have `<bangSyntax>false</bangSyntax>`)
 * tropo2_functional_tester/config/config.yml.sample (rename to config.yml with changes for your environment)
-
-* Deploy script to $PRISM_HOME/apps/tropo/scripts (tropo2_functional_tester/support/tropo1_script/tropo2_testing.rb)
-* tropo2_functional_tester/tropo1_script/tropo2_testing.rb (change this line as needed: drb_server_address = $drb_server_address || '98.207.5.162:8787')
+* Deploy Tropo1 script to $PRISM_HOME/apps/tropo/scripts (tropo2_functional_tester/support/tropo1_script/tropo2_testing.rb)
 
 Running
 -------
