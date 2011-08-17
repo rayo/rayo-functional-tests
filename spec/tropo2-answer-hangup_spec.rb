@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-# startCallRecording 'http://tropo-audiofiles-to-s3.heroku.com/post_audio_to_s3?file_name=ozone2_testing.wav'
-
 describe "Call accept, answer and hangup handling" do
   it "should receive a call and then hangup" do
     place_call_with_script <<-TROPO_SCRIPT_CONTENT
