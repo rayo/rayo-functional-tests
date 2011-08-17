@@ -6,7 +6,7 @@ group :development do
   gem 'bundler'
   gem 'rake'
   gem 'rcov'
-  gem 'rspec-rayo', '>= 0.1.0'
+  gem 'rspec-rayo', '>= 0.1.1'
   gem 'punchblock', '>= 0.2.0'
   gem 'awesome_print'
   gem 'ci_reporter'
