@@ -8,6 +8,7 @@ describe "Dial command" do
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.dial tropo1_dial_options
+    @call.call_event.should be_a_valid_offer_event
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_reject_event
   end
@@ -18,6 +19,7 @@ describe "Dial command" do
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.dial tropo1_dial_options
+    @call.call_event.should be_a_valid_offer_event
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_reject_event
   end
@@ -34,6 +36,7 @@ describe "Dial command" do
     dial_options[:headers]['x-tropo2-test'] = 'booyah!'
 
     @call = @tropo2.dial dial_options
+    @call.call_event.should be_a_valid_offer_event
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_answered_event
     @call.next_event.should be_a_valid_hangup_event
@@ -47,6 +50,7 @@ describe "Dial command" do
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.dial tropo1_dial_options
+    @call.call_event.should be_a_valid_offer_event
     @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_answered_event
     hangup_and_confirm
@@ -62,11 +66,13 @@ describe "Dial command" do
     call1 = @tropo2.dial tropo1_dial_options
     call2 = @tropo2.dial tropo1_dial_options
 
+    call1.call_event.should be_a_valid_offer_event
     call1.ring_event.should be_a_valid_ringing_event
     call1.next_event.should be_a_valid_answered_event
     call1.next_event.should be_a_valid_hangup_event
     call1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
 
+    call2.call_event.should be_a_valid_offer_event
     call2.ring_event.should be_a_valid_ringing_event
     call2.next_event.should be_a_valid_answered_event
     call2.next_event.should be_a_valid_hangup_event
