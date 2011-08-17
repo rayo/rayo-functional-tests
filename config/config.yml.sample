@@ -2,6 +2,9 @@ tropo2_server:
     jid: usera@127.0.0.1 # To login to the Tropo/Ozone server as
     password: '1' #Password for the JID
     sip_uri: usera@127.0.0.1 # The SIP URI for Tropo1 to pitch calls to on Tropo2/Ozone
+    alt_jid: userb@127.0.0.1 # To login to the Tropo/Ozone server as
+    alt_password: '1' #Password for the JID
+    alt_sip_uri: userb@127.0.0.1 # The SIP URI for Tropo1 to pitch calls to on Tropo2/Ozone
     wire_log: logs/tropo2-wire.log
     transport_log: logs/tropo2-transport.log
     server: 127.0.0.1

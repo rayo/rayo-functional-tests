@@ -76,4 +76,45 @@ describe "Dial command" do
   it "should get an error if we dial an invalid address" do
     lambda { @tropo2.dial tropo1_dial_options.merge(:to => 'foobar') }.should raise_error(Punchblock::ProtocolError)
   end
+
+  describe "when dialing another Rayo user" do
+    before(:all) do
+      @client2 = RSpecRayo::RayoDriver.new :username         => ENV['TROPO2_ALT_JID'] || $config['tropo2_server']['alt_jid'] || random_jid,
+                                           :password         => ENV['TROPO2_ALT_PASSWORD'] || $config['tropo2_server']['alt_password'],
+                                           :wire_logger      => Logger.new($config['tropo2_server']['wire_log']),
+                                           :transport_logger => Logger.new($config['tropo2_server']['transport_log']),
+                                           :log_level        => Logger::DEBUG,
+                                           :queue_timeout    => $config['tropo2_queue']['connection_timeout'],
+                                           :write_timeout    => $config['tropo2_server']['write_timeout']
+
+      @client2.read_queue(@client2.event_queue).should == 'CONNECTED'
+      @client2.start_event_dispatcher
+    end
+
+    it "should direct events to the dialing party" do
+      @call1 = @tropo2.dial :to => 'sip:' + $config['tropo2_server']['alt_sip_uri'], :from => 'tel:+14155551212'
+
+      @call2 = @client2.get_call
+      @call2.call_event.should be_a_valid_offer_event
+      @call2.answer.should be_true
+
+      @call1.ring_event.should be_a_valid_ringing_event
+      @call1.next_event.should be_a_valid_answered_event
+
+      @call1.output(:text => 'Hello').should be_true
+      @call1.next_event.should be_a_valid_output_event
+
+      hangup_and_confirm @call1
+
+      @call2.next_event.should be_a_valid_hangup_event
+    end
+
+    after do
+      begin
+        @client2.read_event_queue(@config['tropo2_queue']['last_stanza_timeout']) until @tropo2.event_queue.empty?
+      ensure
+        @client2.cleanup_calls
+      end
+    end
+  end
 end

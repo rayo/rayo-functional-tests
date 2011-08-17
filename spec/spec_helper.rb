@@ -15,7 +15,9 @@ Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
 
 $config = YAML.load File.open('config/config.yml')
 
-random_jid = "user#{(1..1000).to_a.sort_by { rand }.first}@127.0.0.1"
+def random_jid
+  "user#{(1..1000).to_a.sort_by { rand }.first}@127.0.0.1"
+end
 
 $tropo2 = RSpecRayo::RayoDriver.new :username         => ENV['TROPO2_JID'] || $config['tropo2_server']['jid'] || random_jid,
                                     :password         => ENV['TROPO2_PASSWORD'] || $config['tropo2_server']['password'],
