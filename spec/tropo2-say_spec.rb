@@ -15,7 +15,7 @@ describe "Say command" do
 
     get_call_and_answer
 
-    @call.say(:text => 'yes').should be_true
+    @call.say(:text => 'yes').should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -34,7 +34,7 @@ describe "Say command" do
 
     get_call_and_answer
 
-    @call.say(:audio => { :url => @config['audio_url'] }).should be_true
+    @call.say(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
 
     sleep 9 #Wait for audio file to complete playing
 
@@ -57,7 +57,7 @@ describe "Say command" do
 
     get_call_and_answer
 
-    @call.say(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should be_true
+    @call.say(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -99,7 +99,7 @@ describe "Say command" do
 
     get_call_and_answer
 
-    @call.say(:audio => { :url => @config['audio_url'] }).should be_true
+    @call.say(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
 
     @call.next_event.should be_a_valid_complete_hangup_event
     @call.next_event.should be_a_valid_hangup_event

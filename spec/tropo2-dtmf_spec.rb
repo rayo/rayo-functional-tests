@@ -35,7 +35,7 @@ describe "DTMF events" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should be_true
+    @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -60,7 +60,7 @@ describe "DTMF events" do
 
     get_call_and_answer
 
-    @call.say(:audio => { :url => 'dtmf:5' }).should be_true
+    @call.say(:audio => { :url => 'dtmf:5' }).should have_executed_correctly
 
     wait_on_latch :responded
 

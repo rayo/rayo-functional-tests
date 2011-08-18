@@ -9,7 +9,7 @@ describe "Conference command" do
 
     get_call_and_answer
 
-    @call.conference(:name => '1234').should be_true
+    @call.conference(:name => '1234').should have_executed_correctly
 
     @call.next_event.should be_a_valid_conference_command
 
@@ -26,23 +26,23 @@ describe "Conference command" do
 
     call_1 = @tropo2.get_call
     call_1.call_event.should be_a_valid_offer_event
-    call_1.answer.should be_true
-    call_1.conference(:name => '1234').should be_true
+    call_1.answer.should have_executed_correctly
+    call_1.conference(:name => '1234').should have_executed_correctly
     call_1.next_event.should be_a_valid_conference_command
 
     @tropo1.place_call @config['tropo1']['session_url']
 
     call_2 = @tropo2.get_call
     call_2.call_event.should be_a_valid_offer_event
-    call_2.answer.should be_true
-    call_2.conference(:name => '1234').should be_true
+    call_2.answer.should have_executed_correctly
+    call_2.conference(:name => '1234').should have_executed_correctly
     call_2.next_event.should be_a_valid_conference_command
 
-    call_1.hangup.should be_true
+    call_1.hangup.should have_executed_correctly
     call_1.next_event.should be_a_valid_complete_hangup_event
     call_1.next_event.should be_a_valid_hangup_event
 
-    call_2.hangup.should be_true
+    call_2.hangup.should have_executed_correctly
     call_2.next_event.should be_a_valid_complete_hangup_event
     call_2.next_event.should be_a_valid_hangup_event
 
@@ -61,8 +61,8 @@ describe "Conference command" do
 
     call_1 = @tropo2.get_call
     call_1.call_event.should be_a_valid_offer_event
-    call_1.answer.should be_true
-    call_1.conference(:name => '1234').should be_true
+    call_1.answer.should have_executed_correctly
+    call_1.conference(:name => '1234').should have_executed_correctly
     call_1.next_event.should be_a_valid_conference_command
 
     place_call_with_script <<-SCRIPT_CONTENT
@@ -73,17 +73,17 @@ describe "Conference command" do
 
     call_2 = @tropo2.get_call
     call_2.call_event.should be_a_valid_offer_event
-    call_2.answer.should be_true
-    call_2.conference(:name => '1234').should be_true
+    call_2.answer.should have_executed_correctly
+    call_2.conference(:name => '1234').should have_executed_correctly
     call_2.next_event.should be_a_valid_conference_command
 
     sleep @config['media_assertion_timeout'] + 2
 
-    call_1.hangup.should be_true
+    call_1.hangup.should have_executed_correctly
     call_1.next_event.should be_a_valid_complete_hangup_event
     call_1.next_event.should be_a_valid_hangup_event
 
-    call_2.hangup.should be_true
+    call_2.hangup.should have_executed_correctly
     call_2.next_event.should be_a_valid_complete_hangup_event
     call_2.next_event.should be_a_valid_hangup_event
 

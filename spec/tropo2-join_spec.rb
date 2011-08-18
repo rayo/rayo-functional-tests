@@ -10,7 +10,7 @@ describe "Join command" do
 
   describe "can join a call" do
     def join(opts = {})
-      calls[0].join({:other_call_id => calls[1].call_id}.merge(opts)).should be_true
+      calls[0].join({:other_call_id => calls[1].call_id}.merge(opts)).should have_executed_correctly
     end
 
     describe "to another call" do
@@ -127,7 +127,7 @@ describe "Join command" do
 
     describe "to a mixer" do
       def join(opts = {})
-        @call.join({:mixer_id => mixer_id}.merge(opts)).should be_true
+        @call.join({:mixer_id => mixer_id}.merge(opts)).should have_executed_correctly
       end
 
       let(:mixer_id) { 'abc123' }
@@ -174,12 +174,12 @@ describe "Join command" do
         end
       end
 
-      calls[0].join(:other_call_id => calls[1].call_id).should be_true
+      calls[0].join(:other_call_id => calls[1].call_id).should have_executed_correctly
 
       calls[0].next_event.should be_a_valid_joined_event.with_other_call_id(calls[1].call_id)
       calls[1].next_event.should be_a_valid_joined_event.with_other_call_id(calls[0].call_id)
 
-      calls[0].unjoin(:other_call_id => calls[1].call_id).should be_true
+      calls[0].unjoin(:other_call_id => calls[1].call_id).should have_executed_correctly
 
       calls[0].next_event.should be_a_valid_unjoined_event.with_other_call_id(calls[1].call_id)
       calls[1].next_event.should be_a_valid_unjoined_event.with_other_call_id(calls[0].call_id)
@@ -194,11 +194,11 @@ describe "Join command" do
 
       mixer_id = 'abc123'
 
-      @call.join(:mixer_id => mixer_id).should be_true
+      @call.join(:mixer_id => mixer_id).should have_executed_correctly
 
       @call.next_event.should be_a_valid_joined_event.with_mixer_id(mixer_id)
 
-      @call.unjoin(:mixer_id => mixer_id).should be_true
+      @call.unjoin(:mixer_id => mixer_id).should have_executed_correctly
 
       @call.next_event.should be_a_valid_unjoined_event.with_mixer_id(mixer_id)
 
@@ -219,7 +219,7 @@ describe "Join command" do
         end
 
         def dial_join(opts = {})
-          @call2 = @tropo2.dial(tropo1_dial_options.merge(:join => { :other_call_id => @call.call_id }.merge(opts))).should be_true
+          @call2 = @tropo2.dial(tropo1_dial_options.merge(:join => { :other_call_id => @call.call_id }.merge(opts))).should have_dialed_correctly
         end
 
         it "in receive mode" do
@@ -275,7 +275,7 @@ describe "Join command" do
 
       describe "to a mixer" do
         def dial_join(opts = {})
-          @call = @tropo2.dial(tropo1_dial_options.merge(:join => { :mixer_id => mixer_id }.merge(opts))).should be_true
+          @call = @tropo2.dial(tropo1_dial_options.merge(:join => { :mixer_id => mixer_id }.merge(opts))).should have_dialed_correctly
         end
 
         let(:mixer_id) { 'abc123' }

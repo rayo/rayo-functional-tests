@@ -40,7 +40,7 @@ describe "Call accept, answer and hangup handling" do
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer false
-    @call.accept.should be_true
+    @call.accept.should have_executed_correctly
     hangup_and_confirm
   end
 

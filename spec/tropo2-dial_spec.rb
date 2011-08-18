@@ -96,12 +96,12 @@ describe "Dial command" do
 
       @call2 = @client2.get_call
       @call2.call_event.should be_a_valid_offer_event
-      @call2.answer.should be_true
+      @call2.answer.should have_executed_correctly
 
       @call1.ring_event.should be_a_valid_ringing_event
       @call1.next_event.should be_a_valid_answered_event
 
-      @call1.output(:text => 'Hello').should be_true
+      @call1.output(:text => 'Hello').should have_executed_correctly
       @call1.next_event.should be_a_valid_output_event
 
       hangup_and_confirm @call1

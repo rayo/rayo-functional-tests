@@ -41,7 +41,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => 'yes, no' }).should be_true
+    @call.input(:grammar => { :value => 'yes, no' }).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -63,7 +63,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should be_true
+    @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -85,7 +85,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => 'yes, no' }).should be_true
+    @call.input(:grammar => { :value => 'yes, no' }).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -104,8 +104,8 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value        =>  grxml,
-                              :content_type => 'application/grammar+grxml' } ).should be_true
+    @call.input(:grammar => { :value        => grxml,
+                              :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
 
     @call.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
 
@@ -125,7 +125,7 @@ describe "Input component" do
     get_call_and_answer
 
     @call.input(:grammar => { :value => grxml,
-                              :content_type => 'application/grammar+grxml' } ).should be_true
+                              :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
 
     @call.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
 

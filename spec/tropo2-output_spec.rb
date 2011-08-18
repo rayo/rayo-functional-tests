@@ -15,7 +15,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:text => 'yes').should be_true
+    @call.output(:text => 'yes').should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -34,7 +34,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:audio => { :url => @config['audio_url'] }).should be_true
+    @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
 
     sleep 9 #Wait for audio file to complete playing
 
@@ -57,7 +57,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should be_true
+    @call.output(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -76,7 +76,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:ssml => '<output-as interpret-as="ordinal">100</output-as>').should be_true
+    @call.output(:ssml => '<output-as interpret-as="ordinal">100</output-as>').should have_executed_correctly
 
     @call.next_event.should be_a_valid_complete_error_event.with_message("Invalid SSML: cvc-elt.1: Cannot find the declaration of element 'output-as'.")
 
@@ -114,7 +114,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:audio => { :url => @config['audio_url'] }).should be_true
+    @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
 
     @call.next_event.should be_a_valid_complete_hangup_event
     @call.next_event.should be_a_valid_hangup_event
@@ -142,37 +142,37 @@ describe "Output component" do
       SCRIPT_CONTENT
 
       get_call_and_answer
-      @output_command = @call.output(:audio => { :url => @config['audio_url'] }).should be_true
+      @output_command = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
     end
 
     it "can seek within the output" do
       pending 'This requires a new build of Prism, which depends on Tropo2 using the new XMPP stack'
-      @output_command.seek!(:direction => :forward, :amount => 3000).should be_true
-      @output_command.seek!(:direction => :back, :amount => 3000).should be_true
+      @output_command.seek!(:direction => :forward, :amount => 3000).should have_executed_correctly
+      @output_command.seek!(:direction => :back, :amount => 3000).should have_executed_correctly
     end
 
     it "can speed up output" do
-      @output_command.speed_up!.should be_true
-      @output_command.speed_up!.should be_true
+      @output_command.speed_up!.should have_executed_correctly
+      @output_command.speed_up!.should have_executed_correctly
     end
 
     it "can slow down output" do
-      @output_command.slow_down!.should be_true
-      @output_command.slow_down!.should be_true
+      @output_command.slow_down!.should have_executed_correctly
+      @output_command.slow_down!.should have_executed_correctly
     end
 
     it "can increase output volume" do
-      @output_command.volume_up!.should be_true
-      @output_command.volume_up!.should be_true
+      @output_command.volume_up!.should have_executed_correctly
+      @output_command.volume_up!.should have_executed_correctly
     end
 
     it "can decrease output volume" do
-      @output_command.volume_down!.should be_true
-      @output_command.volume_down!.should be_true
+      @output_command.volume_down!.should have_executed_correctly
+      @output_command.volume_down!.should have_executed_correctly
     end
 
     after do
-      @output_command.stop!.should be_true
+      @output_command.stop!.should have_executed_correctly
       @call.next_event.should be_a_valid_stopped_output_event
       hangup_and_confirm
     end

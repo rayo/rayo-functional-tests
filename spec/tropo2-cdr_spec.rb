@@ -59,7 +59,7 @@ describe "CDR Manager" do
 
     get_call_and_answer
 
-    @call.say(:text => 'yes').should be_true
+    @call.say(:text => 'yes').should have_executed_correctly
 
     wait_on_latch :responded
 

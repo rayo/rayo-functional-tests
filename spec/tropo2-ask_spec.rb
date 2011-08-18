@@ -42,7 +42,7 @@ describe "Ask command" do
     get_call_and_answer
 
     @call.ask(:prompt  => { :text  => 'One1' },
-              :choices => { :value => 'yes, no' }).should be_true
+              :choices => { :value => 'yes, no' }).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -66,7 +66,7 @@ describe "Ask command" do
 
     @call.ask(:prompt  => { :text  => 'One2' },
               :choices => { :value => '[1 DIGITS]' },
-              :mode    => :dtmf).should be_true
+              :mode    => :dtmf).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -89,7 +89,7 @@ describe "Ask command" do
     get_call_and_answer
 
     @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
-              :choices => { :value => 'yes, no' }).should be_true
+              :choices => { :value => 'yes, no' }).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -110,7 +110,7 @@ describe "Ask command" do
 
     @call.ask(:prompt  => { :text         => 'One3' },
               :choices => { :value        =>  grxml,
-                            :content_type => 'application/grammar+grxml' } ).should be_true
+                            :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
 
     @call.next_event.should be_a_valid_successful_ask_event.with_utterance('clue')
 
@@ -131,7 +131,7 @@ describe "Ask command" do
 
     @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
               :choices => { :value => grxml,
-                            :content_type => 'application/grammar+grxml' } ).should be_true
+                            :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
 
     @call.next_event.should be_a_valid_successful_ask_event.with_utterance('clue')
 

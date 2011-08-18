@@ -15,7 +15,7 @@ describe "Redirect command" do
       wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
-    @call.redirect(:to => @config['tropo1']['call_destination']).should be_true
+    @call.redirect(:to => @config['tropo1']['call_destination']).should have_executed_correctly
     @call.next_event.should be_a_valid_redirect_event
   end
 end

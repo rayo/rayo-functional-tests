@@ -9,8 +9,8 @@ describe "Misc commands" do
 
     get_call_and_answer
 
-    @call.mute.should be_true
-    @call.unmute.should be_true
+    @call.mute.should have_executed_correctly
+    @call.unmute.should have_executed_correctly
     hangup_and_confirm
   end
 end

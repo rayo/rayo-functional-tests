@@ -22,7 +22,7 @@ describe "Record command" do
     wait_on_latch :answered
 
     @record_command = @call.record record_options
-    @record_command.should be_true
+    @record_command.should have_executed_correctly
   end
 
   it "should record a call", :'load-suite' => true do
@@ -54,7 +54,7 @@ describe "Record command" do
 
     get_call_and_answer
 
-    @call.output(:audio => {:url => @recording.recording.uri}).should be_true
+    @call.output(:audio => {:url => @recording.recording.uri}).should have_executed_correctly
 
     wait_on_latch :responded
     @call.next_event.should be_a_valid_output_event
@@ -91,11 +91,11 @@ describe "Record command" do
 
     it "can be paused, resumed and stopped" do
       sleep 2
-      @record_command.pause!.should be_true
+      @record_command.pause!.should have_executed_correctly
       sleep 2
-      @record_command.resume!.should be_true
+      @record_command.resume!.should have_executed_correctly
       sleep 2
-      @record_command.stop!.should be_true
+      @record_command.stop!.should have_executed_correctly
 
       @call.next_event.should be_a_valid_stopped_recording_event
 

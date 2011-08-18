@@ -8,7 +8,7 @@ describe "Reject command" do
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer false
-    @call.reject(:reason => :decline).should be_true
+    @call.reject(:reason => :decline).should have_executed_correctly
     @call.next_event.should be_a_valid_reject_event
   end
 
@@ -19,7 +19,7 @@ describe "Reject command" do
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer false
-    @call.reject(:reason => :busy).should be_true
+    @call.reject(:reason => :busy).should have_executed_correctly
     @call.next_event.should be_a_valid_reject_event
   end
 
@@ -30,7 +30,7 @@ describe "Reject command" do
     TROPO_SCRIPT_CONTENT
 
     get_call_and_answer false
-    @call.reject(:reason => :error).should be_true
+    @call.reject(:reason => :error).should have_executed_correctly
     @call.next_event.should be_a_valid_reject_event
   end
 
@@ -42,7 +42,7 @@ describe "Reject command" do
 
     get_call_and_answer false
     lambda { @call.reject :reason => :foobar }.should raise_error(ArgumentError)
-    @call.reject(:reason => :busy).should be_true
+    @call.reject(:reason => :busy).should have_executed_correctly
     @call.next_event.should be_a_valid_reject_event
   end
 end

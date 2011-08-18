@@ -9,16 +9,14 @@ describe "Call Scenarios" do
 
       # 2. One number service answers the call and plays an announcement (selected from a predefined set or from the recordings made by user)
       get_call_and_answer
-      call_output = @call.output(:audio => { :url => @config['audio_url'] }).should be_true
+      call_output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
 
       # 3. While the announcement is being played the call is transferred to N employees in parallel (all the employees’ phones ring in parallel)
       @tropo1.script_content = employee_script
 
-      @employee1 = @tropo2.dial(tropo1_dial_options).should be_true
-
-      @employee2 = @tropo2.dial(tropo1_dial_options).should be_true
-
-      @employee3 = @tropo2.dial(tropo1_dial_options).should be_true
+      @employee1 = @tropo2.dial tropo1_dial_options
+      @employee2 = @tropo2.dial tropo1_dial_options
+      @employee3 = @tropo2.dial tropo1_dial_options
 
       # 4. The possible answers for each of the phones are reject, busy, timeout (no answer), cancelled (connFu hangs that call before any other answer) or accepted
       #
@@ -31,15 +29,15 @@ describe "Call Scenarios" do
       @employee1.next_event.should be_a_valid_answered_event
 
       # 6. All other pending legs with employees are hung up
-      @employee2.hangup.should be_true
-      @employee3.hangup.should be_true
+      @employee2.hangup.should have_executed_correctly
+      @employee3.hangup.should have_executed_correctly
 
       # 7. The call is established end to end between the customer and employee1
-      call_output.stop!.should be_true
+      call_output.stop!.should have_executed_correctly
       @call.next_event.should be_a_valid_stopped_output_event
 
       # Join employee1 to the customer
-      @employee1.join(:other_call_id => @call.call_id).should be_true
+      @employee1.join(:other_call_id => @call.call_id).should have_executed_correctly
       @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee1.call_id)
       @employee1.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
     end
@@ -120,17 +118,17 @@ describe "Call Scenarios" do
         wait_to_hangup 4
       SCRIPT_CONTENT
 
-      @employee1 = @tropo2.dial(tropo1_dial_options).should be_true
+      @employee1 = @tropo2.dial tropo1_dial_options
 
       @employee1.ring_event.should be_a_valid_ringing_event
       @employee1.next_event.should be_a_valid_answered_event
 
-      @employee1.join(:other_call_id => @call.call_id).should be_true
+      @employee1.join(:other_call_id => @call.call_id).should have_executed_correctly
       @employee1.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
       @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee1.call_id)
 
       # 3. employee1 enters a DTMF sequence (eg. 1)
-      @employee1.input(:grammar => { :value => '1' }).should be_true
+      @employee1.input(:grammar => { :value => '1' }).should have_executed_correctly
 
       @employee1.next_event.should be_a_valid_successful_input_event.with_interpretation('1')
 
@@ -145,11 +143,11 @@ describe "Call Scenarios" do
       @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
 
       # Play Announcement
-      @call_output = @call.output(:audio => { :url => @config['audio_url'] }).should be_true
+      @call_output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
 
       # Dial ‘employee2’
       @tropo1.script_content = employee2_script
-      @employee2 = @tropo2.dial(tropo1_dial_options).should be_true
+      @employee2 = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
     end
 
     describe "5.1 If employee2 takes the call" do
@@ -163,10 +161,10 @@ describe "Call Scenarios" do
 
       it "then the call is established between the customer and employee1" do
         @employee2.next_event.should be_a_valid_answered_event
-        @call_output.stop!.should be_true
+        @call_output.stop!.should have_executed_correctly
         @call.next_event.should be_a_valid_stopped_output_event
 
-        @employee2.join(:other_call_id => @call.call_id).should be_true
+        @employee2.join(:other_call_id => @call.call_id).should have_executed_correctly
         @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee2.call_id)
         @employee2.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
 
@@ -190,10 +188,10 @@ describe "Call Scenarios" do
 
       it "then play an announcement (selected from a predefined set or from the recordings made by user) and clear the call" do
         @employee2.next_event.should be_a_valid_reject_event
-        @call_output.stop!.should be_true
+        @call_output.stop!.should have_executed_correctly
         @call.next_event.should be_a_valid_stopped_output_event
 
-        @call.output(:audio => { :url => @config['audio_url'] }).should be_true
+        @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
         @call.next_event.should be_a_valid_output_event
 
         hangup_and_confirm
