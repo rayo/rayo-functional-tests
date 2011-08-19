@@ -14,16 +14,13 @@ describe "Call Scenarios" do
       # 3. While the announcement is being played the call is transferred to N employees in parallel (all the employees’ phones ring in parallel)
       @tropo1.script_content = employee_script
 
-      @employee1 = @tropo2.dial tropo1_dial_options
-      @employee2 = @tropo2.dial tropo1_dial_options
-      @employee3 = @tropo2.dial tropo1_dial_options
+      @employee1 = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
+      @employee2 = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
+      @employee3 = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
 
       # 4. The possible answers for each of the phones are reject, busy, timeout (no answer), cancelled (connFu hangs that call before any other answer) or accepted
       #
       # Based on the above dial commands the client will start receiving progress events for all three calls.
-      @employee1.ring_event.should be_a_valid_ringing_event
-      @employee2.ring_event.should be_a_valid_ringing_event
-      @employee3.ring_event.should be_a_valid_ringing_event
 
       # 5. One of them takes the call (employee1) [If none of them takes the call then play an announcement (selected from a predefined set or from the recordings made by user) and clear the call]
       @employee1.next_event.should be_a_valid_answered_event
@@ -118,9 +115,8 @@ describe "Call Scenarios" do
         wait_to_hangup 4
       SCRIPT_CONTENT
 
-      @employee1 = @tropo2.dial tropo1_dial_options
+      @employee1 = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
 
-      @employee1.ring_event.should be_a_valid_ringing_event
       @employee1.next_event.should be_a_valid_answered_event
 
       @employee1.join(:other_call_id => @call.call_id).should have_executed_correctly

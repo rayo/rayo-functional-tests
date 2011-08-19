@@ -34,14 +34,13 @@ describe "CDR Manager" do
       hangup
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial tropo1_dial_options
+    @call = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
 
     p active_cdrs
     p @call.call_event.call_id
 
     check_cdr_is_current_call
 
-    @call.ring_event.should be_a_valid_ringing_event
     @call.next_event.should be_a_valid_reject_event
   end
 

@@ -245,7 +245,6 @@ describe "Join command" do
 
         after :each do
           if @call2
-            @call2.ring_event.should be_a_valid_ringing_event
             @call2.next_event.should be_a_valid_answered_event
             @call2.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
 
@@ -267,8 +266,7 @@ describe "Join command" do
           pending
           @tropo1.script_content = 'reject'
 
-          @call = @tropo2.dial tropo1_dial_options
-          @call.ring_event.should be_a_valid_ringing_event
+          @call = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
           @call.next_event.should be_a_valid_reject_event
         end
       end
@@ -303,7 +301,6 @@ describe "Join command" do
         end
 
         after :each do
-          # @call.ring_event.should be_a_valid_ringing_event
           # @call.next_event.should be_a_valid_answered_event
           # @call.next_event.should be_a_valid_joined_event.with_mixer_id(mixer_id)
           # hangup_and_confirm

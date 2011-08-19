@@ -7,8 +7,7 @@ describe "Dial command" do
       wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial tropo1_dial_options
-    @call.ring_event.should be_a_valid_ringing_event
+    @call = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
     @call.next_event.should be_a_valid_reject_event
   end
 
@@ -17,8 +16,7 @@ describe "Dial command" do
       reject
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial tropo1_dial_options
-    @call.ring_event.should be_a_valid_ringing_event
+    @call = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
     @call.next_event.should be_a_valid_reject_event
   end
 
@@ -33,8 +31,7 @@ describe "Dial command" do
     dial_options = tropo1_dial_options
     dial_options[:headers]['x-tropo2-test'] = 'booyah!'
 
-    @call = @tropo2.dial dial_options
-    @call.ring_event.should be_a_valid_ringing_event
+    @call = @tropo2.dial(dial_options).should have_dialed_correctly
     @call.next_event.should be_a_valid_answered_event
     @call.next_event.should be_a_valid_hangup_event
     @tropo1.result.should eql 'booyah!'
@@ -46,8 +43,7 @@ describe "Dial command" do
       wait_to_hangup
     TROPO_SCRIPT_CONTENT
 
-    @call = @tropo2.dial tropo1_dial_options
-    @call.ring_event.should be_a_valid_ringing_event
+    @call = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
     @call.next_event.should be_a_valid_answered_event
     hangup_and_confirm
   end
@@ -59,15 +55,13 @@ describe "Dial command" do
       hangup
     TROPO_SCRIPT_CONTENT
 
-    call1 = @tropo2.dial tropo1_dial_options
-    call2 = @tropo2.dial tropo1_dial_options
+    call1 = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
+    call2 = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
 
-    call1.ring_event.should be_a_valid_ringing_event
     call1.next_event.should be_a_valid_answered_event
     call1.next_event.should be_a_valid_hangup_event
     call1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
 
-    call2.ring_event.should be_a_valid_ringing_event
     call2.next_event.should be_a_valid_answered_event
     call2.next_event.should be_a_valid_hangup_event
     call2.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
