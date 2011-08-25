@@ -58,11 +58,11 @@ describe "CDR Manager" do
 
     get_call_and_answer
 
-    @call.say(:text => 'yes').should have_executed_correctly
+    say = @call.say(:text => 'yes').should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_say_event
+    say.next_event.should be_a_valid_say_event
 
     check_cdr_is_current_call
 

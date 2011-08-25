@@ -95,8 +95,8 @@ describe "Dial command" do
       @call1.ring_event.should be_a_valid_ringing_event
       @call1.next_event.should be_a_valid_answered_event
 
-      @call1.output(:text => 'Hello').should have_executed_correctly
-      @call1.next_event.should be_a_valid_output_event
+      output = @call1.output(:text => 'Hello').should have_executed_correctly
+      output.next_event.should be_a_valid_output_event
 
       hangup_and_confirm @call1
 

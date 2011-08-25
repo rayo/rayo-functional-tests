@@ -60,11 +60,11 @@ describe "DTMF events" do
 
     get_call_and_answer
 
-    @call.say(:audio => { :url => 'dtmf:5' }).should have_executed_correctly
+    say = @call.say(:audio => { :url => 'dtmf:5' }).should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_say_event
+    say.next_event.should be_a_valid_say_event
 
     hangup_and_confirm
 
