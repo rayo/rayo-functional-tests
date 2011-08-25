@@ -41,11 +41,11 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => 'yes, no' }).should have_executed_correctly
+    input = @call.input(:grammar => { :value => 'yes, no' }).should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_successful_input_event.with_utterance('yes')
+    input.next_event.should be_a_valid_successful_input_event.with_utterance('yes')
 
     hangup_and_confirm
   end
@@ -63,11 +63,11 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should have_executed_correctly
+    input = @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_successful_input_event.with_interpretation('3')
+    input.next_event.should be_a_valid_successful_input_event.with_interpretation('3')
 
     hangup_and_confirm
   end
@@ -85,11 +85,11 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => 'yes, no' }).should have_executed_correctly
+    input = @call.input(:grammar => { :value => 'yes, no' }).should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_successful_input_event.with_utterance('yes')
+    input.next_event.should be_a_valid_successful_input_event.with_utterance('yes')
 
     hangup_and_confirm
   end
@@ -104,10 +104,10 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value        => grxml,
-                              :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
+    input = @call.input(:grammar => { :value        => grxml,
+                                      :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
 
-    @call.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
+    input.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
 
     hangup_and_confirm
   end
@@ -124,10 +124,10 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => grxml,
-                              :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
+    input = @call.input(:grammar => { :value => grxml,
+                                      :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
 
-    @call.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
+    input.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
 
     hangup_and_confirm
   end
@@ -141,9 +141,9 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input :grammar => { :value => 'yes, no' }, :initial_timeout => 2000
+    input = @call.input :grammar => { :value => 'yes, no' }, :initial_timeout => 2000
 
-    @call.next_event.should be_a_valid_input_noinput_event
+    input.next_event.should be_a_valid_input_noinput_event
     @call.next_event.should be_a_valid_hangup_event
   end
 
@@ -158,11 +158,11 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input :grammar          => { :value => 'red, green' },
-                :complete_timeout => 3000,
-                :min_confidence   => 1
+    input = @call.input :grammar          => { :value => 'red, green' },
+                        :complete_timeout => 3000,
+                        :min_confidence   => 1
 
-    @call.next_event.should be_a_valid_input_nomatch_event
+    input.next_event.should be_a_valid_input_nomatch_event
 
     hangup_and_confirm
   end
@@ -177,9 +177,9 @@ describe "Input component" do
 
     get_call_and_answer
 
-    @call.input :grammar => { :value => 'red, green' }
+    input = @call.input :grammar => { :value => 'red, green' }
 
-    @call.next_event.should be_a_valid_stopped_input_event
+    input.next_event.should be_a_valid_stopped_input_event
     @call.next_event.should be_a_valid_hangup_event
   end
 

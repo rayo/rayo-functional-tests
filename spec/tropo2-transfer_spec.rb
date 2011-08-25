@@ -16,13 +16,13 @@ describe "Transfer verb" do
       hangup
     SCRIPT_CONTENT
 
-    @call.transfer(:to      => @config['tropo1']['call_destination'],
-                   :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should have_executed_correctly
+    transfer = @call.transfer(:to      => @config['tropo1']['call_destination'],
+                              :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should have_executed_correctly
 
     # The spec does not call for an <answered/> event here but may soon
     #@call.next_event.should be_a_valid_answered_event
 
-    @call.next_event.should be_a_valid_transfer_event
+    transfer.next_event.should be_a_valid_transfer_event
     hangup_and_confirm
   end
 
@@ -39,11 +39,11 @@ describe "Transfer verb" do
       wait 5000
     SCRIPT_CONTENT
 
-    @call.transfer(:to      => @config['tropo1']['call_destination'],
-                   :timeout => 2000,
-                   :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should have_executed_correctly
+    transfer = @call.transfer(:to      => @config['tropo1']['call_destination'],
+                              :timeout => 2000,
+                              :headers => { 'x-tropo2-drb-address' => @drb_server_uri }).should have_executed_correctly
 
-    @call.next_event.should be_a_valid_transfer_timeout_event
+    transfer.next_event.should be_a_valid_transfer_timeout_event
     hangup_and_confirm
   end
 end

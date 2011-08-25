@@ -15,11 +15,11 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:text => 'yes').should have_executed_correctly
+    output = @call.output(:text => 'yes').should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_output_event
+    output.next_event.should be_a_valid_output_event
 
     hangup_and_confirm
 
@@ -34,11 +34,11 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+    output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
 
     sleep 9 #Wait for audio file to complete playing
 
-    @call.next_event.should be_a_valid_output_event
+    output.next_event.should be_a_valid_output_event
 
     hangup_and_confirm
   end
@@ -57,11 +57,11 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should have_executed_correctly
+    output = @call.output(:ssml => '<say-as interpret-as="ordinal">100</say-as>').should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_output_event
+    output.next_event.should be_a_valid_output_event
 
     hangup_and_confirm
 
@@ -76,9 +76,9 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:ssml => '<output-as interpret-as="ordinal">100</output-as>').should have_executed_correctly
+    output = @call.output(:ssml => '<output-as interpret-as="ordinal">100</output-as>').should have_executed_correctly
 
-    @call.next_event.should be_a_valid_complete_error_event.with_message("Invalid SSML: cvc-elt.1: Cannot find the declaration of element 'output-as'.")
+    output.next_event.should be_a_valid_complete_error_event.with_message("Invalid SSML: cvc-elt.1: Cannot find the declaration of element 'output-as'.")
 
     hangup_and_confirm
   end
@@ -100,7 +100,7 @@ describe "Output component" do
     sleep 2
     output_command.stop!
 
-    @call.next_event.should be_a_valid_stopped_output_event
+    output_command.next_event.should be_a_valid_stopped_output_event
 
     hangup_and_confirm
   end
@@ -114,9 +114,9 @@ describe "Output component" do
 
     get_call_and_answer
 
-    @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+    output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
 
-    @call.next_event.should be_a_valid_complete_hangup_event
+    output.next_event.should be_a_valid_complete_hangup_event
     @call.next_event.should be_a_valid_hangup_event
   end
 
@@ -173,7 +173,7 @@ describe "Output component" do
 
     after do
       @output_command.stop!.should have_executed_correctly
-      @call.next_event.should be_a_valid_stopped_output_event
+      @output_command.next_event.should be_a_valid_stopped_output_event
       hangup_and_confirm
     end
   end

@@ -41,12 +41,12 @@ describe "Ask command" do
 
     get_call_and_answer
 
-    @call.ask(:prompt  => { :text  => 'One1' },
-              :choices => { :value => 'yes, no' }).should have_executed_correctly
+    ask = @call.ask(:prompt  => { :text  => 'One1' },
+                    :choices => { :value => 'yes, no' }).should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_successful_ask_event.with_utterance('yes')
+    ask.next_event.should be_a_valid_successful_ask_event.with_utterance('yes')
 
     hangup_and_confirm
   end
@@ -64,13 +64,13 @@ describe "Ask command" do
 
     get_call_and_answer
 
-    @call.ask(:prompt  => { :text  => 'One2' },
-              :choices => { :value => '[1 DIGITS]' },
-              :mode    => :dtmf).should have_executed_correctly
+    ask = @call.ask(:prompt  => { :text  => 'One2' },
+                    :choices => { :value => '[1 DIGITS]' },
+                    :mode    => :dtmf).should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_successful_ask_event.with_interpretation('3')
+    ask.next_event.should be_a_valid_successful_ask_event.with_interpretation('3')
 
     hangup_and_confirm
   end
@@ -88,12 +88,12 @@ describe "Ask command" do
 
     get_call_and_answer
 
-    @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
-              :choices => { :value => 'yes, no' }).should have_executed_correctly
+    ask = @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
+                    :choices => { :value => 'yes, no' }).should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_successful_ask_event.with_utterance('yes')
+    ask.next_event.should be_a_valid_successful_ask_event.with_utterance('yes')
 
     hangup_and_confirm
   end
@@ -108,11 +108,11 @@ describe "Ask command" do
 
     get_call_and_answer
 
-    @call.ask(:prompt  => { :text         => 'One3' },
-              :choices => { :value        =>  grxml,
-                            :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
+    ask = @call.ask(:prompt  => { :text         => 'One3' },
+                    :choices => { :value        =>  grxml,
+                                  :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
 
-    @call.next_event.should be_a_valid_successful_ask_event.with_utterance('clue')
+    ask.next_event.should be_a_valid_successful_ask_event.with_utterance('clue')
 
     hangup_and_confirm
   end
@@ -129,11 +129,11 @@ describe "Ask command" do
 
     get_call_and_answer
 
-    @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
-              :choices => { :value => grxml,
-                            :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
+    ask = @call.ask(:prompt  => { :text  => '<say-as interpret-as="ordinal">100</say-as>' },
+                    :choices => { :value => grxml,
+                                  :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
 
-    @call.next_event.should be_a_valid_successful_ask_event.with_utterance('clue')
+    ask.next_event.should be_a_valid_successful_ask_event.with_utterance('clue')
 
     hangup_and_confirm
   end
@@ -147,11 +147,11 @@ describe "Ask command" do
 
     get_call_and_answer
 
-    @call.ask :prompt  => { :text  => 'Yeap' },
-              :choices => { :value => 'yes, no' },
-              :timeout => 2000
+    ask = @call.ask :prompt  => { :text  => 'Yeap' },
+                    :choices => { :value => 'yes, no' },
+                    :timeout => 2000
 
-    @call.next_event.should be_a_valid_ask_noinput_event
+    ask.next_event.should be_a_valid_ask_noinput_event
     @call.next_event.should be_a_valid_hangup_event
   end
 
@@ -166,12 +166,12 @@ describe "Ask command" do
 
     get_call_and_answer
 
-    @call.ask :prompt         => { :text  => 'Yeap' },
-              :choices        => { :value => 'red, green' },
-              :timeout        => 3000,
-              :min_confidence => 1
+    ask = @call.ask :prompt         => { :text  => 'Yeap' },
+                    :choices        => { :value => 'red, green' },
+                    :timeout        => 3000,
+                    :min_confidence => 1
 
-    @call.next_event.should be_a_valid_ask_nomatch_event
+    ask.next_event.should be_a_valid_ask_nomatch_event
 
     hangup_and_confirm
   end
@@ -186,10 +186,10 @@ describe "Ask command" do
 
     get_call_and_answer
 
-    @call.ask :prompt  => { :text  => 'Yeap' },
-              :choices => { :value => 'red, green' }
+    ask = @call.ask :prompt  => { :text  => 'Yeap' },
+                    :choices => { :value => 'red, green' }
 
-    @call.next_event.should be_a_valid_stopped_ask_event
+    ask.next_event.should be_a_valid_stopped_ask_event
     @call.next_event.should be_a_valid_hangup_event
   end
 
@@ -201,6 +201,7 @@ describe "Ask command" do
     SCRIPT_CONTENT
 
     get_call_and_answer
+
 
     lambda { @call.ask :prompt  => { :text => 'One4' },
                        :choices => { :value => '<grammar>' } }.should raise_error(Punchblock::ProtocolError)

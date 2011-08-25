@@ -28,14 +28,14 @@ describe "Record command" do
   it "should record a call", :'load-suite' => true do
     wait_on_latch :spoke
     hangup_and_confirm do
-      @call.next_event.should be_a_valid_complete_recording_event
+      @record_command.next_event.should be_a_valid_complete_recording_event
     end
   end
 
   it "should record the correct content and return the correct filename" do
     wait_on_latch :spoke
     hangup_and_confirm do
-      @recording = @call.next_event
+      @recording = @record_command.next_event
       @recording.should be_a_valid_complete_recording_event
     end
 
@@ -54,10 +54,10 @@ describe "Record command" do
 
     get_call_and_answer
 
-    @call.output(:audio => {:url => @recording.recording.uri}).should have_executed_correctly
+    output = @call.output(:audio => {:url => @recording.recording.uri}).should have_executed_correctly
 
     wait_on_latch :responded
-    @call.next_event.should be_a_valid_output_event
+    output.next_event.should be_a_valid_output_event
     hangup_and_confirm
     @tropo1.result.should == 'hello world'
   end
@@ -84,7 +84,7 @@ describe "Record command" do
       let(:record_options) { {:max_duration => 2000} }
 
       it "finishes recording when the maximum duration expires" do
-        @call.next_event.should be_a_valid_stopped_recording_event
+        @record_command.next_event.should be_a_valid_stopped_recording_event
         hangup_and_confirm
       end
     end
@@ -97,7 +97,7 @@ describe "Record command" do
       sleep 2
       @record_command.stop!.should have_executed_correctly
 
-      @call.next_event.should be_a_valid_stopped_recording_event
+      @record_command.next_event.should be_a_valid_stopped_recording_event
 
       hangup_and_confirm
     end

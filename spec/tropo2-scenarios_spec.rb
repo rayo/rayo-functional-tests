@@ -31,7 +31,7 @@ describe "Call Scenarios" do
 
       # 7. The call is established end to end between the customer and employee1
       call_output.stop!.should have_executed_correctly
-      @call.next_event.should be_a_valid_stopped_output_event
+      call_output.next_event.should be_a_valid_stopped_output_event
 
       # Join employee1 to the customer
       @employee1.join(:other_call_id => @call.call_id).should have_executed_correctly
@@ -124,9 +124,9 @@ describe "Call Scenarios" do
       @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee1.call_id)
 
       # 3. employee1 enters a DTMF sequence (eg. 1)
-      @employee1.input(:grammar => { :value => '1' }).should have_executed_correctly
+      input1 = @employee1.input(:grammar => { :value => '1' }).should have_executed_correctly
 
-      @employee1.next_event.should be_a_valid_successful_input_event.with_interpretation('1')
+      input1.next_event.should be_a_valid_successful_input_event.with_interpretation('1')
 
       # 4. The caller (the customer) is transferred to a new destination (employee2) while listening some music on hold and the call with employee1 is automatically hung up
 
@@ -158,7 +158,7 @@ describe "Call Scenarios" do
       it "then the call is established between the customer and employee1" do
         @employee2.next_event.should be_a_valid_answered_event
         @call_output.stop!.should have_executed_correctly
-        @call.next_event.should be_a_valid_stopped_output_event
+        @call_output.next_event.should be_a_valid_stopped_output_event
 
         @employee2.join(:other_call_id => @call.call_id).should have_executed_correctly
         @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee2.call_id)
@@ -185,10 +185,10 @@ describe "Call Scenarios" do
       it "then play an announcement (selected from a predefined set or from the recordings made by user) and clear the call" do
         @employee2.next_event.should be_a_valid_reject_event
         @call_output.stop!.should have_executed_correctly
-        @call.next_event.should be_a_valid_stopped_output_event
+        @call_output.next_event.should be_a_valid_stopped_output_event
 
-        @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
-        @call.next_event.should be_a_valid_output_event
+        output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+        output.next_event.should be_a_valid_output_event
 
         hangup_and_confirm
       end

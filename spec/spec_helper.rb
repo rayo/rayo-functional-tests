@@ -42,6 +42,16 @@ $drb_server_uri = "druby://#{drb_server_host_and_port}"
 $tropo1 = RSpecRayo::Tropo1Driver.new $drb_server_uri, $config['tropo1']['latch_timeout']
 $tropo1.config = $config
 
+module Punchblock
+  module Component
+    class ComponentNode
+      def next_event(timeout = nil)
+        Timeout::timeout(timeout || $config['tropo2_queue']['connection_timeout']) { event_queue.pop }
+      end
+    end
+  end
+end
+
 status = $tropo2.read_queue $tropo2.event_queue
 abort 'Could not connect to Prism XMPP Server. Aborting!' unless status == 'CONNECTED'
 $tropo2.start_event_dispatcher
