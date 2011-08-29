@@ -146,7 +146,6 @@ describe "Output component" do
     end
 
     it "can seek within the output" do
-      pending 'This requires a new build of Prism, which depends on Tropo2 using the new XMPP stack'
       @output_command.seek!(:direction => :forward, :amount => 3000).should have_executed_correctly
       @output_command.seek!(:direction => :back, :amount => 3000).should have_executed_correctly
     end
