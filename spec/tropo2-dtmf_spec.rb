@@ -46,28 +46,45 @@ describe "DTMF events" do
     hangup_and_confirm
   end
 
-  it "should send DTMF tones correctly" do
-    add_latch :responded
+  describe "sending DTMF" do
+    before do
+      add_latch :responded
 
-    place_call_with_script <<-SCRIPT_CONTENT
-      call_tropo2
-      ask 'One6', :choices     => '[1 DIGITS]',
-                  :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
-                  :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
-      trigger_latch :responded
-      wait_to_hangup
-    SCRIPT_CONTENT
+      place_call_with_script <<-SCRIPT_CONTENT
+        call_tropo2
+        ask 'One6', :choices     => '[2 DIGITS]',
+                    :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
+                    :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+        trigger_latch :responded
+        wait_to_hangup
+      SCRIPT_CONTENT
 
-    get_call_and_answer
+      get_call_and_answer
+    end
 
-    say = @call.say(:audio => { :url => 'dtmf:5' }).should have_executed_correctly
+    describe "with a DTMF URI" do
+      it "should send DTMF tones correctly" do
+        say1 = @call.say(:audio => { :url => 'dtmf:5' }).should have_executed_correctly
+        say2 = @call.say(:audio => { :url => 'dtmf:6' }).should have_executed_correctly
 
-    wait_on_latch :responded
+        wait_on_latch :responded
 
-    say.next_event.should be_a_valid_say_event
+        say1.next_event.should be_a_valid_say_event
+        say2.next_event.should be_a_valid_say_event
+      end
+    end
 
-    hangup_and_confirm
+    # describe "with a DTMF command" do
+    #   it "should send DTMF tones correctly" do
+    #     @call.dtmf(5).should have_executed_correctly
+    #     @call.dtmf(6).should have_executed_correctly
+    #     wait_on_latch :responded
+    #   end
+    # end
 
-    @tropo1.result.should eql '5'
+    after do
+      hangup_and_confirm
+      @tropo1.result.should eql '56'
+    end
   end
 end
