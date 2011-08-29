@@ -35,11 +35,11 @@ describe "DTMF events" do
 
     get_call_and_answer
 
-    @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should have_executed_correctly
+    input = @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should have_executed_correctly
 
     wait_on_latch :responded
 
-    @call.next_event.should be_a_valid_successful_input_event.with_interpretation('3')
+    input.next_event.should be_a_valid_successful_input_event.with_interpretation('3')
 
     @call.next_event.should be_a_valid_dtmf_event.with_signal('3')
 
