@@ -28,16 +28,12 @@ describe "CDR Manager" do
   end
 
   it "should create a CDR for an outgoing call" do
-    pending
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
-      wait_to_hangup
+      sleep 1
       hangup
     TROPO_SCRIPT_CONTENT
 
     @call = @tropo2.dial(tropo1_dial_options).should have_dialed_correctly
-
-    p active_cdrs
-    p @call.call_event.call_id
 
     check_cdr_is_current_call
 
