@@ -167,8 +167,7 @@ describe "Input component" do
     hangup_and_confirm
   end
 
-  it "should input and get a STOP if the farside hangs up before the command complete" do
-    pending 'https://github.com/tropo/tropo2/issues/59'
+  it "should input and get a complete hangup if the farside hangs up before the command completes" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       wait 8000
@@ -179,7 +178,7 @@ describe "Input component" do
 
     input = @call.input :grammar => { :value => 'red, green' }
 
-    input.next_event.should be_a_valid_stopped_input_event
+    input.next_event.should be_a_valid_complete_hangup_event
     @call.next_event.should be_a_valid_hangup_event
   end
 

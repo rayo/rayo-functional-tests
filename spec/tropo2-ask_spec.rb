@@ -176,8 +176,7 @@ describe "Ask command" do
     hangup_and_confirm
   end
 
-  it "should ask and get a STOP if the farside hangs up before the command complete" do
-    pending 'https://github.com/tropo/tropo2/issues/59'
+  it "should ask and get a complete hangup if the farside hangs up before the command completes" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_tropo2
       wait 8000
@@ -189,7 +188,7 @@ describe "Ask command" do
     ask = @call.ask :prompt  => { :text  => 'Yeap' },
                     :choices => { :value => 'red, green' }
 
-    ask.next_event.should be_a_valid_stopped_ask_event
+    ask.next_event.should be_a_valid_complete_hangup_event
     @call.next_event.should be_a_valid_hangup_event
   end
 
