@@ -64,8 +64,8 @@ describe "DTMF events" do
 
     describe "with a DTMF URI" do
       it "should send DTMF tones correctly" do
-        say1 = @call.say(:audio => { :url => 'dtmf:5' }).should have_executed_correctly
-        say2 = @call.say(:audio => { :url => 'dtmf:6' }).should have_executed_correctly
+        say1 = @call.say(:ssml => audio_ssml(:url => 'dtmf:5')).should have_executed_correctly
+        say2 = @call.say(:ssml => audio_ssml(:url => 'dtmf:6')).should have_executed_correctly
 
         wait_on_latch :responded
 

@@ -34,7 +34,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+    output = @call.output(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
 
     sleep 9 #Wait for audio file to complete playing
 
@@ -91,7 +91,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    output_command = @call.output :audio => { :url => @config['audio_url'] }
+    output_command = @call.output :ssml => audio_ssml(:url => @config['audio_url'])
 
     sleep 2
     output_command.pause!
@@ -114,7 +114,7 @@ describe "Output component" do
 
     get_call_and_answer
 
-    output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+    output = @call.output(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
 
     output.next_event.should be_a_valid_complete_hangup_event
     @call.next_event.should be_a_valid_hangup_event
@@ -142,7 +142,7 @@ describe "Output component" do
       SCRIPT_CONTENT
 
       get_call_and_answer
-      @output_command = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+      @output_command = @call.output(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
     end
 
     it "can seek within the output" do

@@ -34,7 +34,7 @@ describe "Say command" do
 
     get_call_and_answer
 
-    say = @call.say(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+    say = @call.say(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
 
     sleep 9 #Wait for audio file to complete playing
 
@@ -76,7 +76,7 @@ describe "Say command" do
 
     get_call_and_answer
 
-    say_command = @call.say :audio => { :url => @config['audio_url'] }
+    say_command = @call.say :ssml => audio_ssml(:url => @config['audio_url'])
 
     sleep 2
     say_command.pause!
@@ -99,7 +99,7 @@ describe "Say command" do
 
     get_call_and_answer
 
-    say = @call.say(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+    say = @call.say(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
 
     say.next_event.should be_a_valid_complete_hangup_event
     @call.next_event.should be_a_valid_hangup_event

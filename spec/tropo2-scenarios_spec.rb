@@ -9,7 +9,7 @@ describe "Call Scenarios" do
 
       # 2. One number service answers the call and plays an announcement (selected from a predefined set or from the recordings made by user)
       get_call_and_answer
-      call_output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+      call_output = @call.output(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
 
       # 3. While the announcement is being played the call is transferred to N employees in parallel (all the employees’ phones ring in parallel)
       @tropo1.script_content = employee_script
@@ -139,7 +139,7 @@ describe "Call Scenarios" do
       @employee1.last_event?(@config['tropo2_queue']['last_stanza_timeout']).should == true
 
       # Play Announcement
-      @call_output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+      @call_output = @call.output(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
 
       # Dial ‘employee2’
       @tropo1.script_content = employee2_script
@@ -187,7 +187,7 @@ describe "Call Scenarios" do
         @call_output.stop!.should have_executed_correctly
         @call_output.next_event.should be_a_valid_stopped_output_event
 
-        output = @call.output(:audio => { :url => @config['audio_url'] }).should have_executed_correctly
+        output = @call.output(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
         output.next_event.should be_a_valid_output_event
 
         hangup_and_confirm

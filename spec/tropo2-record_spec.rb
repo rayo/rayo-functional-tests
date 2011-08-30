@@ -54,7 +54,7 @@ describe "Record command" do
 
     get_call_and_answer
 
-    output = @call.output(:audio => {:url => @recording.recording.uri}).should have_executed_correctly
+    output = @call.output(:ssml => audio_ssml(:url => @recording.recording.uri)).should have_executed_correctly
 
     wait_on_latch :responded
     output.next_event.should be_a_valid_output_event
