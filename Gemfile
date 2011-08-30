@@ -6,8 +6,8 @@ group :development do
   gem 'bundler'
   gem 'rake'
   gem 'rcov'
-  gem 'rspec-rayo', '>= 0.1.10'
-  gem 'punchblock', :git => 'git@github.com:tropo/punchblock.git', :branch => :develop
+  gem 'rspec-rayo', '>= 0.1.11'
+  gem 'punchblock', '>= 0.3.1'
   gem 'awesome_print'
   gem 'ci_reporter'
   gem 'json'
