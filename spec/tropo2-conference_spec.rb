@@ -9,7 +9,7 @@ describe "Conference command" do
 
     get_call_and_answer
 
-    conference = @call.conference(:name => '1234', :event_callback => lambda { |event| event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) || event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) }).should have_executed_correctly
+    conference = @call.conference(:name => '1234', :event_callback => lambda { |event| event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) || event.is_a?(Punchblock::Component::Tropo::Conference::FinishedSpeaking) }).should have_executed_correctly
 
     conference.next_event.should be_a_valid_conference_offhold_event
 
