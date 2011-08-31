@@ -18,6 +18,24 @@ describe "Conference command" do
     end
   end
 
+  it "should allow terminating a conference" do
+    place_call_with_script <<-SCRIPT_CONTENT
+      call_tropo2
+      sleep 2
+      play_dtmf '#'
+      wait_to_hangup
+    SCRIPT_CONTENT
+
+    get_call_and_answer
+
+    conference = @call.conference(:name => '1234', :event_callback => lambda { |event| event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) || event.is_a?(Punchblock::Component::Tropo::Conference::FinishedSpeaking) }).should have_executed_correctly
+
+    conference.next_event.should be_a_valid_conference_offhold_event
+    conference.next_event.should be_a_valid_conference_complete_terminator_event
+
+    hangup_and_confirm
+  end
+
   describe "with two callers in a conference" do
     it "should ensure there is media flow between the calls and that appropriate active speaker events are received" do
       pending
