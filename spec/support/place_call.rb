@@ -11,6 +11,6 @@ def tropo1_dial_options
   {
     :to      => @config['tropo1']['call_destination'],
     :from    => 'tel:+14155551212',
-    :headers => { 'x-tropo2-drb-address' => @drb_server_uri }
+    :headers => { 'x-rayo-drb-address' => @drb_server_uri }
   }
 end

@@ -1,27 +1,27 @@
-tropo2_server:
-    jid: usera@127.0.0.1 # To login to the Tropo/Ozone server as
+rayo_server:
+    jid: usera@127.0.0.1 # To login to the Rayo Server as
     password: '1' #Password for the JID
-    sip_uri: usera@127.0.0.1 # The SIP URI for Tropo1 to pitch calls to on Tropo2/Ozone
+    sip_uri: usera@127.0.0.1 # The SIP URI for Tropo1 to pitch calls to on Rayo Server
     alt_jid: userb@127.0.0.1 # To login to the Tropo/Ozone server as
     alt_password: '1' #Password for the JID
-    alt_sip_uri: userb@127.0.0.1 # The SIP URI for Tropo1 to pitch calls to on Tropo2/Ozone
-    wire_log: logs/tropo2-wire.log
-    transport_log: logs/tropo2-transport.log
+    alt_sip_uri: userb@127.0.0.1 # The SIP URI for Tropo1 to pitch calls to on Rayo Server
+    wire_log: logs/rayo-wire.log
+    transport_log: logs/rayo-transport.log
     server: 127.0.0.1
     port: 8080
     write_timeout: 3
-    deployed_as: tropo2
+    deployed_as: rayo
 
-tropo2_queue:
+rayo_queue:
     connection_timeout: 30 # Amount of time waiting to connect to the Ozone server before considering it a timeout
-    read_timeout: 5 # The number of seconds to block on waiting for a Tropo2/Ozone event
+    read_timeout: 5 # The number of seconds to block on waiting for a Rayo Server event
     last_stanza_timeout: 2 # The amount of time to block while flushing the queue of any extraneous stanzas for unhappy cases
 
 tropo1:
     use: true # True to use Tropo1, false to be prompted to dial interactively from a softphone
     # Tropo1 session URI, include the location of ozone_functional_tester/support/ozone_testing.rb, there is a copy on the URI below too
-    session_url: 'http://127.0.0.1:8080/tropo/calls?action=create&token=http://127.0.0.1:8080/tropo/script/tropo2_testing.rb'
-    call_destination: sip:tropo2_testing.rb@127.0.0.1:5061
+    session_url: 'http://127.0.0.1:8080/tropo/calls?action=create&token=http://127.0.0.1:8080/tropo/script/rayo_testing.rb'
+    call_destination: sip:rayo_testing.rb@127.0.0.1:5061
     druby_host: 0.0.0.0
     druby_port: 8787
     wait_to_hangup: 5

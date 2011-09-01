@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.tropo</groupId>
-	<artifactId>tropo-functional-test</artifactId>
+	<groupId>com.rayo</groupId>
+	<artifactId>rayo-functional-tests</artifactId>
 	<version>2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Tropo2/Ozone Functional Test</name>
+	<name>Rayo Server Functional Tests</name>
 
 	<dependencies>
 		<dependency>
@@ -79,7 +79,7 @@
         <goal>java</goal>
        </goals>
        <configuration>
-        <mainClass>com.tropo.functional.StartPrismServer</mainClass>
+        <mainClass>com.rayo.functional.StartPrismServer</mainClass>
         <arguments>
          <argument>arg0</argument>
          <argument>arg1</argument>

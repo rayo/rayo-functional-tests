@@ -2,8 +2,8 @@ require 'net/http'
 require 'json'
 
 def call_jmx(operation, params, namespace = nil)
-  url = "/#{@config['tropo2_server']['deployed_as'] || 'tropo2'}/jmx/#{operation}/#{namespace || 'com.tropo'}:#{params}"
-  Net::HTTP.get_response @config['tropo2_server']['server'], url, @config['tropo2_server']['port'].to_i
+  url = "/#{@config['rayo_server']['deployed_as'] || 'rayo'}/jmx/#{operation}/#{namespace || 'com.rayo'}:#{params}"
+  Net::HTTP.get_response @config['rayo_server']['server'], url, @config['rayo_server']['port'].to_i
 end
 
 def jmx_read(params, namespace = nil)
@@ -24,7 +24,7 @@ end
 
 def try_call(should_get_call = true)
   place_call_with_script <<-SCRIPT_CONTENT
-    call_tropo2
+    call_rayo
     wait_to_hangup
   SCRIPT_CONTENT
 

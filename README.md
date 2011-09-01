@@ -1,14 +1,14 @@
-Tropo2 Functional Tester
-========================
+Rayo Server Functional Tester
+==============================
 
-Provides an automated functional test framework for testing Tropo2. Tropo1 running on Prism (or the Tropo.com cloud) pitches calls at the Tropo2 instance, as well as receives calls from the Tropo2 instance. The purpose is to run assertions not only on the Ozone stanzas, message sequences and behavior, but on the media as well.
+Provides an automated functional test framework for testing Rayo Server. Tropo1 running on Prism (or the Tropo.com cloud) pitches calls at the Tropo2 instance, as well as receives calls from the Tropo2 instance. The purpose is to run assertions not only on the Ozone stanzas, message sequences and behavior, but on the media as well.
 
 Requirements
 ------------
 
 * Prism 10.1
 * Tropo1
-* Tropo2/Ozone
+* Rayo Server
 * Ruby 1.8.7+ or JRuby 1.5.3+
 * Rubygems 1.8.1+
 * Bundler (http://gembundler.com/)
@@ -17,8 +17,8 @@ Installation
 ------------
 
 	gem sources -a http://geminabox.voxeolabs.com/
-	git clone git@github.com:tropo/tropo2_functional_tester.git
-	cd tropo2_functional_tester
+	git clone git@github.com:rayo/rayo_functional_tests.git
+	cd rayo_functional_tests
 	bundle install
 
 Configuration
@@ -26,18 +26,18 @@ Configuration
 
 * /opt/voxeo/prism/conf/portmappings.properties (both Tropo versions may run in the same Prism instance):
 
-    * 5060:tropo2
+    * 5060:rayo
     * 5061:tropo
 
 * /opt/voxeo/prism/conf/sipmethod.xml (ensure both 5060 and 5061 are configured to listen)
 * /opt/voxeo/prism/apps/tropo/WEB-INF/classes/tropo.xml (in the `<mediaServer/>` section you should have `<bangSyntax>false</bangSyntax>`)
-* tropo2_functional_tester/config/config.yml.sample (rename to config.yml with changes for your environment)
-* Deploy Tropo1 script to $PRISM_HOME/apps/tropo/scripts (tropo2_functional_tester/support/tropo1_script/tropo2_testing.rb)
+* rayo_functional_tests/config/config.yml.sample (rename to config.yml with changes for your environment)
+* Deploy Tropo1 script to $PRISM_HOME/apps/tropo/scripts (rayo_functional_tests/support/tropo1_script/rayo_testing.rb)
 
 Running
 -------
 
-	cd tropo2_functional_tester
+	cd rayo_functional_tests
 	bundle exec rspec spec/*_spec.rb --format doc (for verbose output)
 	rake format=junit
 	rake hudson (for basic output that supports Hudson CI server)
@@ -56,47 +56,47 @@ Screencast
 Example
 -------
 
-	Tropo2AutomatedFunctionalTesting
+	RayoAutomatedFunctionalTesting
 	  Call accept, answer and hangup handling
 	    Should receive a call arrives and then hangup
 	    Should answer and hangup
 	    Should throw an error if we try to answer a call that is hungup
 	    Should accept and hangup
 	    Should answer a call and let the farside hangup
-	Tropo2AutomatedFunctionalTesting
+	RayoAutomatedFunctionalTesting
 	  Ask command
 	    Should ask something with ASR and get the utterance back
 	    Should ask with an SSML as a prompt
 	    Should ask with a GRXML grammar
 	    Should ask with an SSML prompt and a GRXML grammar
 	    Should ask and get a NOINPUT event
-	    Should ask and get a NOMATCH event with min_confidence set to 1 (PENDING: https://github.com/tropo/tropo2/issues/30)
-	    Should ask and get a STOP if the farside hangs up before the command complete (PENDING: https://github.com/tropo/tropo2/issues/32)
-	Tropo2AutomatedFunctionalTesting
+	    Should ask and get a NOMATCH event with min_confidence set to 1 (PENDING: https://github.com/rayo/rayo-server/issues/30)
+	    Should ask and get a STOP if the farside hangs up before the command complete (PENDING: https://github.com/rayo/rayo-server/issues/32)
+	RayoAutomatedFunctionalTesting
 	  Conference command
 	    Should put one caller in conference and then hangup
 	    Should put two callers into a conference and then hangup (PENDING: The DSL needs to handle two calls at a time now, for the first time. Will add.)
 	    Should put two callers into a conference, validate media and hangup (PENDING: The DSL needs to handle two calls at a time now, for the first time. Will add.)
-	Tropo2AutomatedFunctionalTesting
+	RayoAutomatedFunctionalTesting
 	  Dial command
 	    Should place an outbound call, receive a ring event, receive an answer event and then hangup
 	    Should place an outbound call and then receive a reject event
-	Tropo2AutomatedFunctionalTesting
+	RayoAutomatedFunctionalTesting
 	  Redirect command
 	    Should redirect a call (PENDING: https://github.com/tropo/punchblock/issues/22)
-	Tropo2AutomatedFunctionalTesting
+	RayoAutomatedFunctionalTesting
 	  Reject command
 	    Should reject with a declined reason
 	    Should reject with a busy reason
 	    Should reject with a error reason
-	Tropo2AutomatedFunctionalTesting
+	RayoAutomatedFunctionalTesting
 	  Say command
 	    Should say something with TTS
 	    Should say an audio URL
 	    Should say SSML
 	    Should say some audio, wait 2 seconds, pause, wait 2 seconds, resume, wait 2 seconds and then stop (PENDING: https://github.com/tropo/punchblock/issues/10)
 	    Should say an audio URL and get a stop event
-	Tropo2AutomatedFunctionalTesting
+	RayoAutomatedFunctionalTesting
 	  Transfer verb
 	    Should answer a call and then transfer it
 	    Should try to transfer but get a timeout
@@ -106,5 +106,5 @@ Example
 Project Files
 -------------
 
-* spec/tropo2-functional_spec.rb - Provides the RSpec tests to run
-* support/tropo1_script/tropo2_testing.rb - Tropo1 Ruby Script
+* spec/rayo-functional_spec.rb - Provides the RSpec tests to run
+* support/tropo1_script/rayo_testing.rb - Tropo1 Ruby Script

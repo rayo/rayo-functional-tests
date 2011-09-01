@@ -27,7 +27,7 @@ end
 
 %w{answer-hangup ask cdr conference dial dtmf input jmx join misc output record redirect reject say scenarios transfer}.each do |command|
   RSpec::Core::RakeTask.new(command.to_sym) do |spec|
-    spec.pattern = FileList["spec/**/tropo2-#{command}_spec.rb"]
+    spec.pattern = FileList["spec/**/rayo-#{command}_spec.rb"]
   end
 end
 
