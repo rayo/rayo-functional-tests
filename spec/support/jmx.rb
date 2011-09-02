@@ -22,6 +22,10 @@ def call_statistics
   JSON.parse jmx_read('Type=Call%20Statistics').body
 end
 
+def active_mixer_count
+  JSON.parse(jmx_read('Type=Mixer%20Statistics/ActiveMixersCount').body)['value']
+end
+
 def try_call(should_get_call = true)
   place_call_with_script <<-SCRIPT_CONTENT
     call_rayo
