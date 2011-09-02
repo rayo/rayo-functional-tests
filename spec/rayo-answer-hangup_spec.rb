@@ -53,4 +53,16 @@ describe "Call accept, answer and hangup handling" do
     get_call_and_answer
     @call.next_event.should be_a_valid_hangup_event
   end
+
+  it "should allow answering multiple times" do
+    place_call_with_script <<-TROPO_SCRIPT_CONTENT
+      call_rayo
+      wait_to_hangup
+    TROPO_SCRIPT_CONTENT
+
+    get_call_and_answer
+    @call.answer.should have_executed_correctly
+    @call.answer.should have_executed_correctly
+    hangup_and_confirm
+  end
 end

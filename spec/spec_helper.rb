@@ -20,12 +20,12 @@ def random_jid
 end
 
 $rayo = RSpecRayo::RayoDriver.new :username         => ENV['RAYO_JID'] || $config['rayo_server']['jid'] || random_jid,
-                                    :password         => ENV['RAYO_PASSWORD'] || $config['rayo_server']['password'],
-                                    :wire_logger      => Logger.new($config['rayo_server']['wire_log']),
-                                    :transport_logger => Logger.new($config['rayo_server']['transport_log']),
-                                    :log_level        => Logger::DEBUG,
-                                    :queue_timeout    => $config['rayo_queue']['connection_timeout'],
-                                    :write_timeout    => $config['rayo_server']['write_timeout']
+                                  :password         => ENV['RAYO_PASSWORD'] || $config['rayo_server']['password'],
+                                  :wire_logger      => Logger.new($config['rayo_server']['wire_log']),
+                                  :transport_logger => Logger.new($config['rayo_server']['transport_log']),
+                                  :log_level        => Logger::DEBUG,
+                                  :queue_timeout    => $config['rayo_queue']['connection_timeout'],
+                                  :write_timeout    => $config['rayo_server']['write_timeout']
 
 $config['max_calls_per_test'] ||= 5
 $config['media_server_port_limit'] ||= 10
