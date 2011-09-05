@@ -19,11 +19,11 @@ def active_sessions
 end
 
 def call_statistics
-  JSON.parse jmx_read('Type=Call%20Statistics').body
+  JSON.parse jmx_read('Type=CallStatistics').body
 end
 
 def active_mixer_count
-  JSON.parse(jmx_read('Type=Mixer%20Statistics/ActiveMixersCount').body)['value']
+  JSON.parse(jmx_read('Type=MixerStatistics/ActiveMixersCount').body)['value']
 end
 
 def try_call(should_get_call = true)

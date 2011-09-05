@@ -12,7 +12,7 @@ describe "JMX Tests" do
   end
 
   it "should find all main JMX Beans" do
-    %w{Type=Info Type=Call%20Statistics Type=Admin,name=Admin Type=Calls Type=Ozone}.each do |bean|
+    %w{Type=Info Type=CallStatistics Type=Admin,name=Admin Type=Calls Type=Ozone}.each do |bean|
       jmx_read(bean).code.should eql '200'
     end
   end
