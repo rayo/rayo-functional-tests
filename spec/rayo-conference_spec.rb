@@ -89,7 +89,7 @@ describe "Conference command" do
     it "should destroy the conference once the last participant leaves" do
       script = <<-SCRIPT_CONTENT
         call_rayo
-        wait_to_hangup
+        3.times { wait_to_hangup }
       SCRIPT_CONTENT
 
       original_mixer_count = active_mixer_count
@@ -99,7 +99,7 @@ describe "Conference command" do
       @call_1 = @rayo.get_call
       @call_1.call_event.should be_a_valid_offer_event
       @call_1.answer.should have_executed_correctly
-      @conference1 = @call_1.conference(:name => '1234', :moderator => true).should have_executed_correctly
+      @conference1 = @call_1.conference(:name => '12393', :moderator => true).should have_executed_correctly
       @conference1.next_event.should be_a_valid_conference_offhold_event
 
       active_mixer_count.should == original_mixer_count + 1
@@ -109,21 +109,19 @@ describe "Conference command" do
       @call_2 = @rayo.get_call
       @call_2.call_event.should be_a_valid_offer_event
       @call_2.answer.should have_executed_correctly
-      @conference2 = @call_2.conference(:name => '1234', :moderator => true).should have_executed_correctly
+      @conference2 = @call_2.conference(:name => '12393', :moderator => true).should have_executed_correctly
       @conference2.next_event.should be_a_valid_conference_offhold_event
 
       active_mixer_count.should == original_mixer_count + 1
 
       @call_1.hangup.should have_executed_correctly
       @conference1.next_event.should be_a_valid_complete_hangup_event
-      @call_1.next_event.should be_a_valid_hangup_event
-
+      @call_1.next_event.should be_a_valid_hangup_event	  
       active_mixer_count.should == original_mixer_count + 1
 
       @call_2.hangup.should have_executed_correctly
       @conference2.next_event.should be_a_valid_complete_hangup_event
-      @call_2.next_event.should be_a_valid_hangup_event
-
+      @call_2.next_event.should be_a_valid_hangup_event	  
       active_mixer_count.should == original_mixer_count
 
       @call_1.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
