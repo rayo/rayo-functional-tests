@@ -87,7 +87,6 @@ describe "Conference command" do
     end
 
     it "should destroy the conference once the last participant leaves" do
-      pending
       script = <<-SCRIPT_CONTENT
         call_rayo
         3.times { wait_to_hangup }
