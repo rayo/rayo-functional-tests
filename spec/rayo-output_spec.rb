@@ -100,7 +100,7 @@ describe "Output component" do
     sleep 2
     output_command.stop!
 
-    output_command.next_event.should be_a_valid_stopped_output_event
+    output_command.next_event.should be_a_valid_complete_stopped_event
 
     hangup_and_confirm
   end
@@ -172,7 +172,7 @@ describe "Output component" do
 
     after do
       @output_command.stop!.should have_executed_correctly
-      @output_command.next_event.should be_a_valid_stopped_output_event
+      @output_command.next_event.should be_a_valid_complete_stopped_event
       hangup_and_confirm
     end
   end

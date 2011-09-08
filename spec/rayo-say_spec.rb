@@ -85,7 +85,7 @@ describe "Say command" do
     sleep 2
     say_command.stop!
 
-    say_command.next_event.should be_a_valid_stopped_say_event
+    say_command.next_event.should be_a_valid_complete_stopped_event
 
     hangup_and_confirm
   end

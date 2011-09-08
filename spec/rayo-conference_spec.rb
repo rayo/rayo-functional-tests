@@ -81,49 +81,61 @@ describe "Conference command" do
       @call_2.hangup.should have_executed_correctly
       @conference2.next_event.should be_a_valid_complete_hangup_event
       @call_2.next_event.should be_a_valid_hangup_event
-
-      @call_1.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
-      @call_2.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
     end
 
-    it "should destroy the conference once the last participant leaves" do
-      script = <<-SCRIPT_CONTENT
-        call_rayo
-        3.times { wait_to_hangup }
-      SCRIPT_CONTENT
+    describe "should destroy the conference once the last participant leaves" do
+      let :script do
+        <<-SCRIPT_CONTENT
+          call_rayo
+          3.times { wait_to_hangup }
+        SCRIPT_CONTENT
+      end
 
-      original_mixer_count = active_mixer_count
+      before do
+        @original_mixer_count = active_mixer_count
 
-      place_call_with_script script
+        place_call_with_script script
 
-      @call_1 = @rayo.get_call
-      @call_1.call_event.should be_a_valid_offer_event
-      @call_1.answer.should have_executed_correctly
-      @conference1 = @call_1.conference(:name => '12393', :moderator => true).should have_executed_correctly
-      @conference1.next_event.should be_a_valid_conference_offhold_event
+        @call_1 = @rayo.get_call
+        @call_1.call_event.should be_a_valid_offer_event
+        @call_1.answer.should have_executed_correctly
+        @conference1 = @call_1.conference(:name => '12393', :moderator => true).should have_executed_correctly
+        @conference1.next_event.should be_a_valid_conference_offhold_event
 
-      active_mixer_count.should == original_mixer_count + 1
+        active_mixer_count.should == @original_mixer_count + 1
 
-      place_call_with_script script
+        place_call_with_script script
 
-      @call_2 = @rayo.get_call
-      @call_2.call_event.should be_a_valid_offer_event
-      @call_2.answer.should have_executed_correctly
-      @conference2 = @call_2.conference(:name => '12393', :moderator => true).should have_executed_correctly
-      @conference2.next_event.should be_a_valid_conference_offhold_event
+        @call_2 = @rayo.get_call
+        @call_2.call_event.should be_a_valid_offer_event
+        @call_2.answer.should have_executed_correctly
+        @conference2 = @call_2.conference(:name => '12393', :moderator => true).should have_executed_correctly
+        @conference2.next_event.should be_a_valid_conference_offhold_event
 
-      active_mixer_count.should == original_mixer_count + 1
+        active_mixer_count.should == @original_mixer_count + 1
+      end
 
-      @call_1.hangup.should have_executed_correctly
-      @conference1.next_event.should be_a_valid_complete_hangup_event
-      @call_1.next_event.should be_a_valid_hangup_event
-      active_mixer_count.should == original_mixer_count + 1
+      it "by hanging up" do
+        hangup_and_confirm @call_1
+        @conference1.next_event.should be_a_valid_complete_hangup_event
+        active_mixer_count.should == @original_mixer_count + 1
+      end
 
-      @call_2.hangup.should have_executed_correctly
-      @conference2.next_event.should be_a_valid_complete_hangup_event
-      @call_2.next_event.should be_a_valid_hangup_event
-      active_mixer_count.should == original_mixer_count
+      it "by stopping the component" do
+        @conference1.stop!.should have_executed_correctly
+        @conference1.next_event.should be_a_valid_complete_stopped_event
+        active_mixer_count.should == @original_mixer_count + 1
+        hangup_and_confirm @call_1
+      end
 
+      after do
+        hangup_and_confirm @call_2
+        @conference2.next_event.should be_a_valid_complete_hangup_event
+        active_mixer_count.should == @original_mixer_count
+      end
+    end
+
+    after do
       @call_1.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
       @call_2.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
     end

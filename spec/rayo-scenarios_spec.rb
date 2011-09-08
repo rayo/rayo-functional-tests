@@ -31,7 +31,7 @@ describe "Call Scenarios" do
 
       # 7. The call is established end to end between the customer and employee1
       call_output.stop!.should have_executed_correctly
-      call_output.next_event.should be_a_valid_stopped_output_event
+      call_output.next_event.should be_a_valid_complete_stopped_event
 
       # Join employee1 to the customer
       @employee1.join(:other_call_id => @call.call_id).should have_executed_correctly
@@ -158,7 +158,7 @@ describe "Call Scenarios" do
       it "then the call is established between the customer and employee1" do
         @employee2.next_event.should be_a_valid_answered_event
         @call_output.stop!.should have_executed_correctly
-        @call_output.next_event.should be_a_valid_stopped_output_event
+        @call_output.next_event.should be_a_valid_complete_stopped_event
 
         @employee2.join(:other_call_id => @call.call_id).should have_executed_correctly
         @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee2.call_id)
@@ -185,7 +185,7 @@ describe "Call Scenarios" do
       it "then play an announcement (selected from a predefined set or from the recordings made by user) and clear the call" do
         @employee2.next_event.should be_a_valid_reject_event
         @call_output.stop!.should have_executed_correctly
-        @call_output.next_event.should be_a_valid_stopped_output_event
+        @call_output.next_event.should be_a_valid_complete_stopped_event
 
         output = @call.output(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
         output.next_event.should be_a_valid_output_event
