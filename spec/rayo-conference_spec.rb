@@ -116,12 +116,12 @@ describe "Conference command" do
 
       @call_1.hangup.should have_executed_correctly
       @conference1.next_event.should be_a_valid_complete_hangup_event
-      @call_1.next_event.should be_a_valid_hangup_event	  
+      @call_1.next_event.should be_a_valid_hangup_event
       active_mixer_count.should == original_mixer_count + 1
 
       @call_2.hangup.should have_executed_correctly
       @conference2.next_event.should be_a_valid_complete_hangup_event
-      @call_2.next_event.should be_a_valid_hangup_event	  
+      @call_2.next_event.should be_a_valid_hangup_event
       active_mixer_count.should == original_mixer_count
 
       @call_1.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
