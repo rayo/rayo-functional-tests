@@ -74,13 +74,13 @@ describe "Conference command" do
       @conference1.next_event.should be_a_valid_speaking_event#.for_call_id(@call_2.call_id)
       @conference1.next_event.should be_a_valid_finished_speaking_event#.for_call_id(@call_2.call_id)
 
-      @call_1.hangup.should have_executed_correctly
-      @conference1.next_event.should be_a_valid_complete_hangup_event
-      @call_1.next_event.should be_a_valid_hangup_event
+      hangup_and_confirm @call_1 do
+        @conference1.next_event.should be_a_valid_complete_hangup_event
+      end
 
-      @call_2.hangup.should have_executed_correctly
-      @conference2.next_event.should be_a_valid_complete_hangup_event
-      @call_2.next_event.should be_a_valid_hangup_event
+      hangup_and_confirm @call_2 do
+        @conference2.next_event.should be_a_valid_complete_hangup_event
+      end
     end
 
     describe "should destroy the conference once the last participant leaves" do
@@ -136,8 +136,8 @@ describe "Conference command" do
     end
 
     after do
-      @call_1.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
-      @call_2.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
+      @call_1.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true if @call_1
+      @call_2.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true if @call_2
     end
   end
 end
