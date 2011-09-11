@@ -32,11 +32,11 @@ describe "Record command" do
     end
   end
 
-  it "should record the correct content and return the correct filename" do
+  it "should record the call's input and return the correct filename" do
     wait_on_latch :spoke
     hangup_and_confirm do
-      @recording = @record_command.next_event
-      @recording.should be_a_valid_complete_recording_event
+      @complete = @record_command.next_event
+      @complete.should be_a_valid_complete_recording_event
     end
 
     @call.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
@@ -54,12 +54,54 @@ describe "Record command" do
 
     get_call_and_answer
 
-    output = @call.output(:ssml => audio_ssml(:url => @recording.recording.uri)).should have_executed_correctly
+    output = @call.output(:ssml => audio_ssml(:url => @complete.recording.uri)).should have_executed_correctly
 
     wait_on_latch :responded
     output.next_event.should be_a_valid_output_event
     hangup_and_confirm
     @tropo1.result.should == 'hello world'
+  end
+
+  describe 'when we send output' do
+    let :tropo1_script do
+      <<-TROPO_SCRIPT_CONTENT
+        call_rayo
+        trigger_latch :answered
+        wait_to_hangup 2
+      TROPO_SCRIPT_CONTENT
+    end
+
+    it "should record the call's output" do
+      output = @call.output(:text => 'thanks frank').should have_executed_correctly
+      output.next_event.should be_a_valid_output_event
+
+      hangup_and_confirm do
+        @complete = @record_command.next_event
+        @complete.should be_a_valid_complete_recording_event
+      end
+
+      @call.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
+
+      add_latch :check_answered, :responded
+
+      place_call_with_script <<-SCRIPT_CONTENT
+        call_rayo
+        ask 'One8', :choices     => 'hello world, thanks frank',
+                    :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
+                    :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+        trigger_latch :responded
+        wait_to_hangup 2
+      SCRIPT_CONTENT
+
+      get_call_and_answer
+
+      output = @call.output(:ssml => audio_ssml(:url => @complete.recording.uri)).should have_executed_correctly
+
+      wait_on_latch :responded
+      output.next_event.should be_a_valid_output_event
+      hangup_and_confirm
+      @tropo1.result.should == 'thanks frank'
+    end
   end
 
   it "finishes early if the initial timeout is exceeded"
