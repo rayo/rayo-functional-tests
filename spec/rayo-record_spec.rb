@@ -72,6 +72,7 @@ describe "Record command" do
     end
 
     it "should record the call's output" do
+      pending
       output = @call.output(:text => 'thanks frank').should have_executed_correctly
       output.next_event.should be_a_valid_output_event
 
