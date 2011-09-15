@@ -41,7 +41,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    input = @call.input(:grammar => { :value => 'yes, no' }).should have_executed_correctly
+    input = @call.input(:grammar => { :value => 'yes, no', :content_type => 'application/grammar+voxeo' }).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -63,7 +63,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    input = @call.input(:grammar => { :value => '[1 DIGITS]' }, :mode => :dtmf).should have_executed_correctly
+    input = @call.input(:grammar => { :value => '[1 DIGITS]', :content_type => 'application/grammar+voxeo' }, :mode => :dtmf).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -85,7 +85,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    input = @call.input(:grammar => { :value => 'yes, no' }).should have_executed_correctly
+    input = @call.input(:grammar => { :value => 'yes, no', :content_type => 'application/grammar+voxeo' }).should have_executed_correctly
 
     wait_on_latch :responded
 
@@ -104,8 +104,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    input = @call.input(:grammar => { :value        => grxml,
-                                      :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
+    input = @call.input(:grammar => { :value => grxml } ).should have_executed_correctly
 
     input.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
 
@@ -124,8 +123,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    input = @call.input(:grammar => { :value => grxml,
-                                      :content_type => 'application/grammar+grxml' } ).should have_executed_correctly
+    input = @call.input(:grammar => { :value => grxml } ).should have_executed_correctly
 
     input.next_event.should be_a_valid_successful_input_event.with_utterance('clue')
 
@@ -141,7 +139,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    input = @call.input :grammar => { :value => 'yes, no' }, :initial_timeout => 2000
+    input = @call.input :grammar => { :value => 'yes, no', :content_type => 'application/grammar+voxeo' }, :initial_timeout => 2000
 
     input.next_event.should be_a_valid_input_noinput_event
     @call.next_event.should be_a_valid_hangup_event
@@ -158,7 +156,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    input = @call.input :grammar          => { :value => 'red, green' },
+    input = @call.input :grammar          => { :value => 'red, green', :content_type => 'application/grammar+voxeo' },
                         :complete_timeout => 3000,
                         :min_confidence   => 1
 
@@ -176,7 +174,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    input = @call.input :grammar => { :value => 'red, green' }
+    input = @call.input :grammar => { :value => 'red, green', :content_type => 'application/grammar+voxeo' }
 
     input.next_event.should be_a_valid_complete_hangup_event
     @call.next_event.should be_a_valid_hangup_event
@@ -191,7 +189,7 @@ describe "Input component" do
 
     get_call_and_answer
 
-    lambda { @call.input :grammar => { :value => '<grammar>' } }.should raise_error(Punchblock::ProtocolError)
+    lambda { @call.input :grammar => { :value => '<grammar>', :content_type => 'application/grammar+voxeo' } }.should raise_error(Punchblock::ProtocolError)
 
     @call.next_event.reason.should eql :error
   end
