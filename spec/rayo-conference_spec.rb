@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Conference command" do
+  let(:active_speaker_filter) { lambda { |event| event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) || event.is_a?(Punchblock::Component::Tropo::Conference::FinishedSpeaking) } }
+
   it "should put one caller in conference and then hangup" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_rayo
@@ -9,7 +11,7 @@ describe "Conference command" do
 
     get_call_and_answer
 
-    conference = @call.conference(:name => '1234', :event_callback => lambda { |event| event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) || event.is_a?(Punchblock::Component::Tropo::Conference::FinishedSpeaking) }).should have_executed_correctly
+    conference = @call.conference(:name => '1234', :event_callback => active_speaker_filter).should have_executed_correctly
 
     conference.next_event.should be_a_valid_conference_offhold_event
 
@@ -28,7 +30,7 @@ describe "Conference command" do
 
     get_call_and_answer
 
-    conference = @call.conference(:name => '1234', :event_callback => lambda { |event| event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) || event.is_a?(Punchblock::Component::Tropo::Conference::FinishedSpeaking) }).should have_executed_correctly
+    conference = @call.conference(:name => '1234', :event_callback => active_speaker_filter).should have_executed_correctly
 
     conference.next_event.should be_a_valid_conference_offhold_event
     conference.next_event.should be_a_valid_conference_complete_terminator_event
@@ -38,22 +40,21 @@ describe "Conference command" do
 
   describe "with two callers in a conference" do
     it "should ensure there is media flow between the calls and that appropriate active speaker events are received" do
-      pending
       add_latch :responded
 
       place_call_with_script <<-SCRIPT_CONTENT
         call_rayo
-        ask 'One5', :choices     => 'yes, no',
-                    :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
-                    :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
-      trigger_latch :responded
-      wait_to_hangup
+        ask '', :choices     => 'yes, no',
+                :onBadChoice => lambda { ozone_testing_server.result = 'badchoice' },
+                :onChoice    => lambda { |event| ozone_testing_server.result = event.value  }
+        trigger_latch :responded
+        wait_to_hangup
       SCRIPT_CONTENT
 
       @call_1 = @rayo.get_call
       @call_1.call_event.should be_a_valid_offer_event
       @call_1.answer.should have_executed_correctly
-      @conference1 = @call_1.conference(:name => '1234', :event_callback => lambda { |event| event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) || event.is_a?(Punchblock::Component::Tropo::Conference::FinishedSpeaking) }).should have_executed_correctly
+      @conference1 = @call_1.conference(:name => '1234').should have_executed_correctly
       @conference1.next_event.should be_a_valid_conference_offhold_event
 
       place_call_with_script <<-SCRIPT_CONTENT
@@ -65,14 +66,17 @@ describe "Conference command" do
       @call_2 = @rayo.get_call
       @call_2.call_event.should be_a_valid_offer_event
       @call_2.answer.should have_executed_correctly
-      @conference2 = @call_2.conference(:name => '1234', :event_callback => lambda { |event| event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) || event.is_a?(Punchblock::Component::Tropo::Conference::FinishedSpeaking) }).should have_executed_correctly
+      @conference2 = @call_2.conference(:name => '1234').should have_executed_correctly
       @conference2.next_event.should be_a_valid_conference_offhold_event
 
       wait_on_latch :responded
       @tropo1.result.should == 'yes'
 
-      @conference1.next_event.should be_a_valid_speaking_event#.for_call_id(@call_2.call_id)
-      @conference1.next_event.should be_a_valid_finished_speaking_event#.for_call_id(@call_2.call_id)
+      @conference1.next_event.should be_a_valid_speaking_event.for_call_id(@call_2.call_id)
+      @conference1.next_event.should be_a_valid_finished_speaking_event.for_call_id(@call_2.call_id)
+
+      @conference2.next_event.should be_a_valid_speaking_event.for_call_id(@call_2.call_id)
+      @conference2.next_event.should be_a_valid_finished_speaking_event.for_call_id(@call_2.call_id)
 
       hangup_and_confirm @call_1 do
         @conference1.next_event.should be_a_valid_complete_hangup_event
