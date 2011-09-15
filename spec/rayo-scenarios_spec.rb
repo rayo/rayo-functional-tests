@@ -124,7 +124,7 @@ describe "Call Scenarios" do
       @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee1.call_id)
 
       # 3. employee1 enters a DTMF sequence (eg. 1)
-      input1 = @employee1.input(:grammar => { :value => '1' }).should have_executed_correctly
+      input1 = @employee1.input(:grammar => { :value => '1', :content_type => 'application/grammar+voxeo' }).should have_executed_correctly
 
       input1.next_event.should be_a_valid_successful_input_event.with_interpretation('1')
 
