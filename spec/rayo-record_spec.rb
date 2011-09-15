@@ -100,9 +100,10 @@ describe "Record command" do
 
       wait_on_latch :responded
       output.next_event.should be_a_valid_output_event
-      hangup_and_confirm
       @tropo1.result.should == 'thanks frank'
     end
+
+    after { hangup_and_confirm }
   end
 
   it "finishes early if the initial timeout is exceeded"
