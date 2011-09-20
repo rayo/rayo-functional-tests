@@ -6,7 +6,7 @@ group :development do
   gem 'rake'
   gem 'rcov'
   gem 'punchblock', '>= 0.4.0'
-  gem 'rspec-rayo', '>= 0.1.13'
+  gem 'rspec-rayo', '>= 0.1.14'
   gem 'awesome_print'
   gem 'ci_reporter'
   gem 'json'
