@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe "Conference command" do
-  let(:active_speaker_filter) { lambda { |event| event.is_a?(Punchblock::Component::Tropo::Conference::Speaking) || event.is_a?(Punchblock::Component::Tropo::Conference::FinishedSpeaking) } }
-
   it "should put one caller in conference and then hangup" do
     place_call_with_script <<-SCRIPT_CONTENT
       call_rayo
@@ -11,7 +9,7 @@ describe "Conference command" do
 
     get_call_and_answer
 
-    conference = @call.conference(:name => '1234', :event_callback => active_speaker_filter).should have_executed_correctly
+    conference = @call.conference(:name => '1234').should have_executed_correctly
 
     conference.next_event.should be_a_valid_conference_offhold_event
 
@@ -30,7 +28,7 @@ describe "Conference command" do
 
     get_call_and_answer
 
-    conference = @call.conference(:name => '1234', :event_callback => active_speaker_filter).should have_executed_correctly
+    conference = @call.conference(:name => '1234').should have_executed_correctly
 
     conference.next_event.should be_a_valid_conference_offhold_event
     conference.next_event.should be_a_valid_conference_complete_terminator_event
