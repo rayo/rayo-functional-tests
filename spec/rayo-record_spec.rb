@@ -22,6 +22,7 @@ describe "Record command" do
     wait_on_latch :answered
 
     @record_command = @call.record record_options
+    @record_start_time = Time.now
     @record_command.should have_executed_correctly
   end
 
@@ -32,11 +33,14 @@ describe "Record command" do
     end
   end
 
-  it "should record the call's input and return the correct filename" do
+  it "should record the call's input and return the correct filename and metadata" do
     wait_on_latch :spoke
     hangup_and_confirm do
       @complete = @record_command.next_event
       @complete.should be_a_valid_complete_recording_event
+      @recording = @complete.recording
+      @recording.duration.should be_within(100).of((Time.now - @record_start_time) * 1000)
+      @recording.size.should be_within(5000).of(15000)
     end
 
     @call.last_event?(@config['rayo_queue']['last_stanza_timeout']).should == true
@@ -54,7 +58,7 @@ describe "Record command" do
 
     get_call_and_answer
 
-    output = @call.output(:ssml => audio_ssml(:url => @complete.recording.uri)).should have_executed_correctly
+    output = @call.output(:ssml => audio_ssml(:url => @recording.uri)).should have_executed_correctly
 
     wait_on_latch :responded
     output.next_event.should be_a_valid_output_event
