@@ -65,4 +65,18 @@ describe "Call accept, answer and hangup handling" do
     @call.answer.should have_executed_correctly
     hangup_and_confirm
   end
+
+  describe "issuing accept multiple times" do
+    it "should return an error, but not kill the call" do
+      place_call_with_script <<-TROPO_SCRIPT_CONTENT
+        call_rayo
+        wait_to_hangup
+      TROPO_SCRIPT_CONTENT
+
+      get_call_and_answer false
+      @call.accept.should have_executed_correctly
+      lambda { @call.answer }.should raise_error(Punchblock::ProtocolError)
+      hangup_and_confirm
+    end
+  end
 end
