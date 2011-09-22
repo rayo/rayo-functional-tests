@@ -75,7 +75,7 @@ describe "Call accept, answer and hangup handling" do
 
       get_call_and_answer false
       @call.accept.should have_executed_correctly
-      lambda { @call.answer }.should raise_error(Punchblock::ProtocolError)
+      lambda { @call.accept }.should raise_error(Punchblock::ProtocolError)
       hangup_and_confirm
     end
   end
