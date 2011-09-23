@@ -39,7 +39,7 @@ describe "Record command" do
       @complete = @record_command.next_event
       @complete.should be_a_valid_complete_recording_event
       @recording = @complete.recording
-      @recording.duration.should be_within(100).of((Time.now - @record_start_time) * 1000)
+      @recording.duration.should be_within(200).of((Time.now - @record_start_time) * 1000)
       @recording.size.should be_within(5000).of(15000)
     end
 
