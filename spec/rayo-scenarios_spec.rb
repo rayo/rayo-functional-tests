@@ -156,21 +156,22 @@ describe "Call Scenarios" do
       end
 
       it "then the call is established between the customer and employee1" do
-        pending "Need to wait until Beijing is back from holidays. Broke the build somehow"
-        @employee2.next_event.should be_a_valid_answered_event
-        @call_output.stop!.should have_executed_correctly
-        @call_output.next_event.should be_a_valid_complete_stopped_event
+        pending "Need to wait until Beijing is back from holidays. Broke the build somehow" do
+          @employee2.next_event.should be_a_valid_answered_event
+          @call_output.stop!.should have_executed_correctly
+          @call_output.next_event.should be_a_valid_complete_stopped_event
 
-        @employee2.join(:other_call_id => @call.call_id).should have_executed_correctly
-        @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee2.call_id)
-        @employee2.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
+          @employee2.join(:other_call_id => @call.call_id).should have_executed_correctly
+          @call.next_event.should be_a_valid_joined_event.with_other_call_id(@employee2.call_id)
+          @employee2.next_event.should be_a_valid_joined_event.with_other_call_id(@call.call_id)
 
-        hangup_and_confirm do
-          @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@employee2.call_id)
+          hangup_and_confirm do
+            @call.next_event.should be_a_valid_unjoined_event.with_other_call_id(@employee2.call_id)
+          end
+
+          @employee2.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call.call_id)
+          hangup_and_confirm @employee2
         end
-
-        @employee2.next_event.should be_a_valid_unjoined_event.with_other_call_id(@call.call_id)
-        hangup_and_confirm @employee2
       end
     end
 
@@ -184,15 +185,16 @@ describe "Call Scenarios" do
       end
 
       it "then play an announcement (selected from a predefined set or from the recordings made by user) and clear the call" do
-        pending "Need to wait until Beijing is back from holidays. Broke the build somehow"
-        @employee2.next_event.should be_a_valid_reject_event
-        @call_output.stop!.should have_executed_correctly
-        @call_output.next_event.should be_a_valid_complete_stopped_event
+        pending "Need to wait until Beijing is back from holidays. Broke the build somehow" do
+          @employee2.next_event.should be_a_valid_reject_event
+          @call_output.stop!.should have_executed_correctly
+          @call_output.next_event.should be_a_valid_complete_stopped_event
 
-        output = @call.output(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
-        output.next_event.should be_a_valid_output_event
+          output = @call.output(:ssml => audio_ssml(:url => @config['audio_url'])).should have_executed_correctly
+          output.next_event.should be_a_valid_output_event
 
-        hangup_and_confirm
+          hangup_and_confirm
+        end
       end
     end
 
