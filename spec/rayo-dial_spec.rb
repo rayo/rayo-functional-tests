@@ -37,7 +37,7 @@ describe "Dial command" do
     @tropo1.result.should eql 'booyah!'
   end
 
-  it "should place an outbound call and then hangup" do
+  it "should place an outbound call which is answered and then hangup" do
     @tropo1.script_content = <<-TROPO_SCRIPT_CONTENT
       answer
       wait_to_hangup
@@ -45,6 +45,11 @@ describe "Dial command" do
 
     @call = @rayo.dial(tropo1_dial_options).should have_dialed_correctly
     @call.next_event.should be_a_valid_answered_event
+    hangup_and_confirm
+  end
+
+  it "should abort a dial before it is accepted/answered" do
+    @call = @rayo.dial tropo1_dial_options
     hangup_and_confirm
   end
 
