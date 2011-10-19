@@ -57,7 +57,6 @@ describe "Conference command" do
 
       place_call_with_script <<-SCRIPT_CONTENT
         call_rayo
-        sleep 2
         say 'yes'
         wait_to_hangup
       SCRIPT_CONTENT
