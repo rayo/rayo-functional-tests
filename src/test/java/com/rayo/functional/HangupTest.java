@@ -21,12 +21,10 @@ public class HangupTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
-	    
-	    waitForEvents();	    
+	    	    
 	    assertReceived(AnsweredEvent.class, outgoing);
 	    
 	    incoming.hangup();
-	    waitForEvents(2000);	    
 
 	    MohoCallCompleteEvent endIncoming = assertReceived(MohoCallCompleteEvent.class, incoming);
 	    assertEquals(endIncoming.getCause(), Cause.DISCONNECT);

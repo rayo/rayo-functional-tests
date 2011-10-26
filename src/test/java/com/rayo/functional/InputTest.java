@@ -26,10 +26,8 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    incoming.answer();
 	    
 	    Input<Call> input = incoming.input(new InputCommand(new SimpleGrammar("yes,no")));
-	    waitForEvents();
 	    outgoing.output("yes");
 	    
-	    waitForEvents(2000);	    
 	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
 	    assertEquals(complete.getCause(), Cause.MATCH);
 	    assertEquals(complete.getInterpretation(),"yes");

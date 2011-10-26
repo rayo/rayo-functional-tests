@@ -48,7 +48,6 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    Input<Call> input3 = call3.input(input);
 	    
 	    call1.output("yes");
-	    waitForEvents();
 
 	    assertReceived(InputCompleteEvent.class, input2);
 	    assertReceived(InputCompleteEvent.class, input3);

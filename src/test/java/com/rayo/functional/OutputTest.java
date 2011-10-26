@@ -22,7 +22,6 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    call.answer();
 	    
 	    Output<Call> output = call.output("Hello World");
-	    waitForEvents();
 	    assertReceived(OutputCompleteEvent.class, output);
 	}
 }

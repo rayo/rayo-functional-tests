@@ -29,6 +29,9 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 
 	private MohoRemote mohoRemote;
 	
+	private int retries = 3;
+	private int waitTime = 3000;
+	
 	@Before
 	public void setup() {
 		
@@ -103,23 +106,23 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 	protected <T> T assertReceived(Class<T> eventClass, Call call) {
 		
 		System.out.println(String.format("Asserting event [%s] on call [%s]", eventClass, call.getId()));
-		for (Event event: events) {
-			if (eventClass.isAssignableFrom(event.getClass())) {
-				if (event.getSource() == call) {
-					return (T)event;
+		int i = 0;
+		do {
+			for (Event event: events) {
+				if (eventClass.isAssignableFrom(event.getClass())) {
+					if (event.getSource() == call) {
+						return (T)event;
+					}
 				}
 			}
-		}
+			i++;
+			waitForEvents(waitTime);
+		} while (i<retries);
 		System.out.println("Call event not found");
 		throw new AssertionError("Call Event not found");
 	}
 
-	protected void waitForEvents() {
-		
-		waitForEvents(1000);
-	}
-	
-	protected void waitForEvents(int time) {
+	private void waitForEvents(int time) {
 		 
 		try {
 			Thread.sleep(time);
