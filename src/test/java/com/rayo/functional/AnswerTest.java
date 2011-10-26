@@ -20,7 +20,7 @@ public class AnswerTest extends MohoBasedIntegrationTest {
 	    assertNotNull(incoming);
 	    incoming.answer();
 	    
-	    waitForEvents();	    
+	    waitForEvents(2000);	    
 	    assertReceived(AnsweredEvent.class, outgoing);
 	}
 }

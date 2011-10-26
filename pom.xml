@@ -62,6 +62,11 @@
 			<artifactId>commons-exec</artifactId>
 			<version>1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.voxeo.moho</groupId>
+			<artifactId>moho-remote</artifactId>
+			<version>0.8-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 <profiles>
  <profile>
@@ -74,7 +79,7 @@
      <version>1.1.1</version>
      <executions>
       <execution>
-       <phase>test</phase>
+       <phase>process-test-resources</phase>
        <goals>
         <goal>java</goal>
        </goals>

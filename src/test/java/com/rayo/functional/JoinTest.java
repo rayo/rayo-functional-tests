@@ -23,7 +23,7 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming2 = getIncomingCall();
 	    incoming2.join(incoming1, JoinType.BRIDGE, Direction.DUPLEX);
 	    
-	    waitForEvents(2000);
+	    waitForEvents(3000);
 	    
 	    assertReceived(MohoJoinCompleteEvent.class, incoming1);
 	    assertReceived(MohoJoinCompleteEvent.class, incoming2);
