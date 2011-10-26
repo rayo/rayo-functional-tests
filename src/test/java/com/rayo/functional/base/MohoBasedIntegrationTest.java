@@ -45,7 +45,11 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 	@After
 	public void shutdown() {
 		
-		mohoRemote.disconnect();
+		try {
+			mohoRemote.disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public OutgoingCall dial() {
