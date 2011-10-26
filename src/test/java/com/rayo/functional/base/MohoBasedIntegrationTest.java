@@ -89,16 +89,21 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 	
 	protected <T> T assertReceived(Class<T> eventClass, MediaOperation operation) {
 		
-		System.out.println(String.format("Asserting event [%s] on operation [%s]", eventClass, operation));
-		for (Event event: events) {
-			if (eventClass.isAssignableFrom(event.getClass())) {
-				if (event instanceof MohoMediaCompleteEvent) {
-					if (((MohoMediaCompleteEvent)event).getMediaOperation() == operation) {
-						return (T)event;
+		int i = 0;
+		do {
+			System.out.println(String.format("Asserting event [%s] on operation [%s]. Try %s", eventClass, operation, i+1));
+			for (Event event: events) {
+				if (eventClass.isAssignableFrom(event.getClass())) {
+					if (event instanceof MohoMediaCompleteEvent) {
+						if (((MohoMediaCompleteEvent)event).getMediaOperation() == operation) {
+							return (T)event;
+						}
 					}
 				}
 			}
-		}
+			i++;
+			waitForEvents(waitTime);
+		} while (i<retries);
 		throw new AssertionError("Call Event not found");
 	}
 	
