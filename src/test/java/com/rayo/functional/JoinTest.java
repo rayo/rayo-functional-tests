@@ -2,6 +2,7 @@ package com.rayo.functional;
 
 import javax.media.mscontrol.join.Joinable.Direction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.functional.base.MohoBasedIntegrationTest;
@@ -13,6 +14,7 @@ import com.voxeo.moho.common.event.MohoJoinCompleteEvent;
 public class JoinTest extends MohoBasedIntegrationTest {
 
 	@Test
+	@Ignore
 	public void testJoin() {
 		
 	    OutgoingCall outgoing1 = dial();	    	    
