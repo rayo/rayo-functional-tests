@@ -65,7 +65,7 @@ public abstract class MohoBasedIntegrationTest {
 	    return (OutgoingCall)call;
 	}
 	
-	protected IncomingCall getIncomingCall() {
+	protected synchronized IncomingCall getIncomingCall() {
 
 		try {
 			return callsQueue.poll(5000,TimeUnit.MILLISECONDS);
@@ -125,11 +125,13 @@ public abstract class MohoBasedIntegrationTest {
 
 	void addCall(IncomingCall call) {
 
+		System.out.println(String.format("Adding incoming call [%s]",call));
 		callsQueue.add(call);
 	}
 
 	void addEvent(Event event) {
 
+		System.out.println(String.format("Adding event [%s]",event));
 		events.add(event);
 	}
 }
