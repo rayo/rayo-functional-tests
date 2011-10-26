@@ -22,7 +22,7 @@ import com.voxeo.moho.remote.MohoRemote;
 import com.voxeo.moho.remote.impl.MohoRemoteImpl;
 import com.voxeo.moho.remote.sample.SimpleAuthenticateCallbackImpl;
 
-public abstract class MohoBasedIntegrationTest implements Observer {
+public abstract class MohoBasedIntegrationTest {
 
 	private LinkedBlockingQueue<IncomingCall> callsQueue = new LinkedBlockingQueue<IncomingCall>();
 	private List<Event> events = new ArrayList<Event>();
@@ -39,7 +39,7 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 		events.clear();
 		
 	    mohoRemote = new MohoRemoteImpl();
-	    mohoRemote.addObserver(this);
+	    mohoRemote.addObserver(new MohoObserver(this));
 	    
 	    mohoRemote.connect(new SimpleAuthenticateCallbackImpl("usera", "1", "", "voxeo"), "127.0.0.1", "127.0.0.1");
 
@@ -59,7 +59,7 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 		
 	    CallableEndpoint endpoint = (CallableEndpoint)mohoRemote.createEndpoint(URI.create("sip:usera@127.0.0.1:5060"));
 	    Call call = endpoint.createCall("sip:test@test.com");
-	    call.addObserver(this);
+	    call.addObserver(new MohoObserver(this));
 	    call.join();
 	    
 	    return (OutgoingCall)call;
@@ -71,19 +71,6 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 			return callsQueue.poll(5000,TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			return null;
-		}
-	}
-	
-	@State
-	public void handleEvent(Event event) {
-		
-		if (event instanceof IncomingCall) {
-			
-			IncomingCall call = (IncomingCall)event;
-			call.addObserver(this);
-			callsQueue.add(call);
-		} else {
-			events.add(event);
 		}
 	}
 	
@@ -134,5 +121,15 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 		} catch (InterruptedException e) {
 
 		}
+	}
+
+	void addCall(IncomingCall call) {
+
+		callsQueue.add(call);
+	}
+
+	void addEvent(Event event) {
+
+		events.add(event);
 	}
 }
