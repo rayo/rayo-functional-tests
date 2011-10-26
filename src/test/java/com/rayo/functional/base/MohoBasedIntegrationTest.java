@@ -110,6 +110,7 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 				}
 			}
 		}
+		System.out.println("Call event not found");
 		throw new AssertionError("Call Event not found");
 	}
 
