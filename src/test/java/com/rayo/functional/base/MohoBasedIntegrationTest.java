@@ -29,7 +29,7 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 
 	private MohoRemote mohoRemote;
 	
-	private int retries = 3;
+	private int retries = 6;
 	private int waitTime = 3000;
 	
 	@Before
@@ -105,9 +105,9 @@ public abstract class MohoBasedIntegrationTest implements Observer {
 	
 	protected <T> T assertReceived(Class<T> eventClass, Call call) {
 		
-		System.out.println(String.format("Asserting event [%s] on call [%s]", eventClass, call.getId()));
 		int i = 0;
 		do {
+			System.out.println(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, call.getId(), i+1));
 			for (Event event: events) {
 				if (eventClass.isAssignableFrom(event.getClass())) {
 					if (event.getSource() == call) {
