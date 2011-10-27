@@ -27,6 +27,9 @@ public abstract class MohoBasedIntegrationTest {
 	private LinkedBlockingQueue<IncomingCall> callsQueue = new LinkedBlockingQueue<IncomingCall>();
 	private List<Event> events = new ArrayList<Event>();
 
+	private List<OutgoingCall> outgoingCalls = new ArrayList<OutgoingCall>();
+	private List<IncomingCall> incomingCalls = new ArrayList<IncomingCall>();
+	
 	private MohoRemote mohoRemote;
 	
 	private int retries = 6;
@@ -37,6 +40,8 @@ public abstract class MohoBasedIntegrationTest {
 		
 		callsQueue.clear();
 		events.clear();
+		incomingCalls.clear();
+		outgoingCalls.clear();
 		
 	    mohoRemote = new MohoRemoteImpl();
 	    mohoRemote.addObserver(new MohoObserver(this));
@@ -49,6 +54,14 @@ public abstract class MohoBasedIntegrationTest {
 	public void shutdown() {
 		
 		try {
+			for (OutgoingCall call: outgoingCalls) {
+				try {
+					call.disconnect();
+				} catch (Exception e) {
+					System.out.println(String.format("[ERROR] Problem disconnecting outgoing call [%s]", call.getId()));
+				}
+			}			
+			
 			mohoRemote.disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -62,13 +75,19 @@ public abstract class MohoBasedIntegrationTest {
 	    call.addObserver(new MohoObserver(this));
 	    call.join();
 	    
+	    outgoingCalls.add((OutgoingCall)call);
+	    
 	    return (OutgoingCall)call;
 	}
 	
 	protected synchronized IncomingCall getIncomingCall() {
 
 		try {
-			return callsQueue.poll(5000,TimeUnit.MILLISECONDS);
+			IncomingCall call = callsQueue.poll(5000,TimeUnit.MILLISECONDS);
+			if (call != null) {
+				incomingCalls.add(call);
+			}
+			return call;
 		} catch (InterruptedException e) {
 			return null;
 		}
