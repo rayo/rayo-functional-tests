@@ -27,6 +27,9 @@ public abstract class RayoBasedIntegrationTest {
 	private Map<String,List<Object>> callEvents = new ConcurrentHashMap<String, List<Object>>();
 	private Map<String,List<Error>> callErrors = new ConcurrentHashMap<String, List<Error>>();
 	
+	private int retries = 6;
+	private int waitTime = 3000;
+	
 	@Before
 	public void setup() throws Exception {
 		
@@ -45,7 +48,7 @@ public abstract class RayoBasedIntegrationTest {
 					callsQueue.add(call);
 				}
 					
-				if (presence.hasExtension()) {
+				if (presence.hasExtension() && presence.getShow() == null) {
 					synchronized(this) {
 						Object object = presence.getExtension().getObject();
 						List<Object> events = callEvents.get(callId);
@@ -120,6 +123,27 @@ public abstract class RayoBasedIntegrationTest {
 	public void shutdown() throws Exception {
 	
 		rayoClient.disconnect();
+	}
+	
+
+	protected <T> T assertReceived(Class<T> eventClass, Call call) {
+		
+		int i = 0;
+		System.out.println(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, call.getCallId(), i+1));
+		List<Object> events = callEvents.get(call.getCallId());
+		if (events != null) {
+			do {
+				for (Object event: events) {
+					if (eventClass.isAssignableFrom(event.getClass())) {
+						return (T)event;
+					}
+				}
+				i++;
+				waitForEvents(waitTime);
+			} while (i<retries);
+		}
+		System.out.println("Call event not found");
+		throw new AssertionError("Call Event not found");
 	}
 
 	protected void waitForEvents() {

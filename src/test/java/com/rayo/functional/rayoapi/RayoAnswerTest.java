@@ -1,4 +1,4 @@
-package com.rayo.functional;
+package com.rayo.functional.rayoapi;
 
 import java.net.URI;
 

@@ -13,17 +13,14 @@ import com.voxeo.moho.IncomingCall;
 import com.voxeo.moho.OutgoingCall;
 import com.voxeo.moho.Participant.JoinType;
 import com.voxeo.moho.event.InputCompleteEvent;
-import com.voxeo.moho.event.OutputCompleteEvent;
 import com.voxeo.moho.media.Input;
-import com.voxeo.moho.media.Output;
 import com.voxeo.moho.media.input.InputCommand;
 import com.voxeo.moho.media.input.SimpleGrammar;
 
 public class MultipleJoinTest extends MohoBasedIntegrationTest {
 
 	@Test
-	@Ignore
-	public void testMultiJoin() {
+	public void testOutputIsReceivedByMultipleCalls() {
 		
 	    OutgoingCall outgoing1 = dial();	    
 	    IncomingCall call1 = getIncomingCall();
@@ -47,7 +44,7 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    Input<Call> input2 = call2.input(input);
 	    Input<Call> input3 = call3.input(input);
 	    
-	    call1.output("yes");
+	    outgoing1.output("yes");
 
 	    assertReceived(InputCompleteEvent.class, input2);
 	    assertReceived(InputCompleteEvent.class, input3);
