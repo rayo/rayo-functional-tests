@@ -43,6 +43,14 @@ $tropo1 = RSpecRayo::Tropo1Driver.new $drb_server_uri, $config['tropo1']['latch_
 $tropo1.config = $config
 
 module Punchblock
+  class CommandNode
+    def await_completion
+      tap do |c|
+        c.response $config['rayo_server']['write_timeout']
+      end
+    end
+  end
+
   module Component
     class ComponentNode
       attr_accessor :event_queue
@@ -63,7 +71,7 @@ module Punchblock
 end
 
 status = $rayo.read_queue $rayo.event_queue
-abort 'Could not connect to Prism XMPP Server. Aborting!' unless status == 'CONNECTED'
+abort 'Could not connect to Prism XMPP Server. Aborting!' unless status == Punchblock::Connection::Connected
 $rayo.start_event_dispatcher
 
 RSpec.configure do |config|

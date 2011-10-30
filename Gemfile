@@ -5,8 +5,8 @@ group :development do
   gem 'bundler'
   gem 'rake'
   gem 'rcov'
-  gem 'punchblock', :git => 'git://github.com/adhearsion/punchblock.git', :branch => :develop
-  gem 'rspec-rayo', '>= 0.1.14'
+  gem 'punchblock', '>=0.5.0'
+  gem 'rspec-rayo', '>=0.2.0'
   gem 'awesome_print'
   gem 'ci_reporter'
   gem 'json'

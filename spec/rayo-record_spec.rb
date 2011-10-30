@@ -139,11 +139,11 @@ describe "Record command" do
 
     it "can be paused, resumed and stopped" do
       sleep 2
-      @record_command.pause!.should have_executed_correctly
+      @record_command.pause!.await_completion.should have_executed_correctly
       sleep 2
-      @record_command.resume!.should have_executed_correctly
+      @record_command.resume!.await_completion.should have_executed_correctly
       sleep 2
-      @record_command.stop!.should have_executed_correctly
+      @record_command.stop!.await_completion.should have_executed_correctly
 
       @record_command.next_event.should be_a_valid_stopped_recording_event
 
