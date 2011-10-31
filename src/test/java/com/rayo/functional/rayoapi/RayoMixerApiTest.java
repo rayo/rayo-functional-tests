@@ -105,10 +105,10 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertReceived(InputCompleteEvent.class, incoming1);
 		assertReceived(InputCompleteEvent.class, incoming2);
 		
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing1);
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming1.getCallId());
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing2);
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming2.getCallId());
 		assertTrue(iq.isResult());
 		
 		waitForEvents();
