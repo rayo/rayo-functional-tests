@@ -18,6 +18,7 @@ import com.voxeo.moho.event.OutputCompleteEvent.Cause;
 import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.Output;
 import com.voxeo.moho.media.output.OutputCommand;
+import com.voxeo.moho.media.output.TextToSpeechResource;
 
 public class OutputTest extends MohoBasedIntegrationTest {
 
@@ -91,8 +92,8 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    
         Input<Call> input = incoming.input("one hundred,ireland");
 
-        Ssml prompt = new Ssml("<say-as interpret-as=\"ordinal\">100</say-as>");
-        OutputCommand outputCommand = new OutputCommand(resolveAudio(prompt));        
+        String text = "<speak><say-as interpret-as=\"ordinal\">100</say-as></speak>";
+        OutputCommand outputCommand = new OutputCommand(new TextToSpeechResource(text));        
 	    outgoing.output(outputCommand);
 
 	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
@@ -101,6 +102,29 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    incoming.hangup();
 	    waitForEvents();
 	}	
+	
+	@Test
+	public void testErrorOnInvalidSsml() throws Exception {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    
+        Input<Call> input = incoming.input("one hundred,ireland");
+
+        String text = "<speak><output-as interpret-as=\"ordinal\">100</output-as></speak>";
+        OutputCommand outputCommand = new OutputCommand(new TextToSpeechResource(text));        
+	    Output<Call> output = outgoing.output(outputCommand);
+	    waitForEvents();
+	    
+	    OutputCompleteEvent<?> complete = assertReceived(OutputCompleteEvent.class, output);
+	    assertEquals(complete.getCause(), Cause.ERROR);
+	    
+	    incoming.hangup();
+	    waitForEvents();
+	}
 	
 	@Test
 	public void testAudioPlayback() throws Exception {
