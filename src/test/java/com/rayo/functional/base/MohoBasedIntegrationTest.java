@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 
+import com.rayo.core.verb.Ssml;
 import com.voxeo.moho.Call;
 import com.voxeo.moho.CallableEndpoint;
 import com.voxeo.moho.IncomingCall;
@@ -18,6 +19,7 @@ import com.voxeo.moho.common.event.MohoMediaCompleteEvent;
 import com.voxeo.moho.event.Event;
 import com.voxeo.moho.event.Observer;
 import com.voxeo.moho.media.MediaOperation;
+import com.voxeo.moho.media.output.AudibleResource;
 import com.voxeo.moho.remote.MohoRemote;
 import com.voxeo.moho.remote.impl.MohoRemoteImpl;
 import com.voxeo.moho.remote.sample.SimpleAuthenticateCallbackImpl;
@@ -113,6 +115,15 @@ public abstract class MohoBasedIntegrationTest {
 		throw new AssertionError("Call Event not found");
 	}
 	
+	protected boolean assertNotReceived(Class eventClass, MediaOperation operation) {
+		
+		try {
+			assertReceived(eventClass, operation);
+			throw new AssertionError("Call Event found");
+		} catch (AssertionError e) {
+			return true;
+		}
+	}
 	
 	protected <T> T assertReceived(Class<T> eventClass, Call call) {
 		
@@ -132,8 +143,23 @@ public abstract class MohoBasedIntegrationTest {
 		System.out.println("Call event not found");
 		throw new AssertionError("Call Event not found");
 	}
-
-	private void waitForEvents(int time) {
+	
+	protected boolean assertNotReceived(Class eventClass, Call call) {
+		
+		try {
+			assertReceived(eventClass, call);
+			throw new AssertionError("Call Event found");
+		} catch (AssertionError e) {
+			return true;
+		}
+	}
+	
+	protected void waitForEvents() {
+	
+		waitForEvents(1000);
+	}
+	
+	protected void waitForEvents(int time) {
 		 
 		try {
 			Thread.sleep(time);
@@ -153,4 +179,13 @@ public abstract class MohoBasedIntegrationTest {
 		System.out.println(String.format("Adding event [%s]",event));
 		events.add(event);
 	}
+	
+    protected AudibleResource resolveAudio(final Ssml item) {
+    	
+        return new AudibleResource() {
+            public URI toURI() {
+                return item.toUri();
+            }
+        };
+    }
 }

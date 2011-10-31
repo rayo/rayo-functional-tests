@@ -32,4 +32,43 @@ public class HangupTest extends MohoBasedIntegrationTest {
 	    MohoCallCompleteEvent endOutgoing = assertReceived(MohoCallCompleteEvent.class, outgoing);
 	    assertEquals(endOutgoing.getCause(), Cause.DISCONNECT);
 	}
+	
+	@Test
+	public void testAcceptAndHangup() {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.accept();
+	    
+	    waitForEvents(1000);
+	    incoming.hangup();
+
+	    MohoCallCompleteEvent endIncoming = assertReceived(MohoCallCompleteEvent.class, incoming);
+	    assertEquals(endIncoming.getCause(), Cause.DISCONNECT);
+	    
+	    MohoCallCompleteEvent endOutgoing = assertReceived(MohoCallCompleteEvent.class, outgoing);
+	    assertEquals(endOutgoing.getCause(), Cause.DECLINE);		
+	}
+
+	@Test
+	public void testAnswerAndLetFarsideHangup() {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    	    
+	    assertReceived(AnsweredEvent.class, outgoing);
+	    
+	    outgoing.hangup();
+
+	    MohoCallCompleteEvent endIncoming = assertReceived(MohoCallCompleteEvent.class, incoming);
+	    assertEquals(endIncoming.getCause(), Cause.DISCONNECT);
+	    
+	    MohoCallCompleteEvent endOutgoing = assertReceived(MohoCallCompleteEvent.class, outgoing);
+	    assertEquals(endOutgoing.getCause(), Cause.DISCONNECT);
+	}		
 }

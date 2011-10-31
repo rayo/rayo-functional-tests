@@ -13,7 +13,7 @@ public class RayoAnswerTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testAnswerFailsAfterHangUp() throws Exception {
 		
-		String ougoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);
@@ -25,5 +25,38 @@ public class RayoAnswerTest extends RayoBasedIntegrationTest {
 		rayoClient.answer(incomingCallId);
 		assertTrue(hasAnyErrors(incomingCallId));
 		assertEquals(getLastError(incomingCallId).getCondition(), Condition.item_not_found);
+	}
+
+	@Test
+	public void testAnswerMultipleTimes() throws Exception {
+		
+		rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String incomingCallId = getIncomingCall().getCallId();
+		
+		rayoClient.answer(incomingCallId);
+		rayoClient.answer(incomingCallId);
+		rayoClient.answer(incomingCallId);
+		
+		waitForEvents();
+		assertFalse(hasAnyErrors(incomingCallId));
+		rayoClient.hangup(incomingCallId);		
+		waitForEvents();
+	}
+	
+
+	@Test
+	public void testAcceptMultipleTimesShouldThrowErrorAndNotEndCall() throws Exception {
+		
+		rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String incomingCallId = getIncomingCall().getCallId();
+		
+		rayoClient.accept(incomingCallId);
+		rayoClient.accept(incomingCallId);
+		
+		waitForEvents();
+		assertTrue(hasAnyErrors(incomingCallId));
+		assertEquals(getLastError(incomingCallId).getText(), "Call is already accepted");
+		rayoClient.hangup(incomingCallId);		
+		waitForEvents();
 	}
 }
