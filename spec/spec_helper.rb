@@ -71,7 +71,7 @@ module Punchblock
 end
 
 status = $rayo.read_queue $rayo.event_queue
-abort 'Could not connect to Prism XMPP Server. Aborting!' unless status == Punchblock::Connection::Connected
+abort 'Could not connect to Prism XMPP Server. Aborting!' unless status.is_a? Punchblock::Connection::Connected
 $rayo.start_event_dispatcher
 
 RSpec.configure do |config|
