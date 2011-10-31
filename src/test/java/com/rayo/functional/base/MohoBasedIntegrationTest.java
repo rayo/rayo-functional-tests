@@ -97,6 +97,11 @@ public abstract class MohoBasedIntegrationTest {
 	
 	protected <T> T assertReceived(Class<T> eventClass, MediaOperation operation) {
 		
+		return assertReceived(eventClass, operation, retries);
+	}
+	
+	protected <T> T assertReceived(Class<T> eventClass, MediaOperation operation, int retries) {
+		
 		int i = 0;
 		do {
 			System.out.println(String.format("Asserting event [%s] on operation [%s]. Try %s", eventClass, operation, i+1));
@@ -118,14 +123,19 @@ public abstract class MohoBasedIntegrationTest {
 	protected boolean assertNotReceived(Class eventClass, MediaOperation operation) {
 		
 		try {
-			assertReceived(eventClass, operation);
+			assertReceived(eventClass, operation, 0);
 			throw new AssertionError("Call Event found");
 		} catch (AssertionError e) {
 			return true;
 		}
 	}
-	
+
 	protected <T> T assertReceived(Class<T> eventClass, Call call) {
+
+		return assertReceived(eventClass, call, retries);
+	}
+	
+	protected <T> T assertReceived(Class<T> eventClass, Call call, int retries) {
 		
 		int i = 0;
 		do {
@@ -147,7 +157,7 @@ public abstract class MohoBasedIntegrationTest {
 	protected boolean assertNotReceived(Class eventClass, Call call) {
 		
 		try {
-			assertReceived(eventClass, call);
+			assertReceived(eventClass, call, 0);
 			throw new AssertionError("Call Event found");
 		} catch (AssertionError e) {
 			return true;

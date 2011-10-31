@@ -12,6 +12,7 @@ import com.voxeo.moho.OutgoingCall;
 import com.voxeo.moho.Participant.JoinType;
 import com.voxeo.moho.common.event.MohoInputCompleteEvent;
 import com.voxeo.moho.common.event.MohoJoinCompleteEvent;
+import com.voxeo.moho.event.InputCompleteEvent;
 import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.input.InputCommand;
 import com.voxeo.moho.media.input.SimpleGrammar;
@@ -39,15 +40,19 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    
 	    assertReceived(MohoInputCompleteEvent.class, incoming1);
 	    assertReceived(MohoInputCompleteEvent.class, incoming2);
+	    
+	    incoming1.hangup();
+	    incoming2.hangup();
+	    waitForEvents();
 	}
 	
 	@Test
-	@Ignore
 	public void testJoinBridgeFails() {
 		
 	    OutgoingCall outgoing1 = dial();	    	    
 	    IncomingCall incoming1 = getIncomingCall();
 	    incoming1.answer();
+	    waitForEvents();
 	    
 	    OutgoingCall outgoing2 = dial();
 	    incoming1.join(outgoing2, JoinType.BRIDGE, Direction.DUPLEX);
@@ -56,13 +61,14 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    
 	    Input<Call> input1 = outgoing1.input(new InputCommand(new SimpleGrammar("yes,no")));
 	    Input<Call> input2 = outgoing2.input(new InputCommand(new SimpleGrammar("yes,no")));
+	    waitForEvents();
 	    incoming1.output("yes");
 	    
-	    try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    waitForEvents();
+	    assertReceived(InputCompleteEvent.class, input1);
+	    assertReceived(InputCompleteEvent.class, input2);
+	    
+	    incoming1.hangup();
+	    waitForEvents();
 	}
 }

@@ -1,6 +1,7 @@
 package com.rayo.functional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 
@@ -16,7 +17,6 @@ import com.voxeo.moho.event.OutputCompleteEvent;
 import com.voxeo.moho.event.OutputCompleteEvent.Cause;
 import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.Output;
-import com.voxeo.moho.media.output.AudibleResource;
 import com.voxeo.moho.media.output.OutputCommand;
 
 public class OutputTest extends MohoBasedIntegrationTest {
@@ -102,4 +102,135 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    waitForEvents();
 	}	
 	
+	@Test
+	public void testAudioPlayback() throws Exception {
+		
+	    dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    
+	    Output<Call> output = incoming.output(new URI(audioURL));
+	    waitForEvents(1000);
+	    assertNotReceived(OutputCompleteEvent.class, output);
+	    
+	    output.pause();
+	    waitForEvents(6000);
+	    output.resume();
+	    waitForEvents(1000);
+	    
+	    output.stop();
+	    
+	    OutputCompleteEvent<?> complete = assertReceived(OutputCompleteEvent.class, output);
+	    assertEquals(complete.getCause(), Cause.CANCEL);
+	    
+	    incoming.hangup();
+	    waitForEvents();
+	}
+	
+	@Test
+	public void testAudioSeek() throws Exception {
+		
+	    dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    
+	    Output<Call> output = incoming.output(new URI(audioURL));
+	    waitForEvents(1000);
+	    assertNotReceived(OutputCompleteEvent.class, output);
+	    
+	    output.move(true, 2000);
+	    output.move(false, 2000);
+	    
+	    waitForEvents(1000);
+	    assertNotReceived(OutputCompleteEvent.class, output);
+
+	    waitForEvents(2000);
+	    OutputCompleteEvent<?> complete = assertReceived(OutputCompleteEvent.class, output);
+	    assertEquals(complete.getCause(), Cause.END);
+	    
+	    incoming.hangup();
+	    waitForEvents();
+	}
+	
+	@Test
+	public void testAudioSpeedUp() throws Exception {
+		
+	    dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    
+	    Output<Call> output = incoming.output(new URI(audioURL));
+	    waitForEvents(1000);
+	    assertNotReceived(OutputCompleteEvent.class, output);
+	    
+	    // Normally it takes 6 seconds. See test above.
+	    output.speed(true);
+	    waitForEvents(4000);
+
+	    OutputCompleteEvent<?> complete = assertReceived(OutputCompleteEvent.class, output, 1);
+	    assertEquals(complete.getCause(), Cause.END);
+	    
+	    incoming.hangup();
+	    waitForEvents();
+	}
+	
+	@Test
+	public void testAudioSlowDown() throws Exception {
+		
+	    dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    
+	    Output<Call> output = incoming.output(new URI(audioURL));
+	    waitForEvents(1000);
+	    assertNotReceived(OutputCompleteEvent.class, output);
+	    
+	    output.speed(false);
+	    waitForEvents(4000);
+	    assertNotReceived(OutputCompleteEvent.class, output);
+	    waitForEvents(2000);
+	    assertNotReceived(OutputCompleteEvent.class, output);
+	    waitForEvents(4000);
+
+	    OutputCompleteEvent<?> complete = assertReceived(OutputCompleteEvent.class, output, 1);
+	    assertEquals(complete.getCause(), Cause.END);
+	    
+	    incoming.hangup();
+	    waitForEvents();
+	}
+	
+	
+	@Test
+	public void testAudioVolume() throws Exception {
+		
+	    dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    
+	    Output<Call> output = incoming.output(new URI(audioURL));
+	    waitForEvents(1000);
+	    assertNotReceived(OutputCompleteEvent.class, output);
+	    
+	    output.volume(true);
+	    waitForEvents();
+	    output.volume(false);
+	    waitForEvents(4000);
+	    
+	    OutputCompleteEvent<?> complete = assertReceived(OutputCompleteEvent.class, output, 1);
+	    assertEquals(complete.getCause(), Cause.END);
+	    
+	    incoming.hangup();
+	    waitForEvents();
+	}
+
 }

@@ -7,13 +7,12 @@ import java.net.URI;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.rayo.client.registry.Call;
 import com.rayo.client.xmpp.stanza.IQ;
 import com.rayo.core.JoinDestinationType;
+import com.rayo.core.verb.InputCompleteEvent;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
-import com.voxeo.moho.Call;
-import com.voxeo.moho.media.Input;
-import com.voxeo.moho.media.input.InputCommand;
-import com.voxeo.moho.media.input.SimpleGrammar;
+
 
 public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
@@ -78,31 +77,33 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testOutputOnMixer() throws Exception {
 		
 		String outgoing1 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
-		String incoming1 = getIncomingCall().getCallId();
-		rayoClient.answer(incoming1);
+		Call incoming1 = getIncomingCall();
+		rayoClient.answer(incoming1.getCallId());
 
 		String outgoing2 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
-		String incoming2 = getIncomingCall().getCallId();
-		rayoClient.answer(incoming2);
+		Call incoming2 = getIncomingCall();
+		rayoClient.answer(incoming2.getCallId());
 
-		IQ iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		IQ iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming1.getCallId());
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
+		iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming2.getCallId());
 		assertTrue(iq.isResult());
 
 		waitForEvents();
-		rayoClient.input("yes,no", incoming1);
-		rayoClient.input("yes,no", incoming2);
+		rayoClient.input("yes,no", incoming1.getCallId());
+		rayoClient.input("yes,no", incoming2.getCallId());
 
 		waitForEvents();
 		rayoClient.output("yes", "1234");
 		
+		waitForEvents(1000);
 		// Expect input completes. Does not work
+		assertReceived(InputCompleteEvent.class, incoming1);
+		assertReceived(InputCompleteEvent.class, incoming1);
 		
 		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing1);
 		assertTrue(iq.isResult());
