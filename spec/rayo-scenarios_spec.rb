@@ -30,7 +30,7 @@ describe "Call Scenarios" do
       @employee3.hangup.should have_executed_correctly
 
       # 7. The call is established end to end between the customer and employee1
-      call_output.stop!.should have_executed_correctly
+      call_output.stop!.await_completion.should have_executed_correctly
       call_output.next_event.should be_a_valid_complete_stopped_event
 
       # Join employee1 to the customer

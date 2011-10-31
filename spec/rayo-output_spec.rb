@@ -94,11 +94,11 @@ describe "Output component" do
     output_command = @call.output :ssml => audio_ssml(:url => @config['audio_url'])
 
     sleep 2
-    output_command.pause!
+    output_command.pause!.await_completion
     sleep 2
-    output_command.resume!
+    output_command.resume!.await_completion
     sleep 2
-    output_command.stop!
+    output_command.stop!.await_completion
 
     output_command.next_event.should be_a_valid_complete_stopped_event
 
@@ -146,32 +146,32 @@ describe "Output component" do
     end
 
     it "can seek within the output" do
-      @output_command.seek!(:direction => :forward, :amount => 3000).should have_executed_correctly
-      @output_command.seek!(:direction => :back, :amount => 3000).should have_executed_correctly
+      @output_command.seek!(:direction => :forward, :amount => 3000).await_completion.should have_executed_correctly
+      @output_command.seek!(:direction => :back, :amount => 3000).await_completion.should have_executed_correctly
     end
 
     it "can speed up output" do
-      @output_command.speed_up!.should have_executed_correctly
-      @output_command.speed_up!.should have_executed_correctly
+      @output_command.speed_up!.await_completion.should have_executed_correctly
+      @output_command.speed_up!.await_completion.should have_executed_correctly
     end
 
     it "can slow down output" do
-      @output_command.slow_down!.should have_executed_correctly
-      @output_command.slow_down!.should have_executed_correctly
+      @output_command.slow_down!.await_completion.should have_executed_correctly
+      @output_command.slow_down!.await_completion.should have_executed_correctly
     end
 
     it "can increase output volume" do
-      @output_command.volume_up!.should have_executed_correctly
-      @output_command.volume_up!.should have_executed_correctly
+      @output_command.volume_up!.await_completion.should have_executed_correctly
+      @output_command.volume_up!.await_completion.should have_executed_correctly
     end
 
     it "can decrease output volume" do
-      @output_command.volume_down!.should have_executed_correctly
-      @output_command.volume_down!.should have_executed_correctly
+      @output_command.volume_down!.await_completion.should have_executed_correctly
+      @output_command.volume_down!.await_completion.should have_executed_correctly
     end
 
     after do
-      @output_command.stop!.should have_executed_correctly
+      @output_command.stop!.await_completion.should have_executed_correctly
       @output_command.next_event.should be_a_valid_complete_stopped_event
       hangup_and_confirm
     end

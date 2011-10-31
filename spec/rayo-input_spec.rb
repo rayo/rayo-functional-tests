@@ -67,7 +67,7 @@ describe "Input component" do
 
     wait_on_latch :responded
 
-    input.next_event.should be_a_valid_successful_input_event.with_interpretation('3')
+    input.next_event.should be_a_valid_successful_input_event.with_interpretation('dtmf-3')
 
     hangup_and_confirm
   end

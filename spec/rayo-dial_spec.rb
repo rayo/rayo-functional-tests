@@ -85,7 +85,7 @@ describe "Dial command" do
                                            :queue_timeout    => $config['rayo_queue']['connection_timeout'],
                                            :write_timeout    => $config['rayo_server']['write_timeout']
 
-      @client2.read_queue(@client2.event_queue).should == 'CONNECTED'
+      @client2.read_queue(@client2.event_queue).should == Punchblock::Connection::Connected
       @client2.start_event_dispatcher
     end
 
