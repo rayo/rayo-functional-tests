@@ -1,6 +1,7 @@
 package com.rayo.functional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import javax.media.mscontrol.join.Joinable.Direction;
 
@@ -15,7 +16,6 @@ import com.voxeo.moho.Participant.JoinType;
 import com.voxeo.moho.event.CallCompleteEvent;
 import com.voxeo.moho.event.InputCompleteEvent;
 import com.voxeo.moho.event.JoinCompleteEvent;
-import com.voxeo.moho.event.OutputCompleteEvent;
 import com.voxeo.moho.event.UnjoinCompleteEvent;
 import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.input.InputCommand;
@@ -250,4 +250,40 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    outgoing2.hangup();
 	    waitForEvents();
 	}	
+	
+	
+	@Test
+	public void testJoinBridgeSharedSuceeds() {
+		
+	    OutgoingCall outgoing1 = dial();	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    assertNotNull(incoming1);
+	    incoming1.answer();
+
+	    OutgoingCall outgoing2 =dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    assertNotNull(incoming2);
+	    incoming2.answer();
+
+	    OutgoingCall outgoing3 =dial();
+	    IncomingCall incoming3 = getIncomingCall();
+	    assertNotNull(incoming3);
+	    incoming3.answer();
+	    waitForEvents();
+
+	    incoming1.join(incoming2, JoinType.BRIDGE_SHARED, false, Direction.DUPLEX);
+	    waitForEvents();
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+
+	    incoming3.join(incoming1, JoinType.BRIDGE_SHARED, false, Direction.DUPLEX);
+	    waitForEvents();
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming3);
+	    
+	    outgoing1.hangup();
+	    outgoing2.hangup();
+	    outgoing3.hangup();
+	    waitForEvents();
+	}
 }
