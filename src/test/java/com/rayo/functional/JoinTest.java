@@ -76,6 +76,8 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
+	//TODO: #1579867
 	public void joinOutgoingCalls() {
 			
 	    OutgoingCall outgoing1 = dial();	    	    
@@ -112,4 +114,40 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    incoming2.hangup();
 	    waitForEvents();
 	}
+	
+	@Test
+	@Ignore
+	public void testMediaWithCallsJoinedOnRecvMode() {
+		
+	    OutgoingCall outgoing1 = dial();	    	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    incoming1.answer();
+	    waitForEvents();
+	    
+	    OutgoingCall outgoing2 = dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    incoming2.answer();
+	    waitForEvents();
+	    
+	    incoming1.join(incoming2, JoinType.BRIDGE_SHARED, Direction.RECV);
+	    
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+
+	    // Assert leg does receive media
+	    Input<Call> input1 = incoming1.input("yes,no");
+	    outgoing2.output("yes");
+	    waitForEvents();
+	    assertReceived(InputCompleteEvent.class, input1);	 
+	    
+	    // Asserts the other leg does not receive media
+	    Input<Call> input2 = incoming2.input("yes,no");
+	    outgoing1.output("yes");
+	    waitForEvents();
+	    assertNotReceived(InputCompleteEvent.class, input2);   
+	    
+	    incoming1.hangup();
+	    incoming2.hangup();
+	    waitForEvents();
+	}	
 }
