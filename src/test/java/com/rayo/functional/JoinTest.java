@@ -5,6 +5,8 @@ import javax.media.mscontrol.join.Joinable.Direction;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 import com.rayo.functional.base.MohoBasedIntegrationTest;
 import com.voxeo.moho.Call;
 import com.voxeo.moho.IncomingCall;
@@ -320,4 +322,39 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    incoming2.hangup();
 	    waitForEvents();
 	}
+	
+	@Test
+	public void testNoMediaOperationsAllowedOnJoin() {
+		
+	    OutgoingCall outgoing1 = dial();	    	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    incoming1.answer();
+	    waitForEvents();
+	    
+	    OutgoingCall outgoing2 = dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    incoming2.answer();
+	    waitForEvents();
+	    
+	    incoming1.join(incoming2, JoinType.DIRECT, Direction.DUPLEX);
+	    
+	    try {
+	    	incoming1.input("yes,no");
+	    	throw new AssertionError("Expected error");
+	    } catch (Exception e) {
+	    	assertTrue(e.getMessage().contains("Media operations are not allowed in the current call status"));
+	    }
+
+	    try {
+	    	incoming1.input("hello");
+	    	throw new AssertionError("Expected error");
+	    } catch (Exception e) {
+	    	assertTrue(e.getMessage().contains("Media operations are not allowed in the current call status"));
+	    }
+
+	    incoming1.hangup();
+	    incoming2.hangup();
+	    waitForEvents();
+	}	
+	
 }

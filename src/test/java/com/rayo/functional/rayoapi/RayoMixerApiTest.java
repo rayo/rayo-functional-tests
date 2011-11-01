@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.client.xmpp.stanza.IQ;
@@ -75,6 +76,8 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
+	//TODO: #1578848
 	public void testOutputOnMixer() throws Exception {
 		
 		String outgoing1 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
