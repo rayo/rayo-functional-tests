@@ -13,6 +13,7 @@ import com.voxeo.moho.Participant.JoinType;
 import com.voxeo.moho.common.event.MohoInputCompleteEvent;
 import com.voxeo.moho.common.event.MohoJoinCompleteEvent;
 import com.voxeo.moho.event.InputCompleteEvent;
+import com.voxeo.moho.event.JoinCompleteEvent;
 import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.input.InputCommand;
 import com.voxeo.moho.media.input.SimpleGrammar;
@@ -47,6 +48,8 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
+	//TODO: #1579864
 	public void testJoinBridgeFails() {
 		
 	    OutgoingCall outgoing1 = dial();	    	    
@@ -69,6 +72,44 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    assertReceived(InputCompleteEvent.class, input2);
 	    
 	    incoming1.hangup();
+	    waitForEvents();
+	}
+	
+	@Test
+	public void joinOutgoingCalls() {
+			
+	    OutgoingCall outgoing1 = dial();	    	    
+	    OutgoingCall outgoing2 = dial();
+	    outgoing1.join(outgoing2, JoinType.BRIDGE_SHARED, Direction.DUPLEX);
+	    
+	    assertReceived(JoinCompleteEvent.class, outgoing1);
+	    assertReceived(JoinCompleteEvent.class, outgoing2);
+	    
+	    outgoing1.hangup();
+	    outgoing2.hangup();
+	    waitForEvents();
+	}
+	
+	@Test
+	public void joinCallsRecvMode() {
+		
+	    dial();	    	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    incoming1.answer();
+	    waitForEvents();
+	    
+	    dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    incoming2.answer();
+	    waitForEvents();
+	    
+	    incoming1.join(incoming2, JoinType.BRIDGE_SHARED, Direction.RECV);
+	    
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+	    
+	    incoming1.hangup();
+	    incoming2.hangup();
 	    waitForEvents();
 	}
 }
