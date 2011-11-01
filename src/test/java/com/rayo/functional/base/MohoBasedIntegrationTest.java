@@ -14,10 +14,8 @@ import com.voxeo.moho.Call;
 import com.voxeo.moho.CallableEndpoint;
 import com.voxeo.moho.IncomingCall;
 import com.voxeo.moho.OutgoingCall;
-import com.voxeo.moho.State;
 import com.voxeo.moho.common.event.MohoMediaCompleteEvent;
 import com.voxeo.moho.event.Event;
-import com.voxeo.moho.event.Observer;
 import com.voxeo.moho.media.MediaOperation;
 import com.voxeo.moho.media.output.AudibleResource;
 import com.voxeo.moho.remote.MohoRemote;
@@ -104,17 +102,25 @@ public abstract class MohoBasedIntegrationTest {
 		
 		int i = 0;
 		do {
-			System.out.println(String.format("Asserting event [%s] on operation [%s]. Try %s", eventClass, operation, i+1));
-			for (Event event: events) {
-				if (eventClass.isAssignableFrom(event.getClass())) {
-					if (event instanceof MohoMediaCompleteEvent) {
-						if (((MohoMediaCompleteEvent)event).getMediaOperation() == operation) {
-							return (T)event;
+			synchronized(events) {
+				T evt = null;
+				System.out.println(String.format("Asserting event [%s] on operation [%s]. Try %s", eventClass, operation, i+1));
+				for (Event event: events) {
+					if (eventClass.isAssignableFrom(event.getClass())) {
+						if (event instanceof MohoMediaCompleteEvent) {
+							if (((MohoMediaCompleteEvent)event).getMediaOperation() == operation) {
+								evt = (T)event;
+								break;
+							}
 						}
 					}
 				}
+				if (evt != null) {
+					events.remove(evt);
+					return evt;
+				}
+				i++;
 			}
-			i++;
 			waitForEvents(waitTime);
 		} while (i<retries);
 		throw new AssertionError("Call Event not found");
@@ -139,15 +145,23 @@ public abstract class MohoBasedIntegrationTest {
 		
 		int i = 0;
 		do {
-			System.out.println(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, call.getId(), i+1));
-			for (Event event: events) {
-				if (eventClass.isAssignableFrom(event.getClass())) {
-					if (event.getSource() == call) {
-						return (T)event;
+			synchronized(events) {
+				T evt = null;
+				System.out.println(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, call.getId(), i+1));
+				for (Event event: events) {
+					if (eventClass.isAssignableFrom(event.getClass())) {
+						if (event.getSource() == call) {
+							evt = (T)event;
+							break;
+						}
 					}
 				}
+				if (evt != null) {
+					events.remove(evt);
+					return evt;
+				}			
+				i++;
 			}
-			i++;
 			waitForEvents(waitTime);
 		} while (i<retries);
 		System.out.println("Call event not found");
@@ -187,7 +201,9 @@ public abstract class MohoBasedIntegrationTest {
 	void addEvent(Event event) {
 
 		System.out.println(String.format("Adding event [%s]",event));
-		events.add(event);
+		synchronized(events) {
+			events.add(event);
+		}
 	}
 	
     protected AudibleResource resolveAudio(final Ssml item) {

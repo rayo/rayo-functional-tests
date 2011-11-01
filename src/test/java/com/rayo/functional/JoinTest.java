@@ -14,6 +14,7 @@ import com.voxeo.moho.common.event.MohoInputCompleteEvent;
 import com.voxeo.moho.common.event.MohoJoinCompleteEvent;
 import com.voxeo.moho.event.InputCompleteEvent;
 import com.voxeo.moho.event.JoinCompleteEvent;
+import com.voxeo.moho.event.UnjoinCompleteEvent;
 import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.input.InputCommand;
 import com.voxeo.moho.media.input.SimpleGrammar;
@@ -21,6 +22,8 @@ import com.voxeo.moho.media.input.SimpleGrammar;
 public class JoinTest extends MohoBasedIntegrationTest {
 
 	@Test
+	@Ignore
+	//TODO: #1578858 / 407
 	public void testJoinBridge() {
 		
 	    OutgoingCall outgoing1 = dial();	    	    
@@ -210,5 +213,111 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    incoming1.hangup();
 	    incoming2.hangup();
 	    waitForEvents();
-	}	
+	}
+	
+	@Test
+	public void joinCallsDuplexMode() {
+		
+	    dial();	    	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    incoming1.answer();
+	    waitForEvents();
+	    
+	    dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    incoming2.answer();
+	    waitForEvents();
+	    
+	    incoming1.join(incoming2, JoinType.BRIDGE_SHARED, Direction.DUPLEX);
+	    
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+	    
+	    incoming1.hangup();
+	    incoming2.hangup();
+	    waitForEvents();
+	}
+	
+	@Test
+	public void testUnjoin() {
+	
+	    OutgoingCall outgoing1 = dial();	    	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    incoming1.answer();
+	    waitForEvents();
+	    
+	    OutgoingCall outgoing2 = dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    incoming2.answer();
+	    waitForEvents();
+	    
+	    incoming1.join(incoming2, JoinType.BRIDGE_SHARED, Direction.DUPLEX);
+	    
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+	    	    
+	    incoming1.unjoin(incoming2);
+	    
+	    assertReceived(UnjoinCompleteEvent.class, incoming1);
+	    assertReceived(UnjoinCompleteEvent.class, incoming2);
+	    
+	    incoming1.hangup();
+	    incoming2.hangup();
+	    waitForEvents();
+	}
+	
+	@Test
+	public void testUnjoinOnHangupLocalEnd() {
+		
+	    OutgoingCall outgoing1 = dial();	    	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    incoming1.answer();
+	    waitForEvents();
+	    
+	    OutgoingCall outgoing2 = dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    incoming2.answer();
+	    waitForEvents();
+	    
+	    incoming1.join(incoming2, JoinType.BRIDGE_SHARED, Direction.DUPLEX);
+	    
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+	    	    
+	    incoming1.hangup();
+	    
+	    assertReceived(UnjoinCompleteEvent.class, incoming1);
+	    assertReceived(UnjoinCompleteEvent.class, incoming2);
+	    
+	    incoming2.hangup();
+	    waitForEvents();
+	}
+	
+	
+	@Test
+	public void testUnjoinOnHangupRemoteEnd() {
+		
+	    OutgoingCall outgoing1 = dial();	    	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    incoming1.answer();
+	    waitForEvents();
+	    
+	    OutgoingCall outgoing2 = dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    incoming2.answer();
+	    waitForEvents();
+	    
+	    incoming1.join(incoming2, JoinType.BRIDGE_SHARED, Direction.DUPLEX);
+	    
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+	    	    
+	    outgoing1.hangup();
+	    
+	    assertReceived(UnjoinCompleteEvent.class, incoming1);
+	    assertReceived(UnjoinCompleteEvent.class, incoming2);
+	    
+	    incoming2.hangup();
+	    waitForEvents();
+	}
 }

@@ -126,17 +126,23 @@ public abstract class RayoBasedIntegrationTest {
 	}
 	
 
-	protected <T> T assertReceived(Class<T> eventClass, Call call) {
+	protected <T> T assertReceived(Class<T> eventClass, String callId) {
 		
 		int i = 0;
-		System.out.println(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, call.getCallId(), i+1));
-		List<Object> events = callEvents.get(call.getCallId());
+		System.out.println(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, callId, i+1));
+		List<Object> events = callEvents.get(callId);
 		if (events != null) {
 			do {
+				T evt = null;
 				for (Object event: events) {
 					if (eventClass.isAssignableFrom(event.getClass())) {
-						return (T)event;
+						evt = (T)event;
+						break;
 					}
+				}
+				if (evt != null) {
+					events.remove(evt);
+					return evt;
 				}
 				i++;
 				waitForEvents(waitTime);

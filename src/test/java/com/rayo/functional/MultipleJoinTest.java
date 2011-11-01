@@ -286,4 +286,127 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    outgoing3.hangup();
 	    waitForEvents();
 	}
+	
+	
+	@Test
+	public void testJoinBridgeSharedSuceedsForceTrue() {
+		
+	    OutgoingCall outgoing1 = dial();	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    assertNotNull(incoming1);
+	    incoming1.answer();
+
+	    OutgoingCall outgoing2 =dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    assertNotNull(incoming2);
+	    incoming2.answer();
+
+	    OutgoingCall outgoing3 =dial();
+	    IncomingCall incoming3 = getIncomingCall();
+	    assertNotNull(incoming3);
+	    incoming3.answer();
+	    waitForEvents();
+
+	    incoming1.join(incoming2, JoinType.BRIDGE_SHARED, false, Direction.DUPLEX);
+	    waitForEvents();
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+
+	    incoming3.join(incoming1, JoinType.BRIDGE_SHARED, true, Direction.DUPLEX);
+	    waitForEvents();
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming3);
+	    
+	    outgoing1.hangup();
+	    outgoing2.hangup();
+	    outgoing3.hangup();
+	    waitForEvents();
+	}
+	
+	@Test
+	public void testJoinExclusiveModeFailsIfJoined() {
+		
+	    OutgoingCall outgoing1 = dial();	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    assertNotNull(incoming1);
+	    incoming1.answer();
+
+	    OutgoingCall outgoing2 =dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    assertNotNull(incoming2);
+	    incoming2.answer();
+
+	    OutgoingCall outgoing3 =dial();
+	    IncomingCall incoming3 = getIncomingCall();
+	    assertNotNull(incoming3);
+	    incoming3.answer();
+	    waitForEvents();
+
+	    incoming1.join(incoming2, JoinType.DIRECT, false, Direction.DUPLEX);
+	    waitForEvents();
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+
+	    try {
+	    	incoming3.join(incoming1, JoinType.BRIDGE_EXCLUSIVE, false, Direction.DUPLEX);
+	    } catch (Exception e) {
+	    	// Moho should have better xmpp error handling
+	    	assertTrue(e.getMessage().contains("is already joined"));
+	    }
+	    assertReceived(CallCompleteEvent.class, incoming3);
+	    assertReceived(CallCompleteEvent.class, outgoing3);
+	    
+	    // Assert that incoming1 keeps working
+	    Input<Call> input = incoming2.input("yes,no");
+	    incoming1.output("yes");
+	    waitForEvents();
+	    assertReceived(InputCompleteEvent.class, input);	    
+	    
+	    outgoing1.hangup();
+	    outgoing2.hangup();
+	    waitForEvents();
+	}
+	
+
+	@Test
+	public void testJoinBridgeExclusiveSucceedsForce() {
+		
+	    OutgoingCall outgoing1 = dial();	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    assertNotNull(incoming1);
+	    incoming1.answer();
+
+	    OutgoingCall outgoing2 =dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    assertNotNull(incoming2);
+	    incoming2.answer();
+
+	    OutgoingCall outgoing3 =dial();
+	    IncomingCall incoming3 = getIncomingCall();
+	    assertNotNull(incoming3);
+	    incoming3.answer();
+	    waitForEvents();
+
+	    incoming1.join(incoming2, JoinType.DIRECT, false, Direction.DUPLEX);
+	    waitForEvents();
+	    assertReceived(JoinCompleteEvent.class, incoming1);
+	    assertReceived(JoinCompleteEvent.class, incoming2);
+
+	    incoming3.join(incoming1, JoinType.BRIDGE_EXCLUSIVE, true, Direction.DUPLEX);
+
+	    assertReceived(JoinCompleteEvent.class, incoming3);
+	    assertReceived(UnjoinCompleteEvent.class, incoming2);
+
+	    // Assert that incoming1 now talks to incoming3
+	    Input<Call> input = incoming3.input("yes,no");
+	    incoming1.output("yes");
+	    waitForEvents();
+	    assertReceived(InputCompleteEvent.class, input);	    
+	    
+	    outgoing1.hangup();
+	    outgoing2.hangup();
+	    outgoing3.hangup();
+	    waitForEvents();
+	}
+
 }
