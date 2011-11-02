@@ -138,9 +138,11 @@ public abstract class MohoBasedIntegrationTest {
 	protected boolean assertNotReceived(Class eventClass, MediaOperation operation) {
 		
 		try {
+			System.out.println(String.format("[%s] Asserting that event [%s] was not received for media operation [%s].", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), eventClass, operation));
 			assertReceived(eventClass, operation, 0);
-			throw new AssertionError("Call Event found");
+			throw new AssertionError("Call Event found and was not expected");
 		} catch (AssertionError e) {
+			System.out.println(String.format("[%s] Assertion error: [%s].", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), e.getMessage()));
 			return true;
 		}
 	}
