@@ -166,13 +166,13 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    waitForEvents(1000);
 	    assertNotReceived(OutputCompleteEvent.class, output);
 	    
-	    output.move(true, 2000);
-	    output.move(false, 2000);
+	    output.move(true, 3000);
+	    output.move(false, 3000);
 	    
 	    waitForEvents(1000);
 	    assertNotReceived(OutputCompleteEvent.class, output);
 
-	    waitForEvents(2000);
+	    waitForEvents(4000);
 	    OutputCompleteEvent<?> complete = assertReceived(OutputCompleteEvent.class, output);
 	    assertEquals(complete.getCause(), Cause.END);
 	    
