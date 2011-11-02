@@ -114,15 +114,18 @@ public abstract class MohoBasedIntegrationTest {
 						if (event instanceof MohoMediaCompleteEvent) {
 							System.out.println(String.format("[%s] Checking if event operation [%s] is same as [%s].", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),((MohoMediaCompleteEvent) event).getMediaOperation(), operation));
 							if (((MohoMediaCompleteEvent)event).getMediaOperation() == operation) {
-								System.out.println(String.format("[%s] Found match.", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS")));
+								System.out.println(String.format("[%s] Found match [%s].", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), (T)event));
 								evt = (T)event;
 								break;
 							}
 						}
 					}
 				}
+				System.out.println(String.format("[%s] Checking if [%s] is null.", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), evt));
 				if (evt != null) {
+					System.out.println(String.format("[%s] Removing [%s] from events.", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), evt));
 					events.remove(evt);
+					System.out.println(String.format("[%s] Returning [%s].", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), evt));
 					return evt;
 				}
 				i++;
