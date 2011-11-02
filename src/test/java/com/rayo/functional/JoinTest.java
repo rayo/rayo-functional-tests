@@ -1,11 +1,11 @@
 package com.rayo.functional;
 
+import static org.junit.Assert.assertTrue;
+
 import javax.media.mscontrol.join.Joinable.Direction;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 import com.rayo.functional.base.MohoBasedIntegrationTest;
 import com.voxeo.moho.Call;
@@ -67,10 +67,6 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    } catch (Exception e) {
 	    	assertTrue(e.getMessage().contains("other join operation in process"));
 	    }
-
-	    outgoing2.hangup();
-	    outgoing1.hangup();
-	    waitForEvents();
 	}
 	
 	@Test
