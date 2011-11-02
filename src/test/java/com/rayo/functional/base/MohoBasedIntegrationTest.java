@@ -2,10 +2,12 @@ package com.rayo.functional.base;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.junit.After;
 import org.junit.Before;
 
@@ -104,7 +106,7 @@ public abstract class MohoBasedIntegrationTest {
 		do {
 			synchronized(events) {
 				T evt = null;
-				System.out.println(String.format("Asserting event [%s] on operation [%s]. Try %s", eventClass, operation, i+1));
+				System.out.println(String.format("[%s] Asserting event [%s] on operation [%s]. Try %s", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),eventClass, operation, i+1));
 				for (Event event: events) {
 					if (eventClass.isAssignableFrom(event.getClass())) {
 						if (event instanceof MohoMediaCompleteEvent) {
@@ -147,7 +149,7 @@ public abstract class MohoBasedIntegrationTest {
 		do {
 			synchronized(events) {
 				T evt = null;
-				System.out.println(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, call.getId(), i+1));
+				System.out.println(String.format("[%s] Asserting event [%s] on call [%s]. Try %s", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), eventClass, call.getId(), i+1));
 				for (Event event: events) {
 					if (eventClass.isAssignableFrom(event.getClass())) {
 						if (event.getSource() == call) {
@@ -194,13 +196,13 @@ public abstract class MohoBasedIntegrationTest {
 
 	void addCall(IncomingCall call) {
 
-		System.out.println(String.format("Adding incoming call [%s]",call));
+		System.out.println(String.format("[%s] Adding incoming call [%s]",DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), call));
 		callsQueue.add(call);
 	}
 
 	void addEvent(Event event) {
 
-		System.out.println(String.format("Adding event [%s]",event));
+		System.out.println(String.format("[%s] Adding event [%s]",DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), event));
 		synchronized(events) {
 			events.add(event);
 		}
