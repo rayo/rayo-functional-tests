@@ -53,9 +53,7 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	//TODO: #1579864
-	public void testJoinBridgeFails() {
+	public void testJoinBridgeFailsIfAnotherJoinIsInProgress() {
 		
 	    OutgoingCall outgoing1 = dial();	    	    
 	    IncomingCall incoming1 = getIncomingCall();
@@ -63,20 +61,15 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    waitForEvents();
 	    
 	    OutgoingCall outgoing2 = dial();
-	    incoming1.join(outgoing2, JoinType.BRIDGE, Direction.DUPLEX);
-	    	    	    
-	    assertReceived(MohoJoinCompleteEvent.class, incoming1);
-	    
-	    Input<Call> input1 = outgoing1.input(new InputCommand(new SimpleGrammar("yes,no")));
-	    Input<Call> input2 = outgoing2.input(new InputCommand(new SimpleGrammar("yes,no")));
-	    waitForEvents();
-	    incoming1.output("yes");
-	    
-	    waitForEvents();
-	    assertReceived(InputCompleteEvent.class, input1);
-	    assertReceived(InputCompleteEvent.class, input2);
-	    
-	    incoming1.hangup();
+	    waitForEvents(3000);
+	    try {
+	    	incoming1.join(outgoing2, JoinType.BRIDGE, Direction.DUPLEX);
+	    } catch (Exception e) {
+	    	assertTrue(e.getMessage().contains("other join operation in process"));
+	    }
+
+	    outgoing2.hangup();
+	    outgoing1.hangup();
 	    waitForEvents();
 	}
 	
