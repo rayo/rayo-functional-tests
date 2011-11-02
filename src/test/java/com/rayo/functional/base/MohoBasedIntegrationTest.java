@@ -108,9 +108,13 @@ public abstract class MohoBasedIntegrationTest {
 				T evt = null;
 				System.out.println(String.format("[%s] Asserting event [%s] on operation [%s]. Try %s", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),eventClass, operation, i+1));
 				for (Event event: events) {
+					System.out.println(String.format("[%s] Checking if event [%s] is assignable.", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),event.getClass()));
 					if (eventClass.isAssignableFrom(event.getClass())) {
+						System.out.println(String.format("[%s] Checking if event [%s] is media complete.", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),event.getClass()));
 						if (event instanceof MohoMediaCompleteEvent) {
+							System.out.println(String.format("[%s] Checking if event operation [%s] is same as [%s].", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),((MohoMediaCompleteEvent) event).getMediaOperation(), operation));
 							if (((MohoMediaCompleteEvent)event).getMediaOperation() == operation) {
+								System.out.println(String.format("[%s] Found match.", DateFormatUtils.format(new Date(), "hh:mm:ss.SSS")));
 								evt = (T)event;
 								break;
 							}
