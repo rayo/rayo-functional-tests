@@ -8,7 +8,6 @@ import java.net.URI;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.rayo.core.verb.Ssml;
 import com.rayo.functional.base.MohoBasedIntegrationTest;
 import com.voxeo.moho.Call;
 import com.voxeo.moho.IncomingCall;
@@ -261,4 +260,31 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    waitForEvents();
 	}
 
+	@Test
+	@Ignore
+	public void testNewOutputStopsActiveOutput() throws Exception {
+		
+	    dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    
+	    Output<Call> output1 = incoming.output(new URI(audioURL));
+	    waitForEvents(1000);
+	    assertNotReceived(OutputCompleteEvent.class, output1);
+
+	    Output<Call> output2 = incoming.output("hello");
+	    waitForEvents(1000);
+	    
+	    OutputCompleteEvent<?> complete1 = assertReceived(OutputCompleteEvent.class, output1, 1);
+	    assertEquals(complete1.getCause(), Cause.CANCEL);
+
+	    waitForEvents(1000);
+	    OutputCompleteEvent<?> complete2 = assertReceived(OutputCompleteEvent.class, output2, 1);
+	    assertEquals(complete2.getCause(), Cause.END);
+	    
+	    incoming.hangup();
+	    waitForEvents();
+	}
 }

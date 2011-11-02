@@ -1,7 +1,6 @@
 package com.rayo.functional;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import javax.media.mscontrol.join.Joinable.Direction;
 
@@ -178,6 +177,7 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 
 	    try {
 	    	incoming3.join(incoming1, JoinType.BRIDGE_SHARED, false, Direction.DUPLEX);
+	    	fail("Expected exception");
 	    } catch (Exception e) {
 	    	// Moho should have better xmpp error handling
 	    	assertTrue(e.getMessage().contains("is already joined"));
