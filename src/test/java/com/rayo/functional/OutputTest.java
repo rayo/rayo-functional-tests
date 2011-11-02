@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.core.verb.Ssml;
@@ -154,6 +155,8 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
+	//TODO: #1581070
 	public void testAudioSeek() throws Exception {
 		
 	    dial();
