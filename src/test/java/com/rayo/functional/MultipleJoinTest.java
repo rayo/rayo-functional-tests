@@ -24,6 +24,7 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 
 	@Test
 	@Ignore
+	//TODO:  #1585055
 	public void testOutputIsReceivedByMultipleCalls() {
 		
 	    OutgoingCall outgoing1 = dial();	    
@@ -49,7 +50,10 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    Input<Call> input3 = call3.input(input);
 	    
 	    outgoing1.output("yes");
-
+	    
+	    // This causes an exception
+	    // call1.output("yes");
+	    
 	    assertReceived(InputCompleteEvent.class, input2);
 	    assertReceived(InputCompleteEvent.class, input3);
 	}
