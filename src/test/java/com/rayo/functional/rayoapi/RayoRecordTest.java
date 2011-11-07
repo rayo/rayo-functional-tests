@@ -83,6 +83,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	
 	@Test
 	@Ignore
+	//TODO:  #1584774
 	public void testInitialTimeout() throws Exception {
 		
 		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
@@ -107,6 +108,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	
 	@Test
 	@Ignore
+	//TODO:  #1584780
 	public void testFinalTimeout() throws Exception {
 		
 		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
@@ -116,10 +118,10 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 		
 		Record record = new Record();
-		record.setFinalTimeout(new Duration(1000));
+		record.setFinalTimeout(new Duration(500));
 		VerbRef recordRef = rayoClient.record(record, incomingCallId);		
-		rayoClient.output("Hello World. This is a long test. So it should take a bit to be read. I hope it takes more than three seconds.", outgoingCallId);
-		Thread.sleep(2000);		
+		rayoClient.output("a", outgoingCallId);
+		Thread.sleep(4000);		
 		rayoClient.stop(recordRef);
 		
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
@@ -159,6 +161,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	
 	@Test
 	@Ignore
+	//TODO:  #1584783
 	public void testPauseAndResume() throws Exception {
 		
 		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
