@@ -49,7 +49,6 @@ public abstract class MohoBasedIntegrationTest {
 	    mohoRemote.addObserver(new MohoObserver(this));
 	    
 	    mohoRemote.connect(new SimpleAuthenticateCallbackImpl("usera", "1", "", "voxeo"), "localhost", "localhost");
-
 	}
 	
 	@After

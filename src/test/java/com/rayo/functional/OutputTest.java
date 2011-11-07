@@ -261,7 +261,6 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	}
 
 	@Test
-	@Ignore
 	public void testNewOutputStopsActiveOutput() throws Exception {
 		
 	    dial();
