@@ -5,10 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.net.URI;
 
 import org.joda.time.Duration;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.core.verb.InputCompleteEvent;
@@ -24,7 +22,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testShouldRecordAndGetValidMetadata() throws Exception {
 		
-		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);
@@ -54,7 +52,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testMediaRecorded() throws Exception {
 		
-		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);
@@ -84,7 +82,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testInitialTimeout() throws Exception {
 		
-		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);
@@ -107,7 +105,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testFinalTimeout() throws Exception {
 		
-		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);
@@ -131,7 +129,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testMaxDuration() throws Exception {
 		
-		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);
@@ -158,7 +156,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testPauseAndResume() throws Exception {
 		
-		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);

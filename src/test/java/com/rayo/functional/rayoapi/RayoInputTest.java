@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.URI;
-
 import org.junit.Test;
 
 import com.rayo.client.XmppException;
@@ -17,7 +15,7 @@ public class RayoInputTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testErrorOnInvalidGrammar() throws Exception {
 		
-		rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);

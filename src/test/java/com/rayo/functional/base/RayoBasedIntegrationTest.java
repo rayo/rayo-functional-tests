@@ -1,5 +1,6 @@
 package com.rayo.functional.base;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import com.rayo.client.xmpp.stanza.IQ;
 import com.rayo.client.xmpp.stanza.Message;
 import com.rayo.client.xmpp.stanza.Presence;
 import com.rayo.client.xmpp.stanza.Stanza;
+import com.rayo.core.verb.VerbRef;
 
 public abstract class RayoBasedIntegrationTest {
 
@@ -30,11 +32,20 @@ public abstract class RayoBasedIntegrationTest {
 	private int retries = 6;
 	private int waitTime = 3000;
 	
+	private String xmppUsername;
+	private String xmppPassword;
+	protected String sipDialUri;
+	private String xmppServer;
+	private String rayoServer;
+		
+	
 	@Before
 	public void setup() throws Exception {
 		
-		rayoClient = new RayoClient("localhost", "localhost");
-		rayoClient.connect("usera", "1");
+		loadProperties();
+		
+		rayoClient = new RayoClient(xmppServer, rayoServer);
+		rayoClient.connect(xmppUsername, xmppPassword);
 		
 		rayoClient.addStanzaListener(new StanzaListener() {
 			
@@ -89,6 +100,11 @@ public abstract class RayoBasedIntegrationTest {
 
 			}
 		});
+	}
+	
+	public VerbRef dial() throws Exception {
+		
+		return rayoClient.dial(new URI(sipDialUri));
 	}
 	
 	public boolean hasAnyErrors(String callId) {
@@ -188,5 +204,27 @@ public abstract class RayoBasedIntegrationTest {
 			}
 		}
 		return domain;
+	}
+	
+	private void loadProperties() {
+
+		xmppUsername = getProperty("xmpp.username", "usera");
+		xmppPassword = getProperty("xmpp.password", "1");
+		xmppServer = getProperty("xmpp.server", "localhost");
+		rayoServer = getProperty("rayo.server", "localhost");
+		sipDialUri = getProperty("sip.dial.uri", "sip:usera@127.0.0.1:5060");
+	}
+
+	private String getProperty(String property, String defaultValue) {
+
+		String result = System.getProperty(property);
+		if (result == null) {
+			result = defaultValue;
+		} else {
+			System.out.println(String.format(
+					"Using system property value for [%s]:[%s]", property,
+					result));
+		}
+		return result;
 	}
 }

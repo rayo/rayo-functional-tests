@@ -1,13 +1,12 @@
 package com.rayo.functional.rayoapi;
 
-import static org.junit.Assert.*;
-
-import java.net.URI;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.rayo.client.xmpp.stanza.IQ;
 import com.rayo.client.xmpp.stanza.Error.Condition;
+import com.rayo.client.xmpp.stanza.IQ;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class CommandTest extends RayoBasedIntegrationTest {
@@ -15,7 +14,7 @@ public class CommandTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testCommandNonExistingCall() throws Exception {
 		
-		rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);

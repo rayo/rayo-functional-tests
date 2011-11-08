@@ -59,7 +59,7 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testNestedJoinAndReject() throws Exception {
 		
-		String outgoing1 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
 		System.out.println(outgoing1 + " - " + incoming1);
 		rayoClient.answer(incoming1);
@@ -92,7 +92,7 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 	
 	private void doTest(JoinType type, Direction direction) throws Exception {
 		
-		String outgoing1 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
 		System.out.println(outgoing1 + " - " + incoming1);
 		rayoClient.answer(incoming1);
@@ -104,7 +104,7 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 		join.setType(JoinDestinationType.CALL);
 		
 		DialCommand dialCommand = new DialCommand();
-		dialCommand.setTo(new URI("sip:usera@localhost"));
+		dialCommand.setTo(new URI(sipDialUri));
 		dialCommand.setFrom(new URI("sip:test@localhost"));
 		dialCommand.setJoin(join);
 		

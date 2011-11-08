@@ -1,9 +1,10 @@
 package com.rayo.functional.rayoapi;
 
-import java.net.URI;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import com.rayo.client.xmpp.stanza.Error.Condition;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
@@ -13,7 +14,7 @@ public class RayoAnswerTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testAnswerFailsAfterHangUp() throws Exception {
 		
-		rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);
@@ -30,7 +31,7 @@ public class RayoAnswerTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testAnswerMultipleTimes() throws Exception {
 		
-		rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);
@@ -47,7 +48,7 @@ public class RayoAnswerTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testAcceptMultipleTimesShouldThrowErrorAndNotEndCall() throws Exception {
 		
-		rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.accept(incomingCallId);

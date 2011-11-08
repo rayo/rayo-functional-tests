@@ -2,8 +2,6 @@ package com.rayo.functional.rayoapi;
 
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -18,7 +16,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testJoinAndUnjoin() throws Exception {
 		
-		String outgoingCallId = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
 		rayoClient.answer(incomingCallId);
@@ -38,17 +36,17 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testJoinAndUnjoinMultipleCalls() throws Exception {
 		
-		String outgoing1 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();		
 		rayoClient.answer(incoming1);
 		waitForEvents();
 
-		String outgoing2 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoing2 = dial().getCallId();
 		String incoming2 = getIncomingCall().getCallId();		
 		rayoClient.answer(incoming2);
 		waitForEvents();
 
-		String outgoing3 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoing3 = dial().getCallId();
 		String incoming3 = getIncomingCall().getCallId();		
 		rayoClient.answer(incoming3);
 		waitForEvents();
@@ -80,11 +78,11 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	//TODO: #1578848
 	public void testOutputOnMixer() throws Exception {
 		
-		String outgoing1 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
 		rayoClient.answer(incoming1);
 
-		String outgoing2 = rayoClient.dial(new URI("sip:usera@localhost")).getCallId();
+		String outgoing2 = dial().getCallId();
 		String incoming2 = getIncomingCall().getCallId();
 		rayoClient.answer(incoming2);
 
