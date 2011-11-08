@@ -57,7 +57,6 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    assertReceived(InputCompleteEvent.class, input2);
 	    assertReceived(InputCompleteEvent.class, input3);
 	}
-	
 
 	@Test
 	public void testJoinDirectModeFailsIfJoined() {
@@ -97,9 +96,7 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    waitForEvents();
 	}
 	
-
 	@Test
-	@Ignore
 	public void testJoinDirectSucceeds() {
 		
 	    OutgoingCall outgoing1 = dial();	    

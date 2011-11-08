@@ -169,4 +169,28 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
 	    assertEquals(complete.getCause(), Cause.DISCONNECT);	    
 	}
+	
+	@Test
+	public void testDifferentRecognizer() throws Exception {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();	    
+	    
+	    InputCommand command = new InputCommand(new SimpleGrammar("si,no"));
+	    command.setMinConfidence(1f);
+	    command.setRecognizer("es-es");
+	    Input<Call> input = incoming.input(command);
+	    
+	    outgoing.output("si");
+	    
+	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
+	    // no support for recognizers so it will fail. But the important thing is that #1532827 is fixed
+	    assertEquals(complete.getCause(), Cause.NO_MATCH);	    
+	    
+	    outgoing.hangup();
+	    waitForEvents();	    
+	}	
 }
