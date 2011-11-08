@@ -68,36 +68,36 @@
 			<version>0.8-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-<profiles>
- <profile>
-  <id>start-server</id>
-  <build>
-   <plugins>
-    <plugin>
-     <groupId>org.codehaus.mojo</groupId>
-     <artifactId>exec-maven-plugin</artifactId>
-     <version>1.1.1</version>
-     <executions>
-      <execution>
-       <phase>process-test-resources</phase>
-       <goals>
-        <goal>java</goal>
-       </goals>
-       <configuration>
-        <mainClass>com.rayo.functional.StartPrismServer</mainClass>
-        <arguments>
-         <argument>arg0</argument>
-         <argument>arg1</argument>
-        </arguments>
-		<classpathScope>compile</classpathScope>
-       </configuration>
-      </execution>
-     </executions>
-    </plugin>
-   </plugins>
-  </build>
- </profile>
-</profiles>
+	<profiles>
+		<profile>
+			<id>start-server</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.1.1</version>
+						<executions>
+							<execution>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>java</goal>
+								</goals>
+								<configuration>
+									<mainClass>com.rayo.functional.StartPrismServer</mainClass>
+									<arguments>
+										<argument>arg0</argument>
+										<argument>arg1</argument>
+									</arguments>
+									<classpathScope>compile</classpathScope>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
 			<plugin>
@@ -107,6 +107,22 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<systemPropertyVariables>
+						<propertyName>xmpp.server</propertyName>
+						<propertyName>rayo.server</propertyName>
+						<propertyName>xmpp.username</propertyName>
+						<propertyName>xmpp.password</propertyName>
+						<propertyName>sip.dial.uri</propertyName>
+						<buildDirectory>${project.build.directory}</buildDirectory>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
