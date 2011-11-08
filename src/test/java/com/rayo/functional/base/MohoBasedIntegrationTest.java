@@ -37,6 +37,12 @@ public abstract class MohoBasedIntegrationTest {
 	private int retries = 6;
 	private int waitTime = 3000;
 	
+	private String xmppUsername;
+	private String xmppPassword;
+	private String sipDialUri;
+	private String xmppServer;
+	private String rayoServer;
+	
 	@Before
 	public void setup() {
 		
@@ -48,9 +54,31 @@ public abstract class MohoBasedIntegrationTest {
 	    mohoRemote = new MohoRemoteImpl();
 	    mohoRemote.addObserver(new MohoObserver(this));
 	    
-	    mohoRemote.connect(new SimpleAuthenticateCallbackImpl("usera", "1", "", "voxeo"), "localhost", "localhost");
+	    loadProperties();
+	    
+	    mohoRemote.connect(new SimpleAuthenticateCallbackImpl(xmppUsername, xmppPassword, "", "voxeo"), xmppServer, rayoServer);
 	}
 	
+	private void loadProperties() {
+
+		xmppUsername = getProperty("xmpp.username", "usera");
+		xmppPassword = getProperty("xmpp.password", "1");
+		xmppServer = getProperty("xmpp.server", "localhost");
+		rayoServer = getProperty("rayo.server", "localhost");
+		sipDialUri = getProperty("sip.dial.uri", "sip:usera@127.0.0.1:5060");
+	}
+	
+	private String getProperty(String property, String defaultValue) {
+		
+		String result = System.getProperty(property); 
+		if ( result == null) {
+			result = defaultValue;
+		} else {
+			System.out.println(String.format("Using system property value for [%s]:[%s]", property, result));
+		}
+		return result;
+	}
+
 	@After
 	public void shutdown() {
 		
@@ -71,7 +99,7 @@ public abstract class MohoBasedIntegrationTest {
 	
 	public OutgoingCall dial() {
 		
-	    CallableEndpoint endpoint = (CallableEndpoint)mohoRemote.createEndpoint(URI.create("sip:usera@127.0.0.1:5060"));
+	    CallableEndpoint endpoint = (CallableEndpoint)mohoRemote.createEndpoint(URI.create(sipDialUri));
 	    Call call = endpoint.createCall("sip:test@test.com");
 	    call.addObserver(new MohoObserver(this));
 	    call.join();
@@ -224,4 +252,44 @@ public abstract class MohoBasedIntegrationTest {
             }
         };
     }
+
+	public String getXmppUsername() {
+		return xmppUsername;
+	}
+
+	public void setXmppUsername(String xmppUsername) {
+		this.xmppUsername = xmppUsername;
+	}
+
+	public String getXmppPassword() {
+		return xmppPassword;
+	}
+
+	public void setXmppPassword(String xmppPassword) {
+		this.xmppPassword = xmppPassword;
+	}
+
+	public String getSipDialUri() {
+		return sipDialUri;
+	}
+
+	public void setSipDialUri(String sipDialUri) {
+		this.sipDialUri = sipDialUri;
+	}
+
+	public String getXmppServer() {
+		return xmppServer;
+	}
+
+	public void setXmppServer(String xmppServer) {
+		this.xmppServer = xmppServer;
+	}
+
+	public String getRayoServer() {
+		return rayoServer;
+	}
+
+	public void setRayoServer(String rayoServer) {
+		this.rayoServer = rayoServer;
+	}
 }
