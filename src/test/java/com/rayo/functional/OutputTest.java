@@ -22,7 +22,7 @@ import com.voxeo.moho.media.output.TextToSpeechResource;
 
 public class OutputTest extends MohoBasedIntegrationTest {
 
-	String audioURL = "http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3";
+	String audioURL = "http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3"; // 7-8 seconds length
 	
 	@Test
 	public void testOutputCompleteReceived() {
@@ -154,8 +154,6 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	//TODO: #1581070
 	public void testAudioSeek() throws Exception {
 		
 	    dial();
@@ -164,19 +162,21 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    assertNotNull(incoming);
 	    incoming.answer();
 	    
+	    // Forward
 	    Output<Call> output = incoming.output(new URI(audioURL));
-	    waitForEvents(1000);
-	    assertNotReceived(OutputCompleteEvent.class, output);
-	    
-	    output.move(true, 3000);
-	    output.move(false, 3000);
-	    
-	    waitForEvents(1000);
-	    assertNotReceived(OutputCompleteEvent.class, output);
-
-	    waitForEvents(4000);
+	    waitForEvents(1000);	    
+	    output.move(true, 6000);
+	    waitForEvents(1000);	    
 	    OutputCompleteEvent<?> complete = assertReceived(OutputCompleteEvent.class, output);
 	    assertEquals(complete.getCause(), Cause.END);
+	    
+	    // Backward. Same as above but we move back before finishing up	    
+	    output = incoming.output(new URI(audioURL));
+	    waitForEvents(1000);	    
+	    output.move(true, 6000);
+	    output.move(false, 4000);
+	    waitForEvents(1000);	    
+	    assertNotReceived(OutputCompleteEvent.class, output);
 	    
 	    incoming.hangup();
 	    waitForEvents();
