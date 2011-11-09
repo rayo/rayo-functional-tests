@@ -61,13 +61,15 @@ public abstract class RayoBasedIntegrationTest {
 					
 				if (presence.hasExtension() && presence.getShow() == null) {
 					synchronized(this) {
-						Object object = presence.getExtension().getObject();
-						List<Object> events = callEvents.get(callId);
-						if (events == null) {
-							events = new ArrayList<Object>();
-							callEvents.put(callId, events);
+						if (isRayoMesage(presence)) {
+							Object object = presence.getExtension().getObject();
+							List<Object> events = callEvents.get(callId);
+							if (events == null) {
+								events = new ArrayList<Object>();
+								callEvents.put(callId, events);
+							}
+							events.add(object);
 						}
-						events.add(object);
 					}
 				}
 			}
@@ -226,5 +228,10 @@ public abstract class RayoBasedIntegrationTest {
 					result));
 		}
 		return result;
+	}
+	
+	private boolean isRayoMesage(Stanza stanza) {
+		
+		return (stanza.getChildNamespace() != null && stanza.getChildNamespace().contains("urn:xmpp:rayo"));
 	}
 }

@@ -64,7 +64,12 @@ public abstract class MohoBasedIntegrationTest {
 		loadProperties();
 
 		mohoRemote.connect(new SimpleAuthenticateCallbackImpl(xmppUsername,
-				xmppPassword, "", "voxeo"), xmppServer, rayoServer);
+				xmppPassword, "", "voxeo3"), xmppServer, rayoServer);
+		
+		try {
+			// Wait 1 seconds to get presence events propagated		
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {}
 	}
 
 	private void loadProperties() {
@@ -204,7 +209,9 @@ public abstract class MohoBasedIntegrationTest {
 				}
 				i++;
 			}
-			waitForEvents(waitTime);
+			if (i < retries) {
+				waitForEvents(waitTime);
+			}
 		} while (i < retries);
 		throw new AssertionError("Call Event not found");
 	}

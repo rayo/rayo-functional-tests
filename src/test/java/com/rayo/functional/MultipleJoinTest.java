@@ -23,8 +23,6 @@ import com.voxeo.moho.media.input.SimpleGrammar;
 public class MultipleJoinTest extends MohoBasedIntegrationTest {
 
 	@Test
-	@Ignore
-	//TODO:  #1585055
 	public void testOutputIsReceivedByMultipleCalls() {
 		
 	    OutgoingCall outgoing1 = dial();	    
@@ -46,8 +44,8 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    call1.join(call3, JoinType.BRIDGE_SHARED, true, Direction.DUPLEX);
 	    	    
 	    InputCommand input = new InputCommand(new SimpleGrammar("yes,no"));
-	    Input<Call> input2 = call2.input(input);
-	    Input<Call> input3 = call3.input(input);
+	    Input<Call> input2 = outgoing2.input(input);
+	    Input<Call> input3 = outgoing3.input(input);
 	    
 	    outgoing1.output("yes");
 	    
@@ -192,7 +190,6 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testJoinBridgeSharedFailsOnBridgeExclusive() {
 		
 	    OutgoingCall outgoing1 = dial();	    
@@ -226,8 +223,8 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    assertReceived(CallCompleteEvent.class, outgoing3);
 	    
 	    // Assert that incoming1 keeps working
-	    Input<Call> input = incoming2.input("yes,no");
-	    outgoing1.output("yes");
+	    Input<Call> input = outgoing1.input("yes,no");
+	    outgoing2.output("yes");
 	    waitForEvents();
 	    assertReceived(InputCompleteEvent.class, input);	    
 	    

@@ -110,8 +110,6 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	//TODO: #1579874
 	public void testMediaWithCallsJoinedOnRecvMode() {
 		
 	    OutgoingCall outgoing1 = dial();	    	    
@@ -130,13 +128,13 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    assertReceived(JoinCompleteEvent.class, incoming2);
 
 	    // Assert leg does receive media
-	    Input<Call> input1 = incoming1.input("yes,no");
+	    Input<Call> input1 = outgoing1.input("yes,no");
 	    outgoing2.output("yes");
 	    waitForEvents();
 	    assertReceived(InputCompleteEvent.class, input1);	 
 	    
 	    // Asserts the other leg does not receive media
-	    Input<Call> input2 = incoming2.input("yes,no");
+	    Input<Call> input2 = outgoing2.input("yes,no");
 	    outgoing1.output("yes");
 	    waitForEvents();
 	    assertNotReceived(InputCompleteEvent.class, input2);   
@@ -171,7 +169,6 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testMediaWithCallsJoinedOnSendMode() {
 		
 	    OutgoingCall outgoing1 = dial();	    	    
@@ -190,13 +187,13 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    assertReceived(JoinCompleteEvent.class, incoming2);
 
 	    // Asserts the other leg does not receive media
-	    Input<Call> input2 = incoming2.input("yes,no");
+	    Input<Call> input2 = outgoing2.input("yes,no");
 	    outgoing1.output("yes");
 	    waitForEvents();
 	    assertReceived(InputCompleteEvent.class, input2);   
 
 	    // Assert leg does receive media
-	    Input<Call> input1 = incoming1.input("yes,no");
+	    Input<Call> input1 = outgoing1.input("yes,no");
 	    outgoing2.output("yes");
 	    waitForEvents();
 	    assertNotReceived(InputCompleteEvent.class, input1);	 
