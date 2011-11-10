@@ -24,6 +24,8 @@ import com.voxeo.moho.media.input.SimpleGrammar;
 public class JoinTest extends MohoBasedIntegrationTest {
 
 	@Test
+	@Ignore
+	// does not work on gateway. Old prism version?
 	public void testJoinBridge() {
 		
 	    OutgoingCall outgoing1 = dial();	    	    
