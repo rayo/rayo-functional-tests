@@ -87,12 +87,14 @@ public abstract class RayoBasedIntegrationTest {
 					String callId = getCallId(iq);
 					synchronized(this) {
 						Error error = iq.getError();
-						List<Error> errors = callErrors.get(callId);
-						if (errors == null) {
-							errors = new ArrayList<Error>();
-							callErrors.put(callId, errors);
+						if (callId != null) {
+							List<Error> errors = callErrors.get(callId);
+							if (errors == null) {
+								errors = new ArrayList<Error>();
+								callErrors.put(callId, errors);
+							}
+							errors.add(error);
 						}
-						errors.add(error);
 					}
 				}
 			}

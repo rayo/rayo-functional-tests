@@ -67,12 +67,15 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
 
-		rayoClient.input("hello world, thanks frank", incomingCallId);
+		rayoClient.input("hello world, thanks frank", outgoingCallId);
 		
-		rayoClient.output(complete.getUri(), outgoingCallId);
+		// It is important to do output on the same leg that made the recording as otherwise the 
+		// recorded file may not be found ( dial requests are load balanced and could have ended up 
+		// in a different server )
+		rayoClient.output(complete.getUri(), incomingCallId);
 		waitForEvents();
 		
-		InputCompleteEvent inputComplete = assertReceived(InputCompleteEvent.class, incomingCallId);
+		InputCompleteEvent inputComplete = assertReceived(InputCompleteEvent.class, outgoingCallId);
 		assertEquals(inputComplete.getUtterance(), "hello world");
 		
 		rayoClient.hangup(outgoingCallId);
@@ -119,8 +122,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		rayoClient.stop(recordRef);
 		
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
-		System.out.println(complete.getDuration().getMillis());
-		assertTrue(complete.getDuration().getMillis() <= 1000);
+		assertTrue(complete.getDuration().getMillis() <= 1500);
 		
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
@@ -166,7 +168,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		rayoClient.output("Hello World. This is a long test. So it should take a bit to be read. I hope it takes more than three seconds. Hello World. This is a long test. So it should take a bit to be read.", outgoingCallId);
 		Thread.sleep(500);
 		rayoClient.pauseRecord(recordRef);
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 		rayoClient.resumeRecord(recordRef);
 		Thread.sleep(500);
 		rayoClient.stop(recordRef);
@@ -174,7 +176,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
 		System.out.println(complete.getDuration());
 		
-		assertTrue(complete.getDuration().getMillis() < 1500);
+		assertTrue(complete.getDuration().getMillis() < 2000);
 				
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
