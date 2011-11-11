@@ -23,7 +23,7 @@ public class CommandTest extends RayoBasedIntegrationTest {
 		IQ iq = rayoClient.hangup("aaaa");
 		assertTrue(iq.isError());
 		assertEquals(iq.getError().getCondition(), Condition.item_not_found);
-		assertEquals(iq.getFrom(), "aaaa@localhost");
+		assertTrue(iq.getFrom().startsWith("aaaa@"));
 		
 		rayoClient.hangup(incomingCallId);
 		waitForEvents();
