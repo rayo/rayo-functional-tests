@@ -133,7 +133,7 @@ public abstract class RayoBasedIntegrationTest {
 	protected Call getIncomingCall() {
 
 		try {
-			return callsQueue.poll(5000,TimeUnit.MILLISECONDS);
+			return callsQueue.poll(15000,TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			return null;
 		}
