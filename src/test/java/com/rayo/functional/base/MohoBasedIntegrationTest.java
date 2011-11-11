@@ -419,7 +419,7 @@ public abstract class MohoBasedIntegrationTest {
 
 		String uri = sipDialUris.get(next);
 		next = (next+1);
-		if (next > sipDialUris.size()) {
+		if (next >= sipDialUris.size()) {
 			next = 0;
 		}
 		return uri;
