@@ -1,10 +1,10 @@
 package com.rayo.functional.base;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -43,10 +43,11 @@ public abstract class MohoBasedIntegrationTest {
 
 	private int retries = 6;
 	private int waitTime = 3000;
+	private int next = 0;
 
 	private String xmppUsername;
 	private String xmppPassword;
-	private String sipDialUri;
+	private List<String> sipDialUris = new ArrayList<String>();
 	private String xmppServer;
 	private String rayoServer;
 
@@ -78,7 +79,8 @@ public abstract class MohoBasedIntegrationTest {
 		xmppPassword = getProperty("xmpp.password", "1");
 		xmppServer = getProperty("xmpp.server", "localhost");
 		rayoServer = getProperty("rayo.server", "localhost");
-		sipDialUri = getProperty("sip.dial.uri", "sip:usera@127.0.0.1:5060");
+		String[] uris = getProperty("sip.dial.uri", "sip:usera@127.0.0.1:5060").split(",");
+		sipDialUris.addAll(Arrays.asList(uris));
 	}
 
 	private String getProperty(String property, String defaultValue) {
@@ -115,9 +117,14 @@ public abstract class MohoBasedIntegrationTest {
 	}
 
 	public OutgoingCall dial() {
+		
+		return dial(getSipDialUri());
+	}
+	
+	public OutgoingCall dial(String uri) {
 
 		CallableEndpoint endpoint = (CallableEndpoint) mohoRemote
-				.createEndpoint(URI.create(sipDialUri));
+				.createEndpoint(URI.create(uri));
 		Call call = endpoint.createCall("sip:test@test.com");
 		call.addObserver(new MohoObserver(this));
 		call.join();
@@ -130,7 +137,7 @@ public abstract class MohoBasedIntegrationTest {
 	protected synchronized IncomingCall getIncomingCall() {
 
 		try {
-			IncomingCall call = callsQueue.poll(5000, TimeUnit.MILLISECONDS);
+			IncomingCall call = callsQueue.poll(15000, TimeUnit.MILLISECONDS);
 			if (call != null) {
 				incomingCalls.add(call);
 			}
@@ -409,12 +416,16 @@ public abstract class MohoBasedIntegrationTest {
 	}
 
 	public String getSipDialUri() {
-		return sipDialUri;
+
+		String uri = sipDialUris.get(next);
+		next = (next+1);
+		if (next > sipDialUris.size()) {
+			next = 0;
+		}
+		return uri;
 	}
 
-	public void setSipDialUri(String sipDialUri) {
-		this.sipDialUri = sipDialUri;
-	}
+
 
 	public String getXmppServer() {
 		return xmppServer;
