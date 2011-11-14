@@ -32,11 +32,11 @@ public abstract class RayoBasedIntegrationTest {
 	private int retries = 6;
 	private int waitTime = 3000;
 	
-	private String xmppUsername;
-	private String xmppPassword;
+	protected String xmppUsername;
+	protected String xmppPassword;
 	protected String sipDialUri;
-	private String xmppServer;
-	private String rayoServer;
+	protected String xmppServer;
+	protected String rayoServer;
 		
 	
 	@Before
