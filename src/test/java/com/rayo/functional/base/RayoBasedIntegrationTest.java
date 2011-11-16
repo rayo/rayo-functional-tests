@@ -142,7 +142,9 @@ public abstract class RayoBasedIntegrationTest {
 	@After
 	public void shutdown() throws Exception {
 	
-		rayoClient.disconnect();
+		if (rayoClient != null) {
+			rayoClient.disconnect();
+		}
 	}
 	
 
@@ -210,7 +212,7 @@ public abstract class RayoBasedIntegrationTest {
 		return domain;
 	}
 	
-	private void loadProperties() {
+	protected void loadProperties() {
 
 		xmppUsername = getProperty("xmpp.username", "usera");
 		xmppPassword = getProperty("xmpp.password", "1");
