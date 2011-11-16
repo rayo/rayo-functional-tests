@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.rayo.client.xmpp.stanza.Error.Condition;
+import com.rayo.client.xmpp.stanza.IQ;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class RayoAnswerTest extends RayoBasedIntegrationTest {
@@ -23,9 +24,9 @@ public class RayoAnswerTest extends RayoBasedIntegrationTest {
 		
 		assertFalse(hasAnyErrors(incomingCallId));
 		
-		rayoClient.answer(incomingCallId);
-		assertTrue(hasAnyErrors(incomingCallId));
-		assertEquals(getLastError(incomingCallId).getCondition(), Condition.item_not_found);
+		IQ result = rayoClient.answer(incomingCallId);
+		assertTrue(result.isError());
+		assertEquals(result.getError().getCondition(), Condition.item_not_found);
 	}
 
 	@Test
