@@ -164,9 +164,9 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    InputCommand command = new InputCommand(new SimpleGrammar("yes,no"));
 	    command.setMinConfidence(1f);
 	    Input<Call> input = incoming.input(command);
-	    
+	    Thread.sleep(100);
 	    outgoing.hangup();
-	    
+	    Thread.sleep(200);
 	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
 	    assertEquals(complete.getCause(), Cause.DISCONNECT);	    
 	}
@@ -196,4 +196,25 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    outgoing.hangup();
 	    waitForEvents();	    
 	}	
+	
+	@Test
+	public void testCantInputNonAnswered() throws Exception {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    try {
+		    IncomingCall incoming = getIncomingCall();	    
+		    assertNotNull(incoming);
+
+		    try {
+		    	incoming.input("yes,no");
+		    	fail("Expected exception");
+		    } catch(Exception e) {
+		    	assertTrue(e.getMessage().contains("The call has not been answered"));
+		    }
+		    Thread.sleep(100);
+	    } finally {
+	    	outgoing.hangup();
+	    }
+	}
 }
