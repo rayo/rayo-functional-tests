@@ -3,6 +3,7 @@ package com.rayo.functional.rayoapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
@@ -26,9 +27,8 @@ public class RayoInputTest extends RayoBasedIntegrationTest {
 			fail("Expected exception");
 		} catch (XmppException xe) {
 			assertTrue(xe.getMessage().contains("could not be compiled"));
+			assertNotNull(xe.getError());
+			assertEquals(xe.getError().getCondition(), Condition.bad_request);
 		}
-		
-		assertTrue(hasAnyErrors(incomingCallId));
-		assertEquals(getLastError(incomingCallId).getCondition(), Condition.bad_request);		
 	}
 }
