@@ -347,4 +347,32 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    waitForEvents();
 	}	
 	
+	@Test
+	@Ignore
+	public void testJoinedDirectHangupAndRejoin() {
+		// Joins two calls in direct mode. Hangs up one leg 
+		// and rejoins the other leg to the media server
+		
+	    OutgoingCall outgoing1 = dial();	    	    
+	    IncomingCall incoming1 = getIncomingCall();
+	    incoming1.answer();
+	    waitForEvents();
+	    
+	    OutgoingCall outgoing2 = dial();
+	    IncomingCall incoming2 = getIncomingCall();
+	    incoming2.answer();
+	    waitForEvents();
+	    
+	    incoming1.join(incoming2, JoinType.DIRECT, Direction.DUPLEX);
+	    incoming1.hangup();
+	    
+	    incoming2.join();
+	    Input<Call> input = outgoing2.input("yes,no");
+	    incoming2.output("yes");
+	    waitForEvents(2000);
+	    assertReceived(InputCompleteEvent.class, outgoing2);
+
+	    incoming2.hangup();
+	    waitForEvents();
+	}		
 }
