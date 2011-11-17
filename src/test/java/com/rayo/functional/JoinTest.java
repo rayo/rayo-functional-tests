@@ -349,6 +349,9 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	
 	@Test
 	@Ignore
+	//TODO: This only works because output/input do auto join. Rayo currently does not
+	// support joining the media server. It always require a call id to join
+	//TODO: #1594119
 	public void testJoinedDirectHangupAndRejoin() {
 		// Joins two calls in direct mode. Hangs up one leg 
 		// and rejoins the other leg to the media server
