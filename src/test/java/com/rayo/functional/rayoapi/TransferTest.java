@@ -140,6 +140,7 @@ public class TransferTest extends RayoBasedIntegrationTest {
 	
 	@Test
 	@Ignore
+	//TODO:  #1594500
 	public void testTransferTerminator() throws Exception {
 		
 		String outgoingCallId = rayoClient.dial(new URI(sipDialUri)).getCallId();
@@ -158,7 +159,7 @@ public class TransferTest extends RayoBasedIntegrationTest {
     	String incomingCall2 = getIncomingCall().getCallId();
     	rayoClient.answer(incomingCall2);
     	waitForEvents(300);
-    	rayoClient.dtmf("#", outgoingCallId);
+    	rayoClient.dtmf("#", incomingCall2);
     	waitForEvents(300);
     	
 	    TransferCompleteEvent complete = assertReceived(TransferCompleteEvent.class, incomingCall);
