@@ -159,7 +159,7 @@ public class TransferTest extends RayoBasedIntegrationTest {
 	    	String incomingCall2 = getIncomingCall().getCallId();
 	    	rayoClient.answer(incomingCall2);
 	    	waitForEvents(300);
-	    	rayoClient.dtmf("#", incomingCall2);
+	    	rayoClient.dtmf("#", outgoingCall);
 	    	waitForEvents(300);
 	    	
 		    TransferCompleteEvent complete = assertReceived(TransferCompleteEvent.class, incomingCall);
