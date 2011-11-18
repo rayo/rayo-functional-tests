@@ -217,4 +217,32 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    	outgoing.hangup();
 	    }
 	}
+	
+	@Test
+	public void testMaxSilence() throws Exception {
+	
+		// Tests that max silence command has any effect. The input should be 
+		// stop only after maximum silence has timed out
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    try {
+		    IncomingCall incoming = getIncomingCall();	    
+		    assertNotNull(incoming);
+		    incoming.answer();
+		    
+	    	InputCommand inputCommand = new InputCommand(new SimpleGrammar("yes,no"));
+	    	inputCommand.setSpeechIncompleteTimeout(2000);
+
+	    	Input<Call> input = incoming.input(inputCommand);
+	    	waitForEvents(1000);
+	    	assertNotReceived(InputCompleteEvent.class, input);	    	
+	    	waitForEvents(1000);
+		    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
+		    assertEquals(complete.getCause(), Cause.NO_MATCH);
+		    
+	    } finally {
+	    	outgoing.hangup();
+	    }
+	}
 }
