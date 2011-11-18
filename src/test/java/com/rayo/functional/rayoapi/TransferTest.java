@@ -139,32 +139,33 @@ public class TransferTest extends RayoBasedIntegrationTest {
 	
 	
 	@Test
-	@Ignore
 	//TODO:  #1594500
 	public void testTransferTerminator() throws Exception {
 		
-		String outgoingCallId = rayoClient.dial(new URI(sipDialUri)).getCallId();
+		String outgoingCall = rayoClient.dial(new URI(sipDialUri)).getCallId();
 	    
-    	String incomingCall = getIncomingCall().getCallId();   
-	    assertNotNull(incomingCall);
-	    rayoClient.answer(incomingCall);
-	    
-	    Transfer transfer = new Transfer();
-	    transfer.setTerminator('#');
-	    List<URI> uris = new ArrayList<URI>();
-	    uris.add(new URI(sipDialUri));
-	    transfer.setTo(uris);
-	    rayoClient.transfer(transfer, incomingCall);
-	    
-    	String incomingCall2 = getIncomingCall().getCallId();
-    	rayoClient.answer(incomingCall2);
-    	waitForEvents(300);
-    	rayoClient.dtmf("#", incomingCall2);
-    	waitForEvents(300);
-    	
-	    TransferCompleteEvent complete = assertReceived(TransferCompleteEvent.class, incomingCall);
-	    assertEquals(complete.getReason(), Reason.TERMINATOR);
-
-    	rayoClient.hangup(outgoingCallId);
+		try {
+	    	String incomingCall = getIncomingCall().getCallId();   
+		    assertNotNull(incomingCall);
+		    rayoClient.answer(incomingCall);
+		    
+		    Transfer transfer = new Transfer();
+		    transfer.setTerminator('#');
+		    List<URI> uris = new ArrayList<URI>();
+		    uris.add(new URI(sipDialUri));
+		    transfer.setTo(uris);
+		    rayoClient.transfer(transfer, incomingCall);
+		    
+	    	String incomingCall2 = getIncomingCall().getCallId();
+	    	rayoClient.answer(incomingCall2);
+	    	waitForEvents(300);
+	    	rayoClient.dtmf("#", incomingCall2);
+	    	waitForEvents(300);
+	    	
+		    TransferCompleteEvent complete = assertReceived(TransferCompleteEvent.class, incomingCall);
+		    assertEquals(complete.getReason(), Reason.TERMINATOR);
+		} finally {
+			rayoClient.hangup(outgoingCall);
+		}
 	}
 }
