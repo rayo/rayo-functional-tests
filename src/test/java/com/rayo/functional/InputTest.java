@@ -219,6 +219,8 @@ public class InputTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
+	// Timing issue.
 	public void testMaxSilence() throws Exception {
 	
 		// Tests that max silence command has any effect. The input should be 
