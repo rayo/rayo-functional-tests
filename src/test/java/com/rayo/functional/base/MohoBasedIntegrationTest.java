@@ -39,7 +39,7 @@ public abstract class MohoBasedIntegrationTest {
 	private List<OutgoingCall> outgoingCalls = new ArrayList<OutgoingCall>();
 	private List<IncomingCall> incomingCalls = new ArrayList<IncomingCall>();
 
-	private MohoRemote mohoRemote;
+	protected MohoRemote mohoRemote;
 
 	private int retries = 6;
 	private int waitTime = 3000;
