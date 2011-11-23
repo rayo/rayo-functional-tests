@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 
 import java.net.URI;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.functional.base.MohoBasedIntegrationTest;
@@ -44,8 +43,6 @@ public class RedirectTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	//TODO: #1599194
-	@Ignore
 	public void testRedirectAccepted() {
 
 		OutgoingCall outgoing1 = null;
