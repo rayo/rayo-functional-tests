@@ -101,7 +101,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 4
 	@Test
-	@Ignore
 	public void testXaFailover() throws Exception {
 		
 		doShowTest(Show.xa);
@@ -110,7 +109,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 5
 	@Test
-	@Ignore
 	public void testShowChatBackAvailable() throws Exception {
 		
 		
