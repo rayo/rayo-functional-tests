@@ -46,7 +46,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 1
 	@Test
-	@Ignore
 	public void testMultipleClientResources() throws Exception {
 		
 		RayoClient rayoClient1 = null;
