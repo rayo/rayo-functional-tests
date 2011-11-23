@@ -1,17 +1,17 @@
 package com.rayo.functional.rayoapi;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.net.URI;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.client.JmxClient;
+import com.rayo.core.EndEvent;
+import com.rayo.core.EndEvent.Reason;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 /**
@@ -21,17 +21,7 @@ import com.rayo.functional.base.RayoBasedIntegrationTest;
  *
  */
 public class QuiesceTest extends RayoBasedIntegrationTest {
-	
-	@Before
-	public void setup() throws Exception {
 		
-		loadProperties();
-	}
-	
-	@After
-	public void shutdown() throws Exception {}
-	
-	
 	@Test
 	public void testCanQueryQuiesceStatus() throws Exception {
 		
@@ -63,7 +53,6 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testCallsRejectedOnQuiesce() throws Exception {
 		
 		String node = getNodeName();
@@ -74,12 +63,10 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertTrue(quiesce);
 
-			try {
-				dial(new URI("sip:usera@"+node));
-				fail("Expected Exception");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			String outgoingCall = dial(new URI("sip:usera@"+node)).getCallId();
+			waitForEvents();
+			EndEvent end = assertReceived(EndEvent.class, outgoingCall);
+			assertEquals(end.getReason(), Reason.BUSY);
 		} finally {
 			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
 		}
@@ -102,9 +89,35 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 	
 	
 	@Test
-	@Ignore
-	//TODO
-	public void testQuiesceLetsActiveCallsEnd() throws Exception {
-		
+	public void testQuiesceLetsActiveCallsFinish() throws Exception {
+				
+		String node = getNodeName();
+		JmxClient nodeClient = new JmxClient(node, "8080");
+		String outgoingCall1 = dial(new URI("sip:usera@"+node)).getCallId();
+		String incomingCall1 = getIncomingCall().getCallId();
+		rayoClient.answer(incomingCall1);
+
+		try {
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");		
+			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
+			assertTrue(quiesce);
+
+			String outgoingCall2 = dial(new URI("sip:usera@"+node)).getCallId();
+			waitForEvents();
+			EndEvent end = assertReceived(EndEvent.class, outgoingCall2);
+			assertEquals(end.getReason(), Reason.BUSY);
+			
+			// but we still can process events on the other call
+			rayoClient.output("hello", outgoingCall1);
+			waitForEvents(300);
+			rayoClient.hangup(outgoingCall1);
+			waitForEvents(500);
+			end = assertReceived(EndEvent.class, outgoingCall1);
+			assertEquals(end.getReason(), Reason.HANGUP);
+			
+		} finally {			
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
+			rayoClient.hangup(outgoingCall1);
+		}
 	}
 }
