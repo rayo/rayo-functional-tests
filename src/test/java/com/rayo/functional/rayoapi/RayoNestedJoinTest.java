@@ -61,7 +61,6 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 		
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
-		System.out.println(outgoing1 + " - " + incoming1);
 		rayoClient.answer(incoming1);
 		
 		JoinCommand join = new JoinCommand();
@@ -77,7 +76,6 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 		
 		String outgoing2 = rayoClient.dial(dialCommand).getCallId();
 		String incoming2 = getIncomingCall().getCallId();
-		System.out.println(outgoing2 + " - " + incoming2);
 		rayoClient.reject(incoming2);
 		
 		EndEvent end = assertReceived(EndEvent.class, incoming2);
@@ -94,7 +92,6 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 		
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
-		System.out.println(outgoing1 + " - " + incoming1);
 		rayoClient.answer(incoming1);
 		
 		JoinCommand join = new JoinCommand();
@@ -110,7 +107,6 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 		
 		String outgoing2 = rayoClient.dial(dialCommand).getCallId();
 		String incoming2 = getIncomingCall().getCallId();
-		System.out.println(outgoing2 + " - " + incoming2);
 		rayoClient.answer(incoming2);
 		
 		JoinedEvent joined = assertReceived(JoinedEvent.class, incoming1);

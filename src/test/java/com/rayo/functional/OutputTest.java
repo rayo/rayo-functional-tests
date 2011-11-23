@@ -3,6 +3,7 @@ package com.rayo.functional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
 
@@ -279,5 +280,69 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    
 	    incoming.hangup();
 	    waitForEvents();
+	}
+	
+	@Test
+	public void testCantOutputWhileHold() throws Exception {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    try {
+		    IncomingCall incoming = getIncomingCall();	    
+		    assertNotNull(incoming);
+		    incoming.answer();
+		    Thread.sleep(100);
+		    incoming.hold();		    
+		    try {
+		    	incoming.output("hello");
+		    	fail("Expected exception");
+		    } catch (Exception e) {
+		    	assertTrue(e.getMessage().contains("Call is currently on hold"));
+		    }
+	    } finally {
+	    	outgoing.hangup();
+	    }
+	}
+	
+	@Test
+	public void testCanOutputAfterUnhold() throws Exception {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    try {
+		    IncomingCall incoming = getIncomingCall();	    
+		    assertNotNull(incoming);
+		    incoming.answer();
+		    Thread.sleep(100);
+		    incoming.hold();
+		    Thread.sleep(100);
+		    incoming.unhold();
+		    Thread.sleep(100);
+		    incoming.output("hello");
+		    Thread.sleep(100);
+	    } finally {
+	    	outgoing.hangup();
+	    }
+	}
+	
+	@Test
+	public void testCantOutputNonAnswered() throws Exception {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    try {
+		    IncomingCall incoming = getIncomingCall();	    
+		    assertNotNull(incoming);
+
+		    try {
+		    	incoming.output("hello");
+		    	fail("Expected exception");
+		    } catch(Exception e) {
+		    	assertTrue(e.getMessage().contains("The call has not been answered"));
+		    }
+		    Thread.sleep(100);
+	    } finally {
+	    	outgoing.hangup();
+	    }
 	}
 }

@@ -16,6 +16,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rayo.client.JmxClient;
 import com.rayo.core.verb.Ssml;
@@ -33,6 +35,8 @@ import com.voxeo.moho.remote.sample.SimpleAuthenticateCallbackImpl;
 
 public abstract class MohoBasedIntegrationTest {
 
+	private Logger log = LoggerFactory.getLogger(MohoBasedIntegrationTest.class);
+	
 	private LinkedBlockingQueue<IncomingCall> callsQueue = new LinkedBlockingQueue<IncomingCall>();
 	private List<Event> events = new ArrayList<Event>();
 
@@ -89,7 +93,7 @@ public abstract class MohoBasedIntegrationTest {
 		if (result == null) {
 			result = defaultValue;
 		} else {
-			System.out.println(String.format(
+			log.trace(String.format(
 					"Using system property value for [%s]:[%s]", property,
 					result));
 		}
@@ -104,7 +108,7 @@ public abstract class MohoBasedIntegrationTest {
 				try {
 					call.disconnect();
 				} catch (Exception e) {
-					System.out.println(String.format(
+					log.error(String.format(
 							"[ERROR] Problem disconnecting outgoing call [%s]",
 							call.getId()));
 				}
@@ -159,18 +163,17 @@ public abstract class MohoBasedIntegrationTest {
 		do {
 			synchronized (events) {
 				T evt = null;
-				System.out.println(String.format(
+				log.trace(String.format(
 						"[%s] Asserting event [%s] on operation [%s]. Try %s",
 						DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),
 						eventClass, operation, i + 1));
 				for (Event event : events) {
-					System.out.println(String.format(
+					log.trace(String.format(
 							"[%s] Checking if event [%s] is assignable.",
 							DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),
 							event.getClass()));
 					if (eventClass.isAssignableFrom(event.getClass())) {
-						System.out
-								.println(String
+						log.trace(String
 										.format("[%s] Checking if event [%s] is media complete.",
 												DateFormatUtils.format(
 														new Date(),
@@ -188,7 +191,7 @@ public abstract class MohoBasedIntegrationTest {
 													operation));
 							if (((MohoMediaCompleteEvent) event)
 									.getMediaOperation() == operation) {
-								System.out.println(String.format(
+								log.trace(String.format(
 										"[%s] Found match [%s].",
 										DateFormatUtils.format(new Date(),
 												"hh:mm:ss.SSS"), (T) event));
@@ -198,18 +201,17 @@ public abstract class MohoBasedIntegrationTest {
 						}
 					}
 				}
-				System.out
-						.println(String.format(
+				log.trace(String.format(
 								"[%s] Checking if [%s] is null.",
 								DateFormatUtils.format(new Date(),
 										"hh:mm:ss.SSS"), evt));
 				if (evt != null) {
-					System.out.println(String.format(
+					log.trace(String.format(
 							"[%s] Removing [%s] from events.",
 							DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),
 							evt));
 					events.remove(evt);
-					System.out.println(String.format("[%s] Returning [%s].",
+					log.trace(String.format("[%s] Returning [%s].",
 							DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),
 							evt));
 					return evt;
@@ -235,7 +237,7 @@ public abstract class MohoBasedIntegrationTest {
 									operation));
 			assertReceived(eventClass, operation, 0);
 		} catch (AssertionError e) {
-			System.out.println(String.format("[%s] Assertion error: [%s].",
+			log.error(String.format("[%s] Assertion error: [%s].",
 					DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),
 					e.getMessage()));
 			return true;
@@ -254,7 +256,7 @@ public abstract class MohoBasedIntegrationTest {
 		do {
 			synchronized (events) {
 				T evt = null;
-				System.out.println(String.format(
+				log.debug(String.format(
 						"[%s] Asserting event [%s] on call [%s]. Try %s",
 						DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),
 						eventClass, call.getId(), i + 1));
@@ -274,7 +276,7 @@ public abstract class MohoBasedIntegrationTest {
 			}
 			waitForEvents(waitTime);
 		} while (i < retries);
-		System.out.println("Call event not found");
+		log.error("Call event not found");
 		throw new AssertionError("Call Event not found");
 	}
 
@@ -304,14 +306,14 @@ public abstract class MohoBasedIntegrationTest {
 
 	void addCall(IncomingCall call) {
 
-		System.out.println(String.format("[%s] Adding incoming call [%s]",
+		log.debug(String.format("[%s] Adding incoming call [%s]",
 				DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), call));
 		callsQueue.add(call);
 	}
 
 	void addEvent(Event event) {
 
-		System.out.println(String.format("[%s] Adding event [%s]",
+		log.debug(String.format("[%s] Adding event [%s]",
 				DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"), event));
 		synchronized (events) {
 			events.add(event);

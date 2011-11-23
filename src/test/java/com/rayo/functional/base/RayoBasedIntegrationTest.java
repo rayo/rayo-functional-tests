@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rayo.client.RayoClient;
 import com.rayo.client.listener.StanzaListener;
@@ -23,6 +25,8 @@ import com.rayo.core.verb.VerbRef;
 
 public abstract class RayoBasedIntegrationTest {
 
+	private Logger log = LoggerFactory.getLogger(RayoBasedIntegrationTest.class);
+	
 	protected RayoClient rayoClient;
 
 	private LinkedBlockingQueue<Call> callsQueue = new LinkedBlockingQueue<Call>();
@@ -151,7 +155,7 @@ public abstract class RayoBasedIntegrationTest {
 	protected <T> T assertReceived(Class<T> eventClass, String callId) {
 		
 		int i = 0;
-		System.out.println(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, callId, i+1));
+		log.trace(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, callId, i+1));
 		List<Object> events = callEvents.get(callId);
 		if (events != null) {
 			do {
@@ -170,7 +174,7 @@ public abstract class RayoBasedIntegrationTest {
 				waitForEvents(waitTime);
 			} while (i<retries);
 		}
-		System.out.println("Call event not found");
+		log.error("Call event not found");
 		throw new AssertionError("Call Event not found");
 	}
 
@@ -227,7 +231,7 @@ public abstract class RayoBasedIntegrationTest {
 		if (result == null) {
 			result = defaultValue;
 		} else {
-			System.out.println(String.format(
+			log.trace(String.format(
 					"Using system property value for [%s]:[%s]", property,
 					result));
 		}

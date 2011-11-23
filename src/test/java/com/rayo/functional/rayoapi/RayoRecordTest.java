@@ -42,7 +42,6 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		assertTrue(complete.getSize() > 15000);
 		assertNotNull(complete.getUri());
 		//assertTrue(new File(complete.getUri()).exists()); Difficult to run on cluster setup
-		System.out.println(complete.getUri());
 		assertTrue(complete.getUri().toString().endsWith(".wav"));
 		
 		rayoClient.hangup(outgoingCallId);
@@ -97,7 +96,6 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		Thread.sleep(1000);
 		
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
-		System.out.println(complete.getDuration().getMillis());
 		assertTrue(complete.getDuration().getMillis() < 1000);
 		assertEquals(complete.getReason(), com.rayo.core.verb.RecordCompleteEvent.Reason.INI_TIMEOUT);
 		
@@ -147,7 +145,6 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
 		
 		assertEquals(complete.getDuration().getMillis(), 1000);
-		System.out.println(complete.getReason());
 		assertEquals(complete.getReason(), com.rayo.core.verb.RecordCompleteEvent.Reason.TIMEOUT);		
 				
 		rayoClient.hangup(outgoingCallId);
@@ -174,7 +171,6 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		rayoClient.stop(recordRef);
 		
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
-		System.out.println(complete.getDuration());
 		
 		assertTrue(complete.getDuration().getMillis() < 2000);
 				

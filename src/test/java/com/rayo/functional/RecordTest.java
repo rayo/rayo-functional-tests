@@ -2,6 +2,8 @@ package com.rayo.functional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -63,5 +65,26 @@ public class RecordTest extends MohoBasedIntegrationTest {
 	    
 	    outgoing.hangup();
 	    waitForEvents();
+	}
+	
+	@Test
+	public void testCantRecordNonAnswered() throws Exception {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    try {
+		    IncomingCall incoming = getIncomingCall();	    
+		    assertNotNull(incoming);
+
+		    try {
+		    	incoming.record(new RecordCommand(null));
+		    	fail("Expected exception");
+		    } catch(Exception e) {
+		    	assertTrue(e.getMessage().contains("The call has not been answered"));
+		    }
+		    Thread.sleep(100);
+	    } finally {
+	    	outgoing.hangup();
+	    }
 	}
 }
