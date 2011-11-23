@@ -286,7 +286,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 9
 	@Test
-	@Ignore
 	public void testInvalidClientApplication() throws Exception {
 		
 		RayoClient rayoClient = null;
@@ -315,7 +314,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 12
 	@Test
-	@Ignore
 	public void testOffersBalancedAcrossResources() throws Exception {
 		
 		RayoClient rayoClient1 = null;
