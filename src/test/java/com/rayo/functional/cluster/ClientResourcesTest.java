@@ -154,7 +154,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 6
 	@Test
-	@Ignore
 	public void testUnavailableFailover() throws Exception {
 		
 		RayoClient rayoClient1 = null;
@@ -197,7 +196,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 7
 	@Test
-	@Ignore
 	public void testUnavailableFailoverAndBackAvailable() throws Exception {
 		
 		RayoClient rayoClient1 = null;
@@ -243,7 +241,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 8
 	@Test
-	@Ignore
 	public void testHangupOnclientDisconnection() throws Exception {
 		
 		RayoClient rayoClient1 = null;
