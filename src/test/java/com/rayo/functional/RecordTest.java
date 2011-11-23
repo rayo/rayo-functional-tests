@@ -36,7 +36,7 @@ public class RecordTest extends MohoBasedIntegrationTest {
 	    
 	    assertReceived(OutputCompleteEvent.class, output);
 	    
-	    outgoing.hangup();
+	    incoming.hangup();
 	    waitForEvents();
 	    RecordCompleteEvent<?> complete =  assertReceived(RecordCompleteEvent.class, recording);
 		assertEquals(complete.getCause(), Cause.DISCONNECT);		
