@@ -16,6 +16,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rayo.client.JmxClient;
 import com.rayo.client.RayoClient;
@@ -30,6 +32,8 @@ import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class ClientResourcesTest extends RayoBasedIntegrationTest {
 
+	private Logger log = LoggerFactory.getLogger(ClientResourcesTest.class);
+	
 	@Before
 	public void setup() throws Exception {
 		
@@ -128,7 +132,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			Thread.sleep(1000);
 			JmxClient client = new JmxClient(rayoServer, "8080");
 			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
-			System.out.println(applications);
 			Iterator<JSONObject> it = applications.iterator();
 			while(it.hasNext()) {
 				JSONObject json = it.next();
@@ -172,7 +175,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			Thread.sleep(1000);
 			JmxClient client = new JmxClient(rayoServer, "8080");
 			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
-			System.out.println(applications);
 			Iterator<JSONObject> it = applications.iterator();
 			while(it.hasNext()) {
 				JSONObject json = it.next();
@@ -219,7 +221,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			
 			JmxClient client = new JmxClient(rayoServer, "8080");
 			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
-			System.out.println(applications);
 			Iterator<JSONObject> it = applications.iterator();
 			while(it.hasNext()) {
 				JSONObject json = it.next();
@@ -393,7 +394,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			Thread.sleep(1000);
 			JmxClient client = new JmxClient(rayoServer, "8080");
 			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
-			System.out.println(applications);
 			Iterator<JSONObject> it = applications.iterator();
 			while(it.hasNext()) {
 				JSONObject json = it.next();
@@ -425,7 +425,7 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			try {
 				rayoClient.hangup(call);
 			} catch (Exception e) {
-				System.out.println("ERROR: " + e.getMessage());
+				log.error("ERROR: " + e.getMessage());
 			}
 		}
 	}

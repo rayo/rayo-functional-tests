@@ -1,6 +1,7 @@
 package com.rayo.functional;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import javax.media.mscontrol.join.Joinable.Direction;
 
@@ -76,23 +77,23 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	//TODO: #1579867
 	public void testJoinOutgoingCallsFails() {
 
-		// This test tries to joion two outgoing calls that haven't been answered. 
+		// #1579867
+		// This test tries to join two outgoing calls that haven't been answered. 
 		// This should not be allowed
 		
 	    OutgoingCall outgoing1 = dial();	    	    
 	    OutgoingCall outgoing2 = dial();
-	    outgoing1.join(outgoing2, JoinType.BRIDGE_SHARED, Direction.DUPLEX);
-	    
-	    assertReceived(JoinCompleteEvent.class, outgoing1);
-	    assertReceived(JoinCompleteEvent.class, outgoing2);
+	    try {
+	    	outgoing1.join(outgoing2, JoinType.BRIDGE_SHARED, Direction.DUPLEX);
+	    	fail("Expected exception");
+	    } catch (Exception e) {
+	    	assertTrue(e.getMessage().contains("None of the calls you are trying to join have been answered"));
+	    }
 	    
 	    outgoing1.hangup();
 	    outgoing2.hangup();
-	    waitForEvents();
 	}
 	
 	@Test
