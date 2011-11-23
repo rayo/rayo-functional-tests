@@ -1,59 +1,77 @@
 package com.rayo.functional;
 
-import org.junit.Ignore;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import com.rayo.functional.base.MohoBasedIntegrationTest;
-import com.voxeo.moho.IncomingCall;
-import com.voxeo.moho.OutgoingCall;
+import com.rayo.client.JmxClient;
+import com.rayo.functional.base.RayoBasedIntegrationTest;
 
-public class CdrTest extends MohoBasedIntegrationTest {
+public class CdrTest extends RayoBasedIntegrationTest {
 
 	@Test
-	@Ignore
 	public void testShouldCreateCdrOnIncomingCall() throws Exception {
 		
-	    OutgoingCall outgoing = dial();
-	    
-	    IncomingCall incoming = getIncomingCall();
-	    
-	    assertJmxNodeContains("com.rayo:Type=Cdrs", "ActiveCDRs", "callId",incoming.getId());	    
-	    
-	    outgoing.hangup();
+	    String outgoingCall = dial().getCallId();
+	    try {
+		    String incomingCallId = getIncomingCall().getCallId();
+		    	    
+		    try {
+			    Object value = null;
+			    for (String node: getNodeNames()) {
+					JmxClient nodeClient = new JmxClient(node, "8080");
+					value = getAttributeValue(nodeClient, "com.rayo:Type=Cdrs", "ActiveCDRs", "callId", incomingCallId);
+			    	if (value != null) break;
+			    }
+			    assertNotNull(value);
+		    } finally {	    
+		    	rayoClient.hangup(outgoingCall);
+		    }
+	    } finally {
+	    	rayoClient.hangup(outgoingCall);
+	    }
 	}
 
 	@Test
-	@Ignore
 	public void testShouldCreateCdrOnOutgoingCall() throws Exception {
 		
-	    OutgoingCall outgoing = dial();
-	    
-	    getIncomingCall();
-	    
-	    assertCdrExists(outgoing.getId());	    
-	    
-	    outgoing.hangup();
+	    String outgoingCall = dial().getCallId();		    
+	    try {
+		    Object cdr = null;
+		    for (String node: getNodeNames()) {
+				JmxClient nodeClient = new JmxClient(node, "8080");
+				cdr = getCdr(nodeClient, outgoingCall);
+		    	if (cdr != null) break;
+		    }
+		    assertNotNull(cdr);
+	    } finally {	    
+	    	rayoClient.hangup(outgoingCall);
+	    }
 	}
 	
 	@Test
-	@Ignore
 	public void testShouldCreateTranscript() throws Exception {
 		
-	    OutgoingCall outgoing = dial();
-	    
-	    IncomingCall incoming = getIncomingCall();
-	    incoming.answer();
-	    
-	    incoming.output("Hello").get();
-	    
-	    String value = getCdrTranscript(incoming.getId());
-	    assertTrue(value.contains("<offer"));
-	    assertTrue(value.contains("<answer"));
-	    assertTrue(value.contains("<output"));
-	    assertTrue(value.contains("<complete"));
-	    assertTrue(value.contains("<success"));
-	    
-	    outgoing.hangup();
+	    String outgoingCall = dial().getCallId();		    
+	    String incomingCallId = getIncomingCall().getCallId();
+	    rayoClient.answer(incomingCallId);
+	    rayoClient.output("Hello", incomingCallId);
+
+	    try {
+		    String value = null;
+		    for (String node: getNodeNames()) {
+				JmxClient nodeClient = new JmxClient(node, "8080");
+				value = getCdrTranscript(nodeClient, incomingCallId);
+		    	if (value != null) break;
+		    }
+		    assertTrue(value.contains("<offer"));
+		    assertTrue(value.contains("<answer"));
+		    assertTrue(value.contains("<output"));
+		    assertTrue(value.contains("<complete"));
+		    assertTrue(value.contains("<success"));
+	    } finally {	    
+	    	rayoClient.hangup(outgoingCall);
+	    }
 	}
 }
