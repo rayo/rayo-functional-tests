@@ -63,6 +63,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testCallsRejectedOnQuiesce() throws Exception {
 		
 		String node = getNodeName();
