@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public class DialTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 10
 	@Test
+	@Ignore
 	public void testDialsAreLoadBalanced() throws Exception {
 
 		String call1 = null;
@@ -87,6 +89,7 @@ public class DialTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 11
 	@Test
+	@Ignore
 	public void testDialWhenNoAvailableNodes() throws Exception {
 
 		List<String> nodesList = new ArrayList<String>();

@@ -11,6 +11,7 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		
 	// Cluster Docs. Scenario 13
 	@Test
+	@Ignore
 	public void testRayoNodesReceiveErrorIfNoClients() throws Exception {
 
 		// We are going to cheat. We are going to connect directly to one of 
@@ -73,6 +75,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 14
 	@Test
+	@Ignore
 	public void testRayoNodesHavePlatform() throws Exception {
 	
 		List<String> nodesList = new ArrayList<String>();
@@ -88,6 +91,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 16
 	@Test
+	@Ignore
 	public void testRayoNodeNotAvailableAfterQuiesce() throws Exception {
 	
 		String node = getNodeName();
@@ -107,6 +111,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 17
 	@Test
+	@Ignore
 	public void testRayoNodeBackAvailableAfterDequiesced() throws Exception {
 	
 		String node = getNodeName();
@@ -124,6 +129,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 18
 	@Test
+	@Ignore
 	public void testRayoNodeLoadBalancing() throws Exception {
 	
 		String firstNode = getNodeName(0);
