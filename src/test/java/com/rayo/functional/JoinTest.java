@@ -77,6 +77,7 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testJoinOutgoingCallsFails() {
 
 		// #1579867

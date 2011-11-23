@@ -2,17 +2,21 @@ package com.rayo.functional.base;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rayo.client.JmxClient;
 import com.rayo.client.RayoClient;
 import com.rayo.client.listener.StanzaListener;
 import com.rayo.client.registry.Call;
@@ -112,7 +116,12 @@ public abstract class RayoBasedIntegrationTest {
 	
 	public VerbRef dial() throws Exception {
 		
-		return rayoClient.dial(new URI(sipDialUri));
+		return dial(new URI(sipDialUri));
+	}
+	
+	public VerbRef dial(URI uri) throws Exception {
+		
+		return rayoClient.dial(uri);
 	}
 	
 	public boolean hasAnyErrors(String callId) {
@@ -241,5 +250,28 @@ public abstract class RayoBasedIntegrationTest {
 	private boolean isRayoMesage(Stanza stanza) {
 		
 		return (stanza.getChildNamespace() != null && stanza.getChildNamespace().contains("urn:xmpp:rayo"));
+	}
+	
+	protected String getNodeName() throws Exception {
+		
+		return getNodeName(0);
+	}
+
+	protected String getNodeName(int i) throws Exception {
+		
+		List<String> nodesList = new ArrayList<String>();
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
+		Iterator<JSONObject> it = nodes.iterator();
+		int j = 0;
+		while(it.hasNext()) {
+			if (j == i) {
+				JSONObject json = it.next();
+				String jid = (String)json.get("JID");
+				return jid;
+			}
+			j++;
+		}
+		return null;
 	}
 }

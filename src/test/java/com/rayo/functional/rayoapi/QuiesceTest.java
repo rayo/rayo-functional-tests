@@ -1,8 +1,10 @@
-package com.rayo.functional;
+package com.rayo.functional.rayoapi;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.net.URI;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,53 +33,54 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 	
 	
 	@Test
-	@Ignore
 	public void testCanQueryQuiesceStatus() throws Exception {
 		
-		JmxClient client = new JmxClient(rayoServer, "8080");
-		boolean quiesce = (Boolean)client.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
+		String node = getNodeName();
+		JmxClient nodeClient = new JmxClient(node, "8080");
+		boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 		assertFalse(quiesce);
 	}
 	
 	@Test
-	@Ignore
 	public void testCanQuiesce() throws Exception {
 		
-		JmxClient client = new JmxClient(rayoServer, "8080");
+		String node = getNodeName();
+		JmxClient nodeClient = new JmxClient(node, "8080");
 		try {
-			boolean quiesce = (Boolean)client.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
+			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertFalse(quiesce);
 			
-			client.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");		
-			quiesce = (Boolean)client.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");		
+			quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertTrue(quiesce);
 	
-			client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
-			quiesce = (Boolean)client.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
+			quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertFalse(quiesce);
 		} finally {
-			client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
 		}
 	}
 	
 	@Test
-	@Ignore
 	public void testCallsRejectedOnQuiesce() throws Exception {
 		
-		JmxClient client = new JmxClient(rayoServer, "8080");
+		String node = getNodeName();
+		JmxClient nodeClient = new JmxClient(node, "8080");
+
 		try {
-			client.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");		
-			boolean quiesce = (Boolean)client.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");		
+			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertTrue(quiesce);
 
 			try {
-				dial();
+				dial(new URI("sip:usera@"+node));
 				fail("Expected Exception");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} finally {
-			client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
 		}
 	}
 	

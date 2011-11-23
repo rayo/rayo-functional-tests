@@ -163,29 +163,6 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			node2Client.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");			
 		}
 	}
-
-	private String getNodeName() throws Exception {
-		
-		return getNodeName(0);
-	}
-
-	private String getNodeName(int i) throws Exception {
-		
-		List<String> nodesList = new ArrayList<String>();
-		JmxClient client = new JmxClient(rayoServer, "8080");
-		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
-		Iterator<JSONObject> it = nodes.iterator();
-		int j = 0;
-		while(it.hasNext()) {
-			if (j == i) {
-				JSONObject json = it.next();
-				String jid = (String)json.get("JID");
-				return jid;
-			}
-			j++;
-		}
-		return null;
-	}
 	
 	private int getTotalNodePresenceErrors() throws Exception {
 		
