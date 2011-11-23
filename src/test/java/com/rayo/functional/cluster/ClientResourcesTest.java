@@ -87,7 +87,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 2
 	@Test
-	@Ignore
 	public void testBusyFailover() throws Exception {
 		
 		doShowTest(Show.away);
@@ -95,7 +94,6 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 3
 	@Test
-	@Ignore
 	public void testDndFailover() throws Exception {
 		
 		doShowTest(Show.dnd);
