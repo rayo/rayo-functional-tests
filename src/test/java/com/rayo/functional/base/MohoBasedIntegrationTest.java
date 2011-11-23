@@ -1,25 +1,19 @@
 package com.rayo.functional.base;
 
-import static org.junit.Assert.fail;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rayo.client.JmxClient;
 import com.rayo.core.verb.Ssml;
 import com.voxeo.moho.Call;
 import com.voxeo.moho.CallableEndpoint;
@@ -327,78 +321,6 @@ public abstract class MohoBasedIntegrationTest {
 				return item.toUri();
 			}
 		};
-	}
-
-	protected void assertCdrExists(String id) throws Exception {
-
-		assertJmxNodeContains("com.rayo:Type=Cdrs", "ActiveCDRs", "callId", id);
-	}
-
-	protected String getCdrTranscript(String id) throws Exception {
-
-		JmxClient jmx = new JmxClient("localhost", "8080");
-		Object jmxObject = jmx.jmxValue("com.rayo:Type=Cdrs", "ActiveCDRs");
-		JSONArray cdrs = (JSONArray) jmxObject;
-		Iterator<JSONObject> it = cdrs.iterator();
-		while (it.hasNext()) {
-			JSONObject jsonObject = it.next();
-			if (jsonObject.get("callId") != null) {
-				if (jsonObject.get("callId").equals(id)) {
-					return jsonObject.get("transcript").toString();
-				}
-			}
-		}
-		return "";
-	}
-
-	protected void assertJmxNodeContains(String url, String node,
-			String attribute, String value) throws Exception {
-
-		JmxClient jmx = new JmxClient("localhost", "8080");
-		Object jmxObject = jmx.jmxValue(url, node);
-		if (jmxObject instanceof JSONArray) {
-			JSONArray cdrs = (JSONArray) jmx.jmxValue(url, node);
-			boolean found = false;
-			Iterator<JSONObject> it = cdrs.iterator();
-			while (it.hasNext()) {
-				JSONObject object = it.next();
-				if (object.get(attribute).equals(value)) {
-					return;
-				}
-			}
-			fail(String
-					.format("Could not find attribute [%s] with value [%s] on JSON Array at Url [%s]",
-							attribute, value, url));
-		} else {
-			JSONObject jsonObject = (JSONObject) jmxObject;
-			if (jsonObject.get(attribute) != null) {
-				if (jsonObject.get(attribute).equals(value)) {
-					return;
-				} else {
-					fail(String.format("Expected attribute [%s]. Found [%s]",
-							value, jsonObject.get(attribute)));
-				}
-			} else {
-				fail(String.format("Could not find attribute [%s] on [%s]",
-						attribute, url));
-			}
-		}
-	}
-
-	protected String getJmxValue(String url, String node, String attribute)
-			throws Exception {
-
-		JmxClient jmx = new JmxClient("localhost", "8080");
-		Object jmxObject = jmx.jmxValue(url, node);
-		if (jmxObject instanceof JSONArray) {
-			JSONArray cdrs = (JSONArray) jmxObject;
-			if (cdrs != null) {
-				return cdrs.get(0).toString();
-			}
-			return "";
-		} else {
-			return jmxObject.toString();
-		}
 	}
 
 	public String getXmppUsername() {

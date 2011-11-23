@@ -257,9 +257,23 @@ public abstract class RayoBasedIntegrationTest {
 		return getNodeName(0);
 	}
 
-	protected String getNodeName(int i) throws Exception {
+	protected List<String> getNodeNames() throws Exception {
 		
 		List<String> nodesList = new ArrayList<String>();
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
+		Iterator<JSONObject> it = nodes.iterator();
+		int j = 0;
+		while(it.hasNext()) {
+			JSONObject json = it.next();
+			String jid = (String)json.get("JID");
+			nodesList.add(jid);
+		}
+		return nodesList;
+	}
+	
+	protected String getNodeName(int i) throws Exception {
+		
 		JmxClient client = new JmxClient(rayoServer, "8080");
 		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
 		Iterator<JSONObject> it = nodes.iterator();
@@ -273,5 +287,70 @@ public abstract class RayoBasedIntegrationTest {
 			j++;
 		}
 		return null;
+	}
+	
+	protected Object getCdr(JmxClient jmx, String id) throws Exception {
+
+		return getAttributeValue(jmx, "com.rayo:Type=Cdrs", "ActiveCDRs", "callId", id);
+	}
+
+	protected String getCdrTranscript(JmxClient jmx, String id) throws Exception {
+
+		Object jmxObject = jmx.jmxValue("com.rayo:Type=Cdrs", "ActiveCDRs");
+		JSONArray cdrs = (JSONArray) jmxObject;
+		Iterator<JSONObject> it = cdrs.iterator();
+		while (it.hasNext()) {
+			JSONObject jsonObject = it.next();
+			if (jsonObject.get("callId") != null) {
+				if (jsonObject.get("callId").equals(id)) {
+					return jsonObject.get("transcript").toString();
+				}
+			}
+		}
+		return "";
+	}
+
+	protected Object getAttributeValue(JmxClient jmx, String url, String node,
+			String attribute, String value) throws Exception {
+
+		Object jmxObject = jmx.jmxValue(url, node);
+		if (jmxObject instanceof JSONArray) {
+			JSONArray cdrs = (JSONArray) jmx.jmxValue(url, node);
+			boolean found = false;
+			Iterator<JSONObject> it = cdrs.iterator();
+			while (it.hasNext()) {
+				JSONObject object = it.next();
+				if (object.get(attribute).equals(value)) {
+					return object;
+				}
+			}
+			return null;
+		} else {
+			JSONObject jsonObject = (JSONObject) jmxObject;
+			if (jsonObject.get(attribute) != null) {
+				if (jsonObject.get(attribute).equals(value)) {
+					return value;
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
+		}
+	}
+
+	protected String getJmxValue(JmxClient jmx, String url, String node, String attribute)
+			throws Exception {
+
+		Object jmxObject = jmx.jmxValue(url, node);
+		if (jmxObject instanceof JSONArray) {
+			JSONArray cdrs = (JSONArray) jmxObject;
+			if (cdrs != null) {
+				return cdrs.get(0).toString();
+			}
+			return "";
+		} else {
+			return jmxObject.toString();
+		}
 	}
 }
