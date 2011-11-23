@@ -74,7 +74,6 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 14
 	@Test
-	@Ignore
 	public void testRayoNodesHavePlatform() throws Exception {
 	
 		List<String> nodesList = new ArrayList<String>();
@@ -90,7 +89,6 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 16
 	@Test
-	@Ignore
 	public void testRayoNodeNotAvailableAfterQuiesce() throws Exception {
 	
 		String node = getNodeName();
