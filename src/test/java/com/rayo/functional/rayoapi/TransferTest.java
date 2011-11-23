@@ -1,13 +1,14 @@
 package com.rayo.functional.rayoapi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.Duration;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.core.verb.Transfer;
