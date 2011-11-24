@@ -108,7 +108,6 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 17
 	@Test
-	@Ignore
 	public void testRayoNodeBackAvailableAfterDequiesced() throws Exception {
 	
 		String node = getNodeName();
