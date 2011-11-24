@@ -6,7 +6,6 @@ import java.net.URI;
 
 import javax.media.mscontrol.join.Joinable.Direction;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.core.DialCommand;
@@ -20,43 +19,43 @@ import com.voxeo.moho.Participant.JoinType;
 
 public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 
-
+	@Test
 	public void testNestedJoinDuplex() throws Exception {
 		
 		doTest(JoinType.BRIDGE, Direction.DUPLEX);
 	}
 
-
+	@Test
 	public void testNestedJoinSend() throws Exception {
 		
 		doTest(JoinType.BRIDGE, Direction.SEND);
 	}
 
-
+	@Test
 	public void testNestedJoinRecv() throws Exception {
 		
 		doTest(JoinType.BRIDGE, Direction.RECV);
 	}
 
-
+	@Test
 	public void testNestedJoinDirect() throws Exception {
 		
 		doTest(JoinType.DIRECT, Direction.DUPLEX);
 	}
 
-
+	@Test
 	public void testNestedJoinBridgeExclusive() throws Exception {
 		
 		doTest(JoinType.BRIDGE_EXCLUSIVE, Direction.DUPLEX);
 	}
 
-
+	@Test
 	public void testNestedJoinBridgeShared() throws Exception {
 		
 		doTest(JoinType.BRIDGE_SHARED, Direction.DUPLEX);
 	}
 	
-
+	@Test
 	public void testNestedJoinAndReject() throws Exception {
 		
 		String outgoing1 = dial().getCallId();
@@ -70,7 +69,7 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 		join.setType(JoinDestinationType.CALL);
 		
 		DialCommand dialCommand = new DialCommand();
-		dialCommand.setTo(new URI("sip:usera@localhost"));
+		dialCommand.setTo(new URI(sipDialUri));
 		dialCommand.setFrom(new URI("sip:test@localhost"));
 		dialCommand.setJoin(join);
 		
