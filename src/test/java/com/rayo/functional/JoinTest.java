@@ -25,8 +25,6 @@ import com.voxeo.moho.media.input.SimpleGrammar;
 public class JoinTest extends MohoBasedIntegrationTest {
 
 	@Test
-	@Ignore
-	// does not work on gateway. Old prism version?
 	public void testJoinBridge() {
 		
 	    OutgoingCall outgoing1 = dial();	    	    
@@ -58,11 +56,9 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	// Timing issue
 	public void testJoinBridgeFailsIfAnotherJoinIsInProgress() {
 		
-	    OutgoingCall outgoing1 = dial();	    	    
+	    dial();	    	    
 	    IncomingCall incoming1 = getIncomingCall();
 	    incoming1.answer();
 	    waitForEvents();
@@ -78,13 +74,17 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	
 	@Test
 	@Ignore
+	//TODO:  #1600683
 	public void testJoinOutgoingCallsFails() {
 
 		// #1579867
 		// This test tries to join two outgoing calls that haven't been answered. 
 		// This should not be allowed
 		
-	    OutgoingCall outgoing1 = dial();	    	    
+	    OutgoingCall outgoing1 = dial();
+	    //waitForEvents(200);
+	    //OutgoingCall nobother = dial();
+	    waitForEvents(200);
 	    OutgoingCall outgoing2 = dial();
 	    try {
 	    	outgoing1.join(outgoing2, JoinType.BRIDGE_SHARED, Direction.DUPLEX);
@@ -99,7 +99,7 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	
 	@Test
 	@Ignore
-	// timing issue
+	//TODO:  #1600683
 	public void testJoinOutgoingCalls() {
 		
 		// This test tries two join two outgoing calls that already have been answered. 	
@@ -263,8 +263,6 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	// timing issue
 	public void testUnjoin() {
 	
 	    OutgoingCall outgoing1 = dial();	    	    
@@ -281,7 +279,8 @@ public class JoinTest extends MohoBasedIntegrationTest {
 	    
 	    assertReceived(JoinCompleteEvent.class, incoming1);
 	    assertReceived(JoinCompleteEvent.class, incoming2);
-	    	    
+	    waitForEvents(500);
+	    
 	    incoming1.unjoin(incoming2);
 	    
 	    assertReceived(UnjoinCompleteEvent.class, incoming1);

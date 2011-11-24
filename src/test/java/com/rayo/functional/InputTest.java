@@ -174,6 +174,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	@Test
 	@Ignore
 	// Does not work on Gatway's Prism build. Needs to be updated.
+	// Not sure if related with the build but it works locally.
 	public void testDifferentRecognizer() throws Exception {
 		
 	    OutgoingCall outgoing = dial();
@@ -220,7 +221,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	
 	@Test
 	@Ignore
-	// Timing issue.
+	// Not supported on current Gateway prism build
 	public void testMaxSilence() throws Exception {
 	
 		// Tests that max silence command has any effect. The input should be 
