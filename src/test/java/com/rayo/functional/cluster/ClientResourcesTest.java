@@ -300,7 +300,7 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			rayoClient.addFilter(filter);
 			
 			rayoClient.connect(xmppUsername, xmppPassword, "resource1");
-			Presence presence = (Presence)filter.poll(100);
+			Presence presence = (Presence)filter.poll(2000);
 			assertNotNull(presence);			
 			assertNotNull(presence.getError());
 			assertEquals(presence.getError().getCondition(), Condition.recipient_unavailable);
@@ -326,9 +326,11 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 		
 		try {
 			rayoClient1 = new RayoClient(xmppServer, rayoServer);
-			rayoClient1.connect(xmppUsername, xmppPassword, "resource1");
+			rayoClient1.connect(xmppUsername, xmppPassword, "resource5");
 			rayoClient2 = new RayoClient(xmppServer, rayoServer);
-			rayoClient2.connect(xmppUsername, xmppPassword, "resource2");			
+			rayoClient2.connect(xmppUsername, xmppPassword, "resource6");			
+			
+			waitForEvents(2000);
 			
 			// one offer filter per clint
 			XmppObjectFilter filter1 = new XmppObjectExtensionNameFilter("offer");
