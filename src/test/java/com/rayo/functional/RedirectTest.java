@@ -88,7 +88,9 @@ public class RedirectTest extends MohoBasedIntegrationTest {
 				assertTrue(e.getMessage().contains("You can't redirect a call that has already been answered"));
 			}
 		} finally {
-			outgoing1.hangup();
+			try {
+				outgoing1.hangup();
+			} catch (Exception e) {}
 		}
 	}	
 }
