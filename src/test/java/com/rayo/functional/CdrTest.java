@@ -57,18 +57,22 @@ public class CdrTest extends RayoBasedIntegrationTest {
 	    String incomingCallId = getIncomingCall().getCallId();
 	    rayoClient.answer(incomingCallId);
 	    rayoClient.output("Hello", incomingCallId);
-    	rayoClient.hangup(outgoingCall);
+    	waitForEvents();
 
-	    String value = null;
-	    for (String node: getNodeNames()) {
-			JmxClient nodeClient = new JmxClient(node, "8080");
-			value = getCdrTranscript(nodeClient, incomingCallId);
-	    	if (value != null) break;
+	    try {
+		    String value = null;
+		    for (String node: getNodeNames()) {
+				JmxClient nodeClient = new JmxClient(node, "8080");
+				value = getCdrTranscript(nodeClient, incomingCallId);
+		    	if (value != null) break;
+		    }
+		    assertTrue(value.contains("<offer"));
+		    assertTrue(value.contains("<answer"));
+		    assertTrue(value.contains("<output"));
+		    assertTrue(value.contains("<complete"));
+		    assertTrue(value.contains("<success"));
+	    } finally {	    
+	    	rayoClient.hangup(outgoingCall);
 	    }
-	    assertTrue(value.contains("<offer"));
-	    assertTrue(value.contains("<answer"));
-	    assertTrue(value.contains("<output"));
-	    assertTrue(value.contains("<complete"));
-	    assertTrue(value.contains("<success"));
 	}
 }
