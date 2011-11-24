@@ -32,7 +32,6 @@ public class DialTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 10
 	@Test
-	@Ignore
 	public void testDialsAreLoadBalanced() throws Exception {
 
 		String call1 = null;
