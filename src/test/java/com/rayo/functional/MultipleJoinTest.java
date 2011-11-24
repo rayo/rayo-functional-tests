@@ -128,27 +128,6 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    outgoing3.hangup();
 	    waitForEvents();
 	}
-	
-	@Test
-	@Ignore // Ask Willie
-	public void testJoinDirectModeFailsIfJoined2() {
-		
-	    OutgoingCall outgoing1 = dial();	    
-	    waitForEvents();
-	    OutgoingCall outgoing2 = dial();
-	    waitForEvents();
-	    
-	    outgoing1.join(outgoing2, JoinType.DIRECT, false, Direction.DUPLEX);
-	    waitForEvents();
-	    
-	    assertReceived(JoinCompleteEvent.class, outgoing1);
-	    assertReceived(JoinCompleteEvent.class, outgoing2);
-	    
-	    outgoing1.hangup();
-	    outgoing2.hangup();
-	    waitForEvents();
-	}
-	
 
 	@Test
 	public void testJoinBridgeSharedFailsOnDirect() {
@@ -270,7 +249,6 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testJoinBridgeSharedSuceedsForceTrue() {
 		
 	    OutgoingCall outgoing1 = dial();	    
@@ -306,8 +284,6 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	//TODO: Not linked yet
 	public void testJoinExclusiveModeFailsIfJoined() {
 		
 	    OutgoingCall outgoing1 = dial();	    
@@ -341,8 +317,8 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    assertReceived(CallCompleteEvent.class, outgoing3);
 	    
 	    // Assert that incoming1 keeps working
-	    Input<Call> input = incoming2.input("yes,no");
-	    incoming1.output("yes");
+	    Input<Call> input = outgoing2.input("yes,no");
+	    outgoing1.output("yes");
 	    waitForEvents();
 	    assertReceived(InputCompleteEvent.class, input);	    
 	    
@@ -353,7 +329,6 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	
 
 	@Test
-	@Ignore
 	public void testJoinBridgeExclusiveSucceedsForce() {
 		
 	    OutgoingCall outgoing1 = dial();	    
@@ -383,8 +358,8 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	    assertReceived(UnjoinCompleteEvent.class, incoming2);
 
 	    // Assert that incoming1 now talks to incoming3
-	    Input<Call> input = incoming3.input("yes,no");
-	    incoming1.output("yes");
+	    Input<Call> input = outgoing3.input("yes,no");
+	    outgoing1.output("yes");
 	    waitForEvents();
 	    assertReceived(InputCompleteEvent.class, input);	    
 	    
