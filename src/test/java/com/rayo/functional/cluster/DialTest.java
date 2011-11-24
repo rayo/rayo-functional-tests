@@ -49,11 +49,11 @@ public class DialTest extends RayoBasedIntegrationTest {
 			
 			JSONObject info1 = (JSONObject)client.jmxExec("com.rayo.gateway:Type=Gateway", "callInfo", call1);
 			updateCount(nodesCount,info1);
-			JSONObject info2 = (JSONObject)client.jmxExec("com.rayo.gateway:Type=Gateway", "callInfo", call1);
+			JSONObject info2 = (JSONObject)client.jmxExec("com.rayo.gateway:Type=Gateway", "callInfo", call2);
 			updateCount(nodesCount,info2);
-			JSONObject info3 = (JSONObject)client.jmxExec("com.rayo.gateway:Type=Gateway", "callInfo", call1);
+			JSONObject info3 = (JSONObject)client.jmxExec("com.rayo.gateway:Type=Gateway", "callInfo", call3);
 			updateCount(nodesCount,info3);
-			JSONObject info4 = (JSONObject)client.jmxExec("com.rayo.gateway:Type=Gateway", "callInfo", call1);
+			JSONObject info4 = (JSONObject)client.jmxExec("com.rayo.gateway:Type=Gateway", "callInfo", call4);
 			updateCount(nodesCount,info4);
 			
 			JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
@@ -88,7 +88,6 @@ public class DialTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 11
 	@Test
-	@Ignore
 	public void testDialWhenNoAvailableNodes() throws Exception {
 
 		List<String> nodesList = new ArrayList<String>();
