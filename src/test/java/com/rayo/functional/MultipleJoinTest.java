@@ -1,10 +1,11 @@
 package com.rayo.functional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import javax.media.mscontrol.join.Joinable.Direction;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.functional.base.MohoBasedIntegrationTest;
