@@ -279,8 +279,8 @@ public abstract class RayoBasedIntegrationTest {
 		Iterator<JSONObject> it = nodes.iterator();
 		int j = 0;
 		while(it.hasNext()) {
+			JSONObject json = it.next();
 			if (j == i) {
-				JSONObject json = it.next();
 				String jid = (String)json.get("JID");
 				return jid;
 			}
