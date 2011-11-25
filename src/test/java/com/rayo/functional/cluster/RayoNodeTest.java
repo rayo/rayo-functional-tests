@@ -136,7 +136,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		try {
 			long initialCalls = getTotalCalls();
 			rayoClient = new RayoClient(xmppServer, rayoServer);
-			rayoClient.connect(xmppUsername, xmppPassword);
+			rayoClient.connect(xmppUsername, xmppPassword,"loadbalance");
 			
 			rayoClient.dial(new URI(sipDialUri)).getCallId();
 			assertEquals(getTotalCalls(), initialCalls+2);
@@ -146,8 +146,8 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			// we need to dial the second node as we have quiesced the first one
 			URI secondURI = new URI("sip:usera@" + secondNode);
 			rayoClient.dial(secondURI).getCallId();
+			waitForEvents();
 			assertEquals(getTotalCalls(), initialCalls+4);
-			
 			
 			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
 			node2Client.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
@@ -155,11 +155,13 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			// we need to dial the first node as we have quiesced the second one
 			URI firstURI = new URI("sip:usera@" + firstNode);
 			rayoClient.dial(firstURI).getCallId();
+			waitForEvents();
 			assertEquals(getTotalCalls(), initialCalls+6);
 	
 			node2Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
 			waitForEvents(500);
 			rayoClient.dial(new URI(sipDialUri)).getCallId();
+			waitForEvents();
 			assertEquals(getTotalCalls(), initialCalls+8);
 		} finally {
 			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
