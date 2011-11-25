@@ -10,6 +10,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.client.JmxClient;
+import com.rayo.client.listener.StanzaAdapter;
+import com.rayo.client.listener.StanzaListener;
+import com.rayo.client.xmpp.stanza.Presence;
+import com.rayo.client.xmpp.stanza.Presence.Show;
 import com.rayo.core.EndEvent;
 import com.rayo.core.EndEvent.Reason;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
@@ -22,6 +26,9 @@ import com.rayo.functional.base.RayoBasedIntegrationTest;
  */
 public class QuiesceTest extends RayoBasedIntegrationTest {
 		
+	protected Show status;
+
+
 	@Test
 	public void testCanQueryQuiesceStatus() throws Exception {
 		
@@ -73,18 +80,46 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	//TODO
-	public void testUnavailablePresenceOnQuiesce() throws Exception {
-		
+	public void testServerGoesAwayOnQuiesce() throws Exception {
+				
+		int nodes = getNodeNames().size();
+		String node = getNodeName();
+		JmxClient nodeClient = new JmxClient(node, "8080");
+
+		try {
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
+			waitForEvents(300);
+			int nodes2 = getNodeNames().size();
+			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
+			assertTrue(quiesce);
+			assertEquals(nodes-1, nodes2);
+			
+		} finally {
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
+		}
 	}
 	
 	
 	@Test
-	@Ignore
-	//TODO
-	public void testAvailablePresenceOnQuiesce() throws Exception {
+	public void testServerComesBackAfterQuiesce() throws Exception {
 		
+		int nodes = getNodeNames().size();
+		String node = getNodeName();
+		JmxClient nodeClient = new JmxClient(node, "8080");
+		
+		try {
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
+			waitForEvents(300);
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
+			waitForEvents(300);
+			int nodes2 = getNodeNames().size();
+			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
+			assertFalse(quiesce);
+			assertEquals(nodes, nodes2);
+			
+		} finally {
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
+		}
 	}
 	
 	
