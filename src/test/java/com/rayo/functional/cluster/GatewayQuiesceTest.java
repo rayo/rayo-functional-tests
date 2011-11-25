@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.client.JmxClient;
@@ -42,6 +43,7 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testCanQuiesce() throws Exception {
 		
 		JmxClient client = new JmxClient(rayoServer, "8080");
@@ -62,6 +64,7 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testCallsRejectedOnQuiesce() throws Exception {
 		
 		JmxClient client = new JmxClient(rayoServer, "8080");
@@ -88,6 +91,7 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testQuiesceLetsActiveCallsEnd() throws Exception {
 				
 		JmxClient client = new JmxClient(rayoServer, "8080");
