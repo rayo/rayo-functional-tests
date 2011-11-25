@@ -6,6 +6,7 @@ import java.net.URI;
 
 import javax.media.mscontrol.join.Joinable.Direction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.core.DialCommand;
@@ -20,36 +21,42 @@ import com.voxeo.moho.Participant.JoinType;
 public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 
 	@Test
+	@Ignore(value="#1600987")
 	public void testNestedJoinDuplex() throws Exception {
 		
 		doTest(JoinType.BRIDGE, Direction.DUPLEX);
 	}
 
 	@Test
+	@Ignore(value="#1600987")
 	public void testNestedJoinSend() throws Exception {
 		
 		doTest(JoinType.BRIDGE, Direction.SEND);
 	}
 
 	@Test
+	@Ignore(value="#1600987")
 	public void testNestedJoinRecv() throws Exception {
 		
 		doTest(JoinType.BRIDGE, Direction.RECV);
 	}
 
 	@Test
+	@Ignore(value="#1600987")
 	public void testNestedJoinDirect() throws Exception {
 		
 		doTest(JoinType.DIRECT, Direction.DUPLEX);
 	}
 
 	@Test
+	@Ignore(value="#1600987")
 	public void testNestedJoinBridgeExclusive() throws Exception {
 		
 		doTest(JoinType.BRIDGE_EXCLUSIVE, Direction.DUPLEX);
 	}
 
 	@Test
+	@Ignore(value="#1600987")
 	public void testNestedJoinBridgeShared() throws Exception {
 		
 		doTest(JoinType.BRIDGE_SHARED, Direction.DUPLEX);
@@ -89,8 +96,8 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 	
 	private void doTest(JoinType type, Direction direction) throws Exception {
 		
-		String outgoing1 = dial().getCallId();
-		String incoming1 = getIncomingCall().getCallId();
+		String outgoing1 = dial().getCallId();//N1
+		String incoming1 = getIncomingCall().getCallId();//N1
 		rayoClient.answer(incoming1);
 		
 		JoinCommand join = new JoinCommand();
@@ -104,8 +111,11 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 		dialCommand.setFrom(new URI("sip:test@localhost"));
 		dialCommand.setJoin(join);
 		
-		String outgoing2 = rayoClient.dial(dialCommand).getCallId();
-		String incoming2 = getIncomingCall().getCallId();
+		String outgoing2 = rayoClient.dial(dialCommand).getCallId();//N2
+		
+		waitForEvents(); // Delay due to possible remote joins
+		
+		String incoming2 = getIncomingCall().getCallId();//N1		
 		rayoClient.answer(incoming2);
 		
 		JoinedEvent joined = assertReceived(JoinedEvent.class, incoming1);
