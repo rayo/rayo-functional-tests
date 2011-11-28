@@ -198,9 +198,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    output.speed(true);
 	    output.speed(true);
 	    output.speed(true);
-	    output.speed(true);
-	    output.speed(true);
-	    output.speed(true);	    
+	    output.speed(true);  
 	    output.speed(true);
 	    output.speed(true);
 	    waitForEvents(4000);
