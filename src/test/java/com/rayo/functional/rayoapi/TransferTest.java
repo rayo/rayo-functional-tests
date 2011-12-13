@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.joda.time.Duration;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import com.rayo.core.verb.Transfer;
 import com.rayo.core.verb.TransferCompleteEvent;
@@ -140,6 +141,7 @@ public class TransferTest extends RayoBasedIntegrationTest {
 	
 	
 	@Test
+	@Ignore
 	//TODO:  #1594500
 	public void testTransferTerminator() throws Exception {
 		
