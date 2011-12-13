@@ -141,6 +141,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			rayoClient.connect(xmppUsername, xmppPassword,"loadbalance");
 			
 			rayoClient.dial(new URI(sipDialUri)).getCallId();
+			waitForEvents();
 			assertEquals(getTotalCalls(), initialCalls+2);
 			
 			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
