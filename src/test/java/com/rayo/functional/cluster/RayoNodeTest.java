@@ -12,6 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		
 	// Cluster Docs. Scenario 13
 	@Test
+	@Ignore
 	public void testRayoNodesReceiveErrorIfNoClients() throws Exception {
 
 		// We are going to cheat. We are going to connect directly to one of 
