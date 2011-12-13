@@ -307,7 +307,7 @@ public abstract class RayoBasedIntegrationTest {
 				}
 			}
 		}
-		return "";
+		return null;
 	}
 
 	protected Object getAttributeValue(JmxClient jmx, String url, String node,
