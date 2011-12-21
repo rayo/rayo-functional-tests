@@ -43,7 +43,6 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testCanQuiesce() throws Exception {
 		
 		JmxClient client = new JmxClient(rayoServer, "8080");
@@ -64,7 +63,6 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testCallsRejectedOnQuiesce() throws Exception {
 		
 		JmxClient client = new JmxClient(rayoServer, "8080");
