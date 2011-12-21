@@ -14,8 +14,6 @@ import com.rayo.functional.base.RayoBasedIntegrationTest;
 public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 	@Test
-	@Ignore
-	// TODO: This one was working. Need to retest.
 	public void testJoinAndUnjoin() throws Exception {
 		
 		String outgoingCallId = dial().getCallId();
@@ -36,8 +34,6 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	
 
 	@Test
-	@Ignore
-	// TODO: This one was working. Need to retest.
 	public void testJoinAndUnjoinMultipleCalls() throws Exception {
 		
 		String outgoing1 = dial().getCallId();
