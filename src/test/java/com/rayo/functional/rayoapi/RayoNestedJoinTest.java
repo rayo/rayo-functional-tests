@@ -21,42 +21,37 @@ import com.voxeo.moho.Participant.JoinType;
 public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 
 	@Test
-	@Ignore(value="#1600987")
 	public void testNestedJoinDuplex() throws Exception {
 		
 		doTest(JoinType.BRIDGE, Direction.DUPLEX);
 	}
 
 	@Test
-	@Ignore(value="#1600987")
 	public void testNestedJoinSend() throws Exception {
 		
 		doTest(JoinType.BRIDGE, Direction.SEND);
 	}
 
 	@Test
-	@Ignore(value="#1600987")
 	public void testNestedJoinRecv() throws Exception {
 		
 		doTest(JoinType.BRIDGE, Direction.RECV);
 	}
 
 	@Test
-	@Ignore(value="#1600987")
+	@Ignore
 	public void testNestedJoinDirect() throws Exception {
 		
 		doTest(JoinType.DIRECT, Direction.DUPLEX);
 	}
 
 	@Test
-	@Ignore(value="#1600987")
 	public void testNestedJoinBridgeExclusive() throws Exception {
 		
 		doTest(JoinType.BRIDGE_EXCLUSIVE, Direction.DUPLEX);
 	}
 
 	@Test
-	@Ignore(value="#1600987")
 	public void testNestedJoinBridgeShared() throws Exception {
 		
 		doTest(JoinType.BRIDGE_SHARED, Direction.DUPLEX);
