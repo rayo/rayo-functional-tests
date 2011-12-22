@@ -25,8 +25,6 @@ import com.voxeo.moho.media.input.SimpleGrammar;
 public class MultipleJoinTest extends MohoBasedIntegrationTest {
 
 	@Test
-	@Ignore
-	//TODO: This one was working. Why does not work any more
 	public void testOutputIsReceivedByMultipleCalls() {
 		
 	    OutgoingCall outgoing1 = dial();	    
@@ -173,8 +171,6 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	//TODO: This one was working. Why does not work any more
 	public void testJoinBridgeSharedFailsOnBridgeExclusive() {
 		
 	    OutgoingCall outgoing1 = dial();	    
@@ -290,8 +286,6 @@ public class MultipleJoinTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
-	//TODO: This one was working. Why does not work any more
 	public void testJoinExclusiveModeFailsIfJoined() {
 		
 	    OutgoingCall outgoing1 = dial();	    
