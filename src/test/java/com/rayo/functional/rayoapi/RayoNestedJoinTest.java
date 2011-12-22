@@ -39,7 +39,6 @@ public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 	}
 
 	@Test
-	@Ignore
 	public void testNestedJoinDirect() throws Exception {
 		
 		doTest(JoinType.DIRECT, Direction.DUPLEX);
