@@ -139,15 +139,4 @@ public class DialTest extends RayoBasedIntegrationTest {
 			nodesCount.put(node, count+1);
 		}
 	}
-
-	private void disconnect(String call) {
-
-		if (call != null) {
-			try {
-				rayoClient.hangup(call);
-			} catch (Exception e) {
-				log.error("ERROR: " + e.getMessage());
-			}
-		}
-	}
 }
