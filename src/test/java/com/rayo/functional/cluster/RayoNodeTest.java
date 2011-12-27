@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
@@ -32,7 +33,6 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		
 	// Cluster Docs. Scenario 13
 	@Test
-	@Ignore
 	public void testRayoNodesReceiveErrorIfNoClients() throws Exception {
 
 		// We are going to cheat. We are going to connect directly to one of 
@@ -47,7 +47,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		String directPassword = "1";
 				
 		try {
-			String server = getNodeName();
+			String server = handleGatewayClusterAndEC2(getNodeName());
 			
 			rayoClient = new RayoClient(server, server);
 			rayoClient.connect(directUsername, directPassword);
@@ -71,8 +71,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			}
 		}
 	}
-	
-	
+
 	// Cluster Docs. Scenario 14
 	@Test
 	public void testRayoNodesHavePlatform() throws Exception {
@@ -225,5 +224,19 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 				log.error("ERROR: " + e.getMessage());
 			}
 		}
+	}
+	
+	private String handleGatewayClusterAndEC2(String hostname) {
+
+		if (System.getProperty("hudson.append.ext") != null && !hostname.contains("-ext")) {
+			// Small "hack" needed for Hudson functional tests. Otherwise the 
+			// tests run on hudson aren't able to access the nodes JMX interfaces
+			// as the gateway will return the internal domains for the rayo nodes.
+			String[] parts = StringUtils.split(hostname,".");
+			parts[0] = parts[0] + "-ext";
+			hostname = StringUtils.join(parts,".");
+			log.debug("Using hostname: " + hostname);
+		}
+		return hostname;
 	}
 }
