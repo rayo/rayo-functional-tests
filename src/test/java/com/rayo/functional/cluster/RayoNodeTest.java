@@ -13,7 +13,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,37 +192,6 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		}
 		
 		return totalNodeErrors;
-	}
-		
-	private int getClientsConnected() throws Exception {
-		
-		JmxClient client = new JmxClient(rayoServer, "8080");
-		JSONArray clients = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications"));
-		return clients.size();
-	}
-
-	private long getTotalCalls() throws Exception {
-		
-		JmxClient client = new JmxClient(rayoServer, "8080");
-		return ((Long)client.jmxValue("com.rayo.gateway:Type=GatewayStatistics", "TotalCallsCount"));
-	}
-	
-	private int getNodes() throws Exception {
-		
-		JmxClient client = new JmxClient(rayoServer, "8080");
-		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
-		return nodes.size();
-	}
-	
-	private void disconnect(String call) {
-
-		if (call != null) {
-			try {
-				rayoClient.hangup(call);
-			} catch (Exception e) {
-				log.error("ERROR: " + e.getMessage());
-			}
-		}
 	}
 	
 	private String handleGatewayClusterAndEC2(String hostname) {

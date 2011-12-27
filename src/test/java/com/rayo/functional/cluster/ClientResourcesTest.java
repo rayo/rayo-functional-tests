@@ -409,22 +409,4 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			}
 		}
 	}
-
-	private void disconnect(String call) {
-
-		if (call != null) {
-			try {
-				rayoClient.hangup(call);
-			} catch (Exception e) {
-				log.error("ERROR: " + e.getMessage());
-			}
-		}
-	}
-	
-	private int getClientsConnected() throws Exception {
-		
-		JmxClient client = new JmxClient(rayoServer, "8080");
-		JSONArray clients = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications"));
-		return clients.size();
-	}
 }

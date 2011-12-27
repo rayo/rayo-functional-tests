@@ -353,4 +353,35 @@ public abstract class RayoBasedIntegrationTest {
 			return jmxObject.toString();
 		}
 	}
+	
+	protected int getClientsConnected() throws Exception {
+		
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		JSONArray clients = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications"));
+		return clients.size();
+	}
+
+	protected long getTotalCalls() throws Exception {
+		
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		return ((Long)client.jmxValue("com.rayo.gateway:Type=GatewayStatistics", "TotalCallsCount"));
+	}
+	
+	protected int getNodes() throws Exception {
+		
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
+		return nodes.size();
+	}
+	
+	protected void disconnect(String call) {
+
+		if (call != null) {
+			try {
+				rayoClient.hangup(call);
+			} catch (Exception e) {
+				log.error("ERROR: " + e.getMessage());
+			}
+		}
+	}
 }
