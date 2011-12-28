@@ -97,7 +97,8 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		JmxClient nodeClient = new JmxClient(node, "8080");
 
 		try {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");			int nodes2 = getNodes();
+			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");			
+			int nodes2 = getNodes();
 			assertTrue(nodes2 == nodes-1);
 		} finally {			
 			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
