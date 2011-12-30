@@ -3,11 +3,16 @@ package com.rayo.functional.cluster;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -112,8 +117,7 @@ public class LoadBalancingTest extends RayoBasedIntegrationTest {
 				disconnect(callid);
 			}
 		}
-	}
-	
+	}	
 	
 	@Test
 	public void testPriorityIsConsideredWhenLoadBalancing() throws Exception {
@@ -246,6 +250,196 @@ public class LoadBalancingTest extends RayoBasedIntegrationTest {
 					rayoClient2.disconnect();
 				}
 
+			}
+		}
+	}
+	
+	@Test
+	public void testBlacklistNode() throws Exception {
+
+		String firstNode = getNodeName(0);
+		String secondNode = getNodeName(1);
+		JmxClient node1Client = new JmxClient(firstNode, "8080");
+		long node1Dials = getOutgoingCalls(node1Client);
+		JmxClient node2Client = new JmxClient(secondNode, "8080");		
+		long node2Dials = getOutgoingCalls(node2Client);
+		
+		// node2 will not get any calls
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "blacklist", "staging", secondNode, true);
+		
+		// Wait for the presence to be broadcasted to the gateway so the routing 
+		// engine gets updated
+		waitForEvents(2000);
+		
+		List<String> dialed = new ArrayList<String>();
+		try {
+			rayoClient = new RayoClient(xmppServer, rayoServer);
+			rayoClient.connect(xmppUsername, xmppPassword,"loadbalance");
+			
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			
+			assertEquals(getOutgoingCalls(node1Client), node1Dials + 6);
+			assertEquals(getOutgoingCalls(node2Client), node2Dials);
+			
+		} finally {
+			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "blacklist", "staging", secondNode, false);
+			
+			for (String callid: dialed) {
+				disconnect(callid);
+			}
+		}
+	}
+	
+	@Test
+	public void testDialRedirectedToOtherNodeIfOneFails() throws Exception {
+
+		String firstNode = getNodeName(0);
+		String secondNode = getNodeName(1);
+		JmxClient node1Client = new JmxClient(firstNode, "8080");
+		long node1Dials = getOutgoingCalls(node1Client);
+		JmxClient node2Client = new JmxClient(secondNode, "8080");		
+		long node2Dials = getOutgoingCalls(node2Client);
+		
+		// node1 will reject dials so node2 should take everything
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "allowOutgoingCalls", "false");
+		
+		// Wait for the presence to be broadcasted to the gateway so the routing 
+		// engine gets updated
+		waitForEvents(2000);
+		
+		List<String> dialed = new ArrayList<String>();
+		try {
+			rayoClient = new RayoClient(xmppServer, rayoServer);
+			rayoClient.connect(xmppUsername, xmppPassword,"loadbalance");
+			
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			
+			assertEquals(getOutgoingCalls(node1Client), node1Dials);
+			assertEquals(getOutgoingCalls(node2Client), node2Dials + 6);
+			
+			JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
+			Iterator<JSONObject> it = nodes.iterator();
+			while(it.hasNext()) {
+				JSONObject json = it.next();
+				String hostname = (String)json.get("hostname");
+				if (hostname.equals(firstNode)) {
+					// after several failures the node should have been blacklisted
+					assertEquals(new Long(5), json.get("consecutiveErrors"));
+					assertTrue((Boolean)json.get("blacklisted"));
+				} else {
+					assertEquals(new Long(0), json.get("consecutiveErrors"));
+					assertFalse((Boolean)json.get("blacklisted"));
+				}
+			}
+
+			
+		} finally {
+			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "allowOutgoingCalls", "true");
+			// after so many failures the node will have been blacklisted. This will revert it back.
+			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "blacklist", "staging", firstNode, false);
+			
+			for (String callid: dialed) {
+				disconnect(callid);
+			}
+		}
+	}
+	
+	
+	@Test
+	public void testFailsAreResetAfterSuccessfulDial() throws Exception {
+
+		String firstNode = getNodeName(0);
+		String secondNode = getNodeName(1);
+		JmxClient node1Client = new JmxClient(firstNode, "8080");
+		long node1Dials = getOutgoingCalls(node1Client);
+		JmxClient node2Client = new JmxClient(secondNode, "8080");		
+		long node2Dials = getOutgoingCalls(node2Client);
+		
+		// node1 will reject dials so node2 should take everything
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "allowOutgoingCalls", "false");
+		
+		// Wait for the presence to be broadcasted to the gateway so the routing 
+		// engine gets updated
+		waitForEvents(2000);
+		
+		List<String> dialed = new ArrayList<String>();
+		try {
+			rayoClient = new RayoClient(xmppServer, rayoServer);
+			rayoClient.connect(xmppUsername, xmppPassword,"loadbalance");
+			
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			
+			JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
+			Iterator<JSONObject> it = nodes.iterator();
+			while(it.hasNext()) {
+				JSONObject json = it.next();
+				String hostname = (String)json.get("hostname");
+				if (hostname.equals(firstNode)) {
+					// after several failures the node should have been blacklisted
+					assertEquals(new Long(3), json.get("consecutiveErrors"));
+					assertFalse((Boolean)json.get("blacklisted"));
+				}
+			}
+			
+			// Node now accepts dials
+			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "allowOutgoingCalls", "true");
+			waitForEvents(100);
+			
+			dialed.add(rayoClient.dial(new URI(sipDialUri)).getCallId());
+			waitForEvents();
+			
+			nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
+			it = nodes.iterator();
+			while(it.hasNext()) {
+				JSONObject json = it.next();
+				String hostname = (String)json.get("hostname");
+				if (hostname.equals(firstNode)) {
+					// after several failures the node should have been blacklisted
+					assertEquals(new Long(0), json.get("consecutiveErrors"));
+					assertFalse((Boolean)json.get("blacklisted"));
+				}
+			}
+			
+			assertEquals(getOutgoingCalls(node1Client), node1Dials + 1);
+			assertEquals(getOutgoingCalls(node2Client), node2Dials + 3);
+			
+		} finally {
+			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "allowOutgoingCalls", "true");
+			// after so many failures the node might have been blacklisted. This will revert it back.
+			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "blacklist", "staging", firstNode, false);
+			
+			for (String callid: dialed) {
+				disconnect(callid);
 			}
 		}
 	}

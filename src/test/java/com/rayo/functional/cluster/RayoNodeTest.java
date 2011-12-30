@@ -180,7 +180,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		Iterator<JSONObject> it = nodes.iterator();
 		while(it.hasNext()) {
 			JSONObject json = it.next();
-			String jid = (String)json.get("JID");
+			String jid = (String)json.get("hostname");
 			nodesList.add(jid);
 		}
 		

@@ -56,6 +56,7 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			rayoClient2 = new RayoClient(xmppServer, rayoServer);
 			rayoClient2.connect(xmppUsername, xmppPassword, "resource2");
 	
+			waitForEvents(500);
 			JmxClient client = new JmxClient(rayoServer, "8080");
 			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
 			

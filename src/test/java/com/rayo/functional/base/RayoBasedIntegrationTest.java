@@ -266,7 +266,7 @@ public abstract class RayoBasedIntegrationTest {
 		int j = 0;
 		while(it.hasNext()) {
 			JSONObject json = it.next();
-			String jid = (String)json.get("JID");
+			String jid = (String)json.get("hostname");
 			nodesList.add(jid);
 		}
 		return nodesList;
@@ -281,7 +281,7 @@ public abstract class RayoBasedIntegrationTest {
 		while(it.hasNext()) {
 			JSONObject json = it.next();
 			if (j == i) {
-				String jid = (String)json.get("JID");
+				String jid = (String)json.get("hostname");
 				return jid;
 			}
 			j++;

@@ -64,7 +64,7 @@ public class DialTest extends RayoBasedIntegrationTest {
 				Iterator<JSONObject> it = nodes.iterator();
 				while(it.hasNext()) {
 					JSONObject json = it.next();
-					String jid = (String)json.get("JID");
+					String jid = (String)json.get("hostname");
 					assertNotNull(nodesCount.get(jid));
 					
 					// With a two nodes rayo cluster load should be evenly balanced
@@ -96,7 +96,7 @@ public class DialTest extends RayoBasedIntegrationTest {
 		Iterator<JSONObject> it = nodes.iterator();
 		while(it.hasNext()) {
 			JSONObject json = it.next();
-			String jid = (String)json.get("JID");
+			String jid = (String)json.get("hostname");
 			nodesList.add(jid);
 		}
 		
