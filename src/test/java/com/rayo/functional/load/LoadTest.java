@@ -10,15 +10,12 @@ import com.voxeo.moho.Call;
 import com.voxeo.moho.IncomingCall;
 import com.voxeo.moho.OutgoingCall;
 import com.voxeo.moho.event.InputCompleteEvent;
-import com.voxeo.moho.event.OutputCompleteEvent;
-import com.voxeo.moho.event.RecordCompleteEvent;
 import com.voxeo.moho.event.InputCompleteEvent.Cause;
+import com.voxeo.moho.event.OutputCompleteEvent;
 import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.Output;
-import com.voxeo.moho.media.Recording;
 import com.voxeo.moho.media.input.InputCommand;
 import com.voxeo.moho.media.input.SimpleGrammar;
-import com.voxeo.moho.media.record.RecordCommand;
 
 /**
  * Load tests are executed by JMeter. Feel free to add here any scenarios that should be ran 
@@ -95,10 +92,11 @@ public class LoadTest extends MohoBasedIntegrationTest {
 	 * Public method that will be invoked by The Grinder. This method will return an integer other than 
 	 * 0 if the test scenario has failed
 	 */
-	public int loadTest() {
+	public int loadTest(int user) {
 		
 		try {
-			setup();
+			loadProperties();
+			setup(xmppUsername+user);
 			testLoadScenario2();
 			return 0;
 		} catch (Exception e) {

@@ -43,14 +43,19 @@ public abstract class MohoBasedIntegrationTest {
 	private int waitTime = 3000;
 	private int next = 0;
 
-	private String xmppUsername;
-	private String xmppPassword;
-	private List<String> sipDialUris = new ArrayList<String>();
-	private String xmppServer;
-	private String rayoServer;
+	protected String xmppUsername;
+	protected String xmppPassword;
+	protected List<String> sipDialUris = new ArrayList<String>();
+	protected String xmppServer;
+	protected String rayoServer;
 
 	@Before
 	public void setup() {
+		
+		setup(xmppUsername);
+	}
+
+	public void setup(String username) {
 
 		callsQueue.clear();
 		events.clear();
@@ -62,7 +67,7 @@ public abstract class MohoBasedIntegrationTest {
 
 		loadProperties();
 
-		mohoRemote.connect(new SimpleAuthenticateCallbackImpl(xmppUsername,
+		mohoRemote.connect(new SimpleAuthenticateCallbackImpl(username,
 				xmppPassword, "", "voxeo3"), xmppServer, rayoServer);
 		
 		try {
@@ -71,7 +76,7 @@ public abstract class MohoBasedIntegrationTest {
 		} catch (InterruptedException e) {}
 	}
 
-	private void loadProperties() {
+	protected void loadProperties() {
 
 		xmppUsername = getProperty("xmpp.username", "usera");
 		xmppPassword = getProperty("xmpp.password", "1");
@@ -135,7 +140,7 @@ public abstract class MohoBasedIntegrationTest {
 	protected synchronized IncomingCall getIncomingCall() {
 
 		try {
-			IncomingCall call = callsQueue.poll(15000, TimeUnit.MILLISECONDS);
+			IncomingCall call = callsQueue.poll(1500000, TimeUnit.MILLISECONDS);
 			if (call != null) {
 				incomingCalls.add(call);
 			}
