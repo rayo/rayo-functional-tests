@@ -52,10 +52,10 @@ public abstract class MohoBasedIntegrationTest {
 	@Before
 	public void setup() {
 		
-		setup(xmppUsername);
+		setup(xmppUsername, xmppPassword);
 	}
 
-	public void setup(String username) {
+	public void setup(String username, String password) {
 
 		callsQueue.clear();
 		events.clear();
@@ -69,9 +69,12 @@ public abstract class MohoBasedIntegrationTest {
 		if (username == null) {
 			username = xmppUsername;
 		}
+		if (password == null) {
+			password = xmppPassword;
+		}
 
 		mohoRemote.connect(new SimpleAuthenticateCallbackImpl(username,
-				xmppPassword, "", "voxeo3"), xmppServer, rayoServer);
+				password, "", "voxeo3"), xmppServer, rayoServer);
 		
 		try {
 			// Wait 1 seconds to get presence events propagated		

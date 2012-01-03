@@ -96,7 +96,7 @@ public class LoadTest extends MohoBasedIntegrationTest {
 		
 		try {
 			loadProperties();
-			setup(xmppUsername+user);
+			setup(xmppUsername+user, xmppPassword+user);
 			testLoadScenario2();
 			return 0;
 		} catch (Exception e) {
