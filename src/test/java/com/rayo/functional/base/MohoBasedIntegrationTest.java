@@ -146,7 +146,7 @@ public abstract class MohoBasedIntegrationTest {
 	protected synchronized IncomingCall getIncomingCall() {
 
 		try {
-			IncomingCall call = callsQueue.poll(1500000, TimeUnit.MILLISECONDS);
+			IncomingCall call = callsQueue.poll(15000, TimeUnit.MILLISECONDS);
 			if (call != null) {
 				incomingCalls.add(call);
 			}
