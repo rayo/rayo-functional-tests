@@ -66,6 +66,9 @@ public abstract class MohoBasedIntegrationTest {
 		mohoRemote.addObserver(new MohoObserver(this));
 
 		loadProperties();
+		if (username == null) {
+			username = xmppUsername;
+		}
 
 		mohoRemote.connect(new SimpleAuthenticateCallbackImpl(username,
 				xmppPassword, "", "voxeo3"), xmppServer, rayoServer);
