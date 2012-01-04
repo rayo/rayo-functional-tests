@@ -227,6 +227,7 @@ public abstract class MohoBasedIntegrationTest {
 				waitForEvents(waitTime);
 			}
 		} while (i < retries);
+		log.trace("Call event not found. Throwing exception");
 		throw new AssertionError("Call Event not found");
 	}
 
