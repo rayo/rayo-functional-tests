@@ -293,7 +293,7 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 		int clients = getClientsConnected();
 		try {
 			client = new JmxClient(rayoServer, "8080");
-			client.jmxExec("com.rayo.gateway:Type=Gateway", "ban", xmppUsername+"@"+xmppServer);
+			client.jmxExec("com.rayo.gateway:Type=Admin", "ban", xmppUsername+"@"+xmppServer);
 			
 			rayoClient = new RayoClient(xmppServer, rayoServer);
 			XmppObjectFilter filter = new XmppObjectExtensionNameFilter("error");
@@ -307,7 +307,7 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			
 			assertEquals(getClientsConnected(), clients);						
 		} finally {
-			client.jmxExec("com.rayo.gateway:Type=Gateway", "unban", xmppUsername+"@"+xmppServer);
+			client.jmxExec("com.rayo.gateway:Type=Admin", "unban", xmppUsername+"@"+xmppServer);
 		}
 	}	
 	

@@ -6,13 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.client.JmxClient;
-import com.rayo.client.listener.StanzaAdapter;
-import com.rayo.client.listener.StanzaListener;
-import com.rayo.client.xmpp.stanza.Presence;
 import com.rayo.client.xmpp.stanza.Presence.Show;
 import com.rayo.core.EndEvent;
 import com.rayo.core.EndEvent.Reason;
