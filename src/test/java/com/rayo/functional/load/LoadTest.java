@@ -3,6 +3,8 @@ package com.rayo.functional.load;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import com.rayo.functional.base.MohoBasedIntegrationTest;
@@ -96,6 +98,11 @@ public class LoadTest extends MohoBasedIntegrationTest {
 		
 		try {
 			loadProperties();
+
+			sipDialUris.clear();
+			String[] uris = getProperty("sip.dial.uri", "sip:user"+user+"@127.0.0.1:5060").split(",");
+			sipDialUris.addAll(Arrays.asList(uris));
+
 			setup(xmppUsername+user, xmppPassword+user);
 			return 0;
 		} catch (Exception e) {

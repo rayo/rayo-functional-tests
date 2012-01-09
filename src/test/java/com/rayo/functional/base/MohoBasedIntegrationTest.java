@@ -92,7 +92,7 @@ public abstract class MohoBasedIntegrationTest {
 		sipDialUris.addAll(Arrays.asList(uris));
 	}
 
-	private String getProperty(String property, String defaultValue) {
+	protected String getProperty(String property, String defaultValue) {
 
 		String result = System.getProperty(property);
 		if (result == null) {
