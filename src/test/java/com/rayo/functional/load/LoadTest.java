@@ -98,12 +98,12 @@ public class LoadTest extends MohoBasedIntegrationTest {
 		
 		try {
 			loadProperties();
-
+			setup(xmppUsername+user, xmppPassword+user);
+			
 			sipDialUris.clear();
 			String[] uris = getProperty("sip.dial.uri", "sip:user"+user+"@127.0.0.1:5060").split(",");
 			sipDialUris.addAll(Arrays.asList(uris));
-
-			setup(xmppUsername+user, xmppPassword+user);
+			
 			return 0;
 		} catch (Exception e) {
 			return 1;
