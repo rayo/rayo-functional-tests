@@ -100,8 +100,15 @@ public class LoadTest extends MohoBasedIntegrationTest {
 			loadProperties();
 			setup(xmppUsername+user, xmppPassword+user);
 			
+			String defaultSipUri = sipDialUris.get(0);
+			int i = defaultSipUri.indexOf("@")+1;
+			int j = defaultSipUri.indexOf(":",i);
+			if (j == -1) {
+				j = defaultSipUri.length();
+			}
+			String serverName = defaultSipUri.substring(i,j);
 			sipDialUris.clear();
-			String[] uris = getProperty("sip.dial.uri", "sip:user"+user+"@127.0.0.1:5060").split(",");
+			String[] uris = new String[]{"sip:user"+user+"@"+serverName};
 			sipDialUris.addAll(Arrays.asList(uris));
 			
 			return 0;
