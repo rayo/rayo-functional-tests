@@ -47,7 +47,7 @@ public class LoadTest extends MohoBasedIntegrationTest {
 	    assertReceived(OutputCompleteEvent.class, output);
 	    
 	    incoming.hangup();
-	    waitForEvents();
+	    waitForEvents(2000);
 	}
 	
 	@Test
@@ -86,7 +86,7 @@ public class LoadTest extends MohoBasedIntegrationTest {
 		*/
 		
 	    incoming.hangup();
-	    waitForEvents();
+	    waitForEvents(2000);
 
 	}
 	
