@@ -5,9 +5,12 @@
 	<artifactId>rayo-functional-tests</artifactId>
 	<version>2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
 	<name>Rayo Server Functional Tests</name>
-
+  
 	<dependencies>
 		<dependency>
 			<groupId>com.voxeo.xmpp</groupId>
