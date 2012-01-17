@@ -104,6 +104,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			assertTrue(nodes2 == nodes-1);
 		} finally {			
 			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
+			waitForEvents();
 		}			
 	}
 	
@@ -123,6 +124,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			assertEquals(nodes2,nodes);
 		} finally {
 			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
+			waitForEvents();
 		}
 	}
 	
@@ -169,7 +171,8 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			assertEquals(getTotalCalls(), initialCalls+8);
 		} finally {
 			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
-			node2Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");			
+			node2Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");	
+			waitForEvents();
 		}
 	}
 	
