@@ -43,16 +43,15 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertFalse(quiesce);
 			
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");		
+			quiesceNode(nodeClient);
 			quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertTrue(quiesce);
 	
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
+			dequiesceNode(nodeClient);	
 			quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertFalse(quiesce);
 		} finally {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
-			waitForEvents();
+			dequiesceNode(nodeClient);
 		}
 	}
 	
@@ -63,7 +62,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 		JmxClient nodeClient = new JmxClient(node, "8080");
 
 		try {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");		
+			quiesceNode(nodeClient);	
 			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertTrue(quiesce);
 
@@ -72,8 +71,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 			EndEvent end = assertReceived(EndEvent.class, outgoingCall);
 			assertEquals(end.getReason(), Reason.BUSY);
 		} finally {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");		
-			waitForEvents();
+			dequiesceNode(nodeClient);
 		}
 	}
 	
@@ -85,16 +83,14 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 		JmxClient nodeClient = new JmxClient(node, "8080");
 
 		try {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
-			waitForEvents(300);
+			quiesceNode(nodeClient);
 			int nodes2 = getNodeNames().size();
 			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertTrue(quiesce);
 			assertEquals(nodes-1, nodes2);
 			
 		} finally {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
-			waitForEvents();
+			dequiesceNode(nodeClient);
 		}
 	}
 	
@@ -107,18 +103,15 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 		JmxClient nodeClient = new JmxClient(node, "8080");
 		
 		try {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
-			waitForEvents(300);
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
-			waitForEvents(300);
+			quiesceNode(nodeClient);
+			dequiesceNode(nodeClient);
 			int nodes2 = getNodeNames().size();
 			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertFalse(quiesce);
 			assertEquals(nodes, nodes2);
 			
 		} finally {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");	
-			waitForEvents();
+			dequiesceNode(nodeClient);
 		}
 	}
 	
@@ -133,7 +126,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 		rayoClient.answer(incomingCall1);
 
 		try {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");		
+			quiesceNode(nodeClient);	
 			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertTrue(quiesce);
 
@@ -151,7 +144,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 			assertEquals(end.getReason(), Reason.HANGUP);
 			
 		} finally {			
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
+			dequiesceNode(nodeClient);
 			rayoClient.hangup(outgoingCall1);
 			waitForEvents();
 		}

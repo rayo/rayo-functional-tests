@@ -192,6 +192,54 @@ public abstract class RayoBasedIntegrationTest {
 		waitForEvents(1000);
 	}
 	
+	protected void quiesceNode(JmxClient nodeClient) throws Exception {
+		
+		nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
+		waitUntilNodeQuiesced(nodeClient, "com.rayo:Type=Admin,name=Admin");
+	}
+	
+	protected void dequiesceNode(JmxClient nodeClient) throws Exception {
+		
+		nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
+		waitUntilNodeDequiesced(nodeClient, "com.rayo:Type=Admin,name=Admin");
+	}
+	
+	protected void quiesceGateway(JmxClient nodeClient) throws Exception {
+		
+		nodeClient.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "enableQuiesce");
+		waitUntilNodeQuiesced(nodeClient, "com.rayo.gateway:Type=Admin,name=Admin");
+	}
+	
+	protected void dequiesceGateway(JmxClient nodeClient) throws Exception {
+		
+		nodeClient.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "disableQuiesce");
+		waitUntilNodeDequiesced(nodeClient, "com.rayo.gateway:Type=Admin,name=Admin");
+	}
+	
+	private void waitUntilNodeQuiesced(JmxClient nodeClient, String url) throws Exception {
+
+		int retries = 0;
+		do {
+			waitForEvents();
+			boolean quiesce = (Boolean)nodeClient.jmxValue(url, "QuiesceMode");
+			if (quiesce) return;
+			retries++;
+		} while (retries < 6);
+		throw new AssertionError("Could not enter Quiesce mode on " + nodeClient);
+	}
+	
+	private void waitUntilNodeDequiesced(JmxClient nodeClient, String url) throws Exception {
+
+		int retries = 0;
+		do {
+			waitForEvents();
+			boolean quiesce = (Boolean)nodeClient.jmxValue(url, "QuiesceMode");
+			if (!quiesce) return;
+			retries++;
+		} while (retries < 6);
+		throw new AssertionError("Could not enter Quiesce mode on " + nodeClient);
+	}
+	
 	protected void waitForEvents(int time) {
 		 
 		try {

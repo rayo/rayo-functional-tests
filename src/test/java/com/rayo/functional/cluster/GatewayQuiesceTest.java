@@ -50,15 +50,15 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 			boolean quiesce = (Boolean)client.jmxValue("com.rayo.gateway:Type=Admin,name=Admin", "QuiesceMode");
 			assertFalse(quiesce);
 			
-			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "enableQuiesce");		
+			quiesceGateway(client);	
 			quiesce = (Boolean)client.jmxValue("com.rayo.gateway:Type=Admin,name=Admin", "QuiesceMode");
 			assertTrue(quiesce);
 	
-			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "disableQuiesce");		
+			dequiesceGateway(client);		
 			quiesce = (Boolean)client.jmxValue("com.rayo.gateway:Type=Admin,name=Admin", "QuiesceMode");
 			assertFalse(quiesce);
 		} finally {
-			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "disableQuiesce");		
+			dequiesceGateway(client);
 		}
 	}
 	
@@ -67,7 +67,7 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 		
 		JmxClient client = new JmxClient(rayoServer, "8080");
 		try {
-			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "enableQuiesce");		
+			quiesceGateway(client);	
 			boolean quiesce = (Boolean)client.jmxValue("com.rayo.gateway:Type=Admin,name=Admin", "QuiesceMode");
 			assertTrue(quiesce);
 
@@ -84,7 +84,7 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 				rayoClient.disconnect();
 			}
 		} finally {
-			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "disableQuiesce");		
+			dequiesceGateway(client);	
 		}
 	}
 	
@@ -99,7 +99,7 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId(); 
 		try {
-			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "enableQuiesce");		
+			quiesceGateway(client);	
 			
 			try {
 				dial();
@@ -115,7 +115,7 @@ public class GatewayQuiesceTest extends RayoBasedIntegrationTest {
 			
 		} finally {
 			rayoClient.hangup(outgoing1);
-			client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "disableQuiesce");		
+			dequiesceGateway(client);	
 		}
 	}
 }

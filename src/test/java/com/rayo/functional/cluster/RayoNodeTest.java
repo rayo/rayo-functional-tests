@@ -98,13 +98,11 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		JmxClient nodeClient = new JmxClient(node, "8080");
 
 		try {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
-			waitForEvents();
+			quiesceNode(nodeClient);
 			int nodes2 = getNodes();
 			assertTrue(nodes2 == nodes-1);
 		} finally {			
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
-			waitForEvents();
+			dequiesceNode(nodeClient);
 		}			
 	}
 	
@@ -117,14 +115,13 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		int nodes = getNodes();
 		JmxClient nodeClient = new JmxClient(node, "8080");
 		try {			
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
-			waitForEvents();
+			quiesceNode(nodeClient);
+			dequiesceNode(nodeClient);
+
 			int nodes2 = getNodes();
 			assertEquals(nodes2,nodes);
 		} finally {
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
-			waitForEvents();
+			dequiesceNode(nodeClient);
 		}
 	}
 	
@@ -147,31 +144,28 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			waitForEvents();
 			assertEquals(getTotalCalls(), initialCalls+2);
 			
-			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
-			waitForEvents(500);
+			quiesceNode(node1Client);
 			// we need to dial the second node as we have quiesced the first one
 			URI secondURI = new URI("sip:usera@" + secondNode);
 			rayoClient.dial(secondURI).getCallId();
 			waitForEvents(2000);
 			assertEquals(getTotalCalls(), initialCalls+4);
 			
-			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
-			node2Client.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
-			waitForEvents(500);
+			dequiesceNode(node1Client);
+			quiesceNode(node2Client);
 			// we need to dial the first node as we have quiesced the second one
 			URI firstURI = new URI("sip:usera@" + firstNode);
 			rayoClient.dial(firstURI).getCallId();
 			waitForEvents();
 			assertEquals(getTotalCalls(), initialCalls+6);
 	
-			node2Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
-			waitForEvents(500);
+			dequiesceNode(node2Client);
 			rayoClient.dial(new URI(sipDialUri)).getCallId();
 			waitForEvents();
 			assertEquals(getTotalCalls(), initialCalls+8);
 		} finally {
-			node1Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");
-			node2Client.jmxExec("com.rayo:Type=Admin,name=Admin", "disableQuiesce");	
+			dequiesceNode(node1Client);
+			dequiesceNode(node2Client);	
 			waitForEvents();
 		}
 	}

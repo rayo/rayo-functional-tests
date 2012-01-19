@@ -102,7 +102,7 @@ public class DialTest extends RayoBasedIntegrationTest {
 		
 		for (String node: nodesList) {
 			JmxClient nodeClient = new JmxClient(node, "8080");
-			nodeClient.jmxExec("com.rayo:Type=Admin,name=Admin", "enableQuiesce");
+			quiesceNode(nodeClient);
 		}
 		
 		Thread.sleep(1000);
