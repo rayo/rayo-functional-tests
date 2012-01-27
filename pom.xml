@@ -5,33 +5,31 @@
 	<artifactId>rayo-functional-tests</artifactId>
 	<version>2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<name>Rayo Server Functional Tests</name>
-  
+
 	<dependencies>
 		<dependency>
-			<groupId>com.voxeo.xmpp</groupId>
-			<artifactId>vsm-lib</artifactId>
-			<version>1.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/vsm-lib.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.voxeo.xmpp</groupId>
-			<artifactId>vsm-tools</artifactId>
-			<version>1.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/vsm-tools.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.voxeo.xmpp</groupId>
-			<artifactId>vsm-ptf</artifactId>
-			<version>1.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/vsm-ptf.jar</systemPath>
+			<groupId>com.rayo</groupId>
+			<artifactId>rayo-storage</artifactId>
+			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.voxeo</groupId>
+					<artifactId>vlib-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.voxeo.moho</groupId>
+					<artifactId>moho-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-codec</artifactId>
+					<groupId>commons-codec</groupId>
+				</exclusion>
+			</exclusions>	
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
@@ -69,38 +67,14 @@
 			<groupId>com.voxeo.moho</groupId>
 			<artifactId>moho-remote</artifactId>
 			<version>0.8-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-codec</artifactId>
+					<groupId>commons-codec</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
-	<profiles>
-		<profile>
-			<id>start-server</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<version>1.1.1</version>
-						<executions>
-							<execution>
-								<phase>process-test-resources</phase>
-								<goals>
-									<goal>java</goal>
-								</goals>
-								<configuration>
-									<mainClass>com.rayo.functional.StartPrismServer</mainClass>
-									<arguments>
-										<argument>arg0</argument>
-										<argument>arg1</argument>
-									</arguments>
-									<classpathScope>compile</classpathScope>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 	<build>
 		<plugins>
 			<plugin>
@@ -121,22 +95,44 @@
 						<propertyName>xmpp.username</propertyName>
 						<propertyName>xmpp.password</propertyName>
 						<propertyName>sip.dial.uri</propertyName>
+						<propertyName>cassandra.hostname</propertyName>
+						<propertyName>cassandra.port</propertyName>
+						<propertyName>xmpp.server</propertyName>
+						<propertyName>dial.uris</propertyName>
+						
 						<buildDirectory>${project.build.directory}</buildDirectory>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
-     		<plugin>
-       			<groupId>org.apache.maven.plugins</groupId>
-       			<artifactId>maven-jar-plugin</artifactId>
-       			<version>2.2</version>
-       			<executions>
-         			<execution>
-           				<goals>
-             				<goal>test-jar</goal>
-           				</goals>
-         			</execution>
-       			</executions>
-     		</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.1.1</version>
+				<executions>
+					<execution>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>com.rayo.storage.cassandra.CassandraPrimer</mainClass>
+							<classpathScope>compile</classpathScope>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
@@ -184,7 +180,8 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -210,6 +207,25 @@
 												generateTestStubs
 											</goal>
 											<goal>generateStubs</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											exec-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.1.1,)
+										</versionRange>
+										<goals>
+											<goal>java</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

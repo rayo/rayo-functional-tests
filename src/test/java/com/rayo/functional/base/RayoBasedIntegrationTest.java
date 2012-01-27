@@ -422,6 +422,21 @@ public abstract class RayoBasedIntegrationTest {
 		return nodes.size();
 	}
 	
+	protected long getNodeIncomingCalls(JmxClient client) throws Exception {
+		
+		return ((Long)client.jmxValue("com.rayo:Type=CallStatistics", "IncomingCalls"));
+	}
+	
+	protected long getNodeActiveCalls(JmxClient client) throws Exception {
+		
+		return ((Long)client.jmxValue("com.rayo:Type=Calls", "ActiveCallsCount"));
+	}
+	
+	protected long getGatewayActiveCalls(JmxClient client) throws Exception {
+		
+		return ((Long)client.jmxValue("com.rayo.gateway:Type=GatewayStatistics", "ActiveCallsCount"));
+	}
+	
 	protected void disconnect(String call) {
 
 		if (call != null) {
@@ -431,5 +446,13 @@ public abstract class RayoBasedIntegrationTest {
 				log.error("ERROR: " + e.getMessage());
 			}
 		}
+	}
+	
+	protected String getSipHostname(String sipUri) {
+		
+		if (sipUri.indexOf('@') != -1) {
+			return sipUri.substring(sipUri.indexOf('@'));
+		}
+		return null;
 	}
 }
