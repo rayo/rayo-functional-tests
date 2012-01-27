@@ -13,25 +13,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.rayo</groupId>
-			<artifactId>rayo-storage</artifactId>
-			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.voxeo</groupId>
-					<artifactId>vlib-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.voxeo.moho</groupId>
-					<artifactId>moho-impl</artifactId>
-				</exclusion>
-				<exclusion>
-					<artifactId>commons-codec</artifactId>
-					<groupId>commons-codec</groupId>
-				</exclusion>
-			</exclusions>	
-		</dependency>
-		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>stringtemplate</artifactId>
 			<version>3.2.1</version>
@@ -103,24 +84,7 @@
 						<buildDirectory>${project.build.directory}</buildDirectory>
 					</systemPropertyVariables>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.1.1</version>
-				<executions>
-					<execution>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<mainClass>com.rayo.storage.cassandra.CassandraPrimer</mainClass>
-							<classpathScope>compile</classpathScope>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>			
+			</plugin>		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
