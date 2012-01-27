@@ -254,6 +254,7 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			rayoClient2.connect(xmppUsername, xmppPassword, "resource2");			
 			String call2 = rayoClient2.dial(new URI(sipDialUri)).getCallId();
 			
+			waitForEvents(1000); // let offers come in
 			XmppObjectFilter filter1 = new XmppObjectExtensionNameFilter("end",call1+"@"+rayoServer);
 			rayoClient1.addFilter(filter1);
 			XmppObjectFilter filter2 = new XmppObjectExtensionNameFilter("end",call2+"@"+rayoServer);
