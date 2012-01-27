@@ -11,6 +11,7 @@ import com.rayo.functional.base.RayoBasedIntegrationTest;
 public class UnavailablePresenceTest extends RayoBasedIntegrationTest {
 
 	@Test
+	// Cluster Docs. Scenario 8
 	public void testUnavailablePresenceEndsActiveClientCalls() throws Exception {
 		/*
 		 * Test that when a client goes to unavailable status and there is active calls

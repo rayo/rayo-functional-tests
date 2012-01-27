@@ -25,8 +25,6 @@ import com.rayo.client.filter.XmppObjectFilter;
 import com.rayo.client.xmpp.stanza.Error.Condition;
 import com.rayo.client.xmpp.stanza.Presence;
 import com.rayo.client.xmpp.stanza.Presence.Show;
-import com.rayo.core.EndEvent;
-import com.rayo.core.EndEvent.Reason;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class ClientResourcesTest extends RayoBasedIntegrationTest {
@@ -237,53 +235,7 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 				}
 			}
 		}
-	}
-	
-	// Cluster Docs. Scenario 8
-	@Test
-	public void testHangupOnclientDisconnection() throws Exception {
-		
-		RayoClient rayoClient1 = null;
-		RayoClient rayoClient2 = null;
-		try {
-			rayoClient1 = new RayoClient(xmppServer, rayoServer);
-			rayoClient1.connect(xmppUsername, xmppPassword, "resource1");
-			String call1 = rayoClient1.dial(new URI(sipDialUri)).getCallId();
-			
-			rayoClient2 = new RayoClient(xmppServer, rayoServer);
-			rayoClient2.connect(xmppUsername, xmppPassword, "resource2");			
-			String call2 = rayoClient2.dial(new URI(sipDialUri)).getCallId();
-			
-			waitForEvents(1000); // let offers come in
-			XmppObjectFilter filter1 = new XmppObjectExtensionNameFilter("end",call1+"@"+rayoServer);
-			rayoClient1.addFilter(filter1);
-			XmppObjectFilter filter2 = new XmppObjectExtensionNameFilter("end",call2+"@"+rayoServer);
-			rayoClient2.addFilter(filter2);
-			
-			rayoClient2.setAvailable(false);
-			Thread.sleep(1000);
-			
-			Presence presence = (Presence)filter2.poll(1000);			
-			assertNotNull(presence);
-			assertTrue(presence.getFrom().startsWith(call2));
-			EndEvent end2 = (EndEvent)presence.getExtension().getObject();
-			assertEquals(end2.getReason(), Reason.HANGUP);
-			
-			assertNull(filter1.poll(100));
-			
-		} finally {
-			try {
-				if (rayoClient1 != null && rayoClient1.getXmppConnection().isConnected()) {
-					rayoClient1.disconnect();
-				}
-			} finally {
-				if (rayoClient2 != null && rayoClient2.getXmppConnection().isConnected()) {
-					rayoClient2.disconnect();
-				}
-			}
-		}
-	}
-	
+	}	
 	
 	// Cluster Docs. Scenario 9
 	@Test
