@@ -8,8 +8,8 @@ import java.net.URI;
 
 import org.junit.Test;
 
-import com.rayo.client.JmxClient;
-import com.rayo.client.xmpp.stanza.Presence.Show;
+import com.voxeo.rayo.client.JmxClient;
+import com.voxeo.rayo.client.xmpp.stanza.Presence.Show;
 import com.rayo.core.EndEvent;
 import com.rayo.core.EndEvent.Reason;
 import com.rayo.functional.base.RayoBasedIntegrationTest;

@@ -16,8 +16,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rayo.client.JmxClient;
-import com.rayo.client.RayoClient;
+import com.voxeo.rayo.client.JmxClient;
+import com.voxeo.rayo.client.RayoClient;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class RayoNodeTest extends RayoBasedIntegrationTest {

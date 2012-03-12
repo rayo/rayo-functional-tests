@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.rayo.client.JmxClient;
-import com.rayo.client.RayoClient;
+import com.voxeo.rayo.client.JmxClient;
+import com.voxeo.rayo.client.RayoClient;
 import com.rayo.core.verb.OutputCompleteEvent;
 import com.rayo.core.verb.OutputCompleteEvent.Reason;
 import com.rayo.functional.base.RayoBasedIntegrationTest;

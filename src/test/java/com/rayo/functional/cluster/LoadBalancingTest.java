@@ -18,10 +18,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rayo.client.JmxClient;
-import com.rayo.client.RayoClient;
-import com.rayo.client.filter.XmppObjectExtensionNameFilter;
-import com.rayo.client.filter.XmppObjectFilter;
+import com.voxeo.rayo.client.JmxClient;
+import com.voxeo.rayo.client.RayoClient;
+import com.voxeo.rayo.client.filter.XmppObjectExtensionNameFilter;
+import com.voxeo.rayo.client.filter.XmppObjectFilter;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class LoadBalancingTest extends RayoBasedIntegrationTest {

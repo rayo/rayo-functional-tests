@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.rayo.client.JmxClient;
+import com.voxeo.rayo.client.JmxClient;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class CdrTest extends RayoBasedIntegrationTest {

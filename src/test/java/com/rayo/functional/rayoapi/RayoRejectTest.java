@@ -6,11 +6,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.rayo.client.RayoClient;
-import com.rayo.client.XmppConnection;
-import com.rayo.client.xmpp.extensions.Extension;
-import com.rayo.client.xmpp.stanza.IQ;
-import com.rayo.client.xmpp.stanza.Error.Condition;
+import com.voxeo.rayo.client.RayoClient;
+import com.voxeo.rayo.client.XmppConnection;
+import com.voxeo.rayo.client.xmpp.extensions.Extension;
+import com.voxeo.rayo.client.xmpp.stanza.IQ;
+import com.voxeo.rayo.client.xmpp.stanza.Error.Condition;
 import com.rayo.core.EndEvent;
 import com.rayo.core.EndEvent.Reason;
 import com.rayo.core.RejectCommand;

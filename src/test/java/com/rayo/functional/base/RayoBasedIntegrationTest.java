@@ -16,15 +16,15 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rayo.client.JmxClient;
-import com.rayo.client.RayoClient;
-import com.rayo.client.listener.StanzaListener;
-import com.rayo.client.registry.Call;
-import com.rayo.client.xmpp.stanza.Error;
-import com.rayo.client.xmpp.stanza.IQ;
-import com.rayo.client.xmpp.stanza.Message;
-import com.rayo.client.xmpp.stanza.Presence;
-import com.rayo.client.xmpp.stanza.Stanza;
+import com.voxeo.rayo.client.JmxClient;
+import com.voxeo.rayo.client.RayoClient;
+import com.voxeo.rayo.client.listener.StanzaListener;
+import com.voxeo.rayo.client.registry.Call;
+import com.voxeo.rayo.client.xmpp.stanza.Error;
+import com.voxeo.rayo.client.xmpp.stanza.IQ;
+import com.voxeo.rayo.client.xmpp.stanza.Message;
+import com.voxeo.rayo.client.xmpp.stanza.Presence;
+import com.voxeo.rayo.client.xmpp.stanza.Stanza;
 import com.rayo.core.verb.VerbRef;
 
 public abstract class RayoBasedIntegrationTest {
@@ -279,7 +279,7 @@ public abstract class RayoBasedIntegrationTest {
 		xmppPassword = getProperty("xmpp.password", "1");
 		xmppServer = getProperty("xmpp.server", "localhost");
 		rayoServer = getProperty("rayo.server", "localhost");
-		sipDialUri = getProperty("sip.dial.uri", "sip:usera@127.0.0.1:5060");
+		sipDialUri = getProperty("sip.dial.uri", "sip:usera@localhost:6062");
 	}
 
 	private String getProperty(String property, String defaultValue) {

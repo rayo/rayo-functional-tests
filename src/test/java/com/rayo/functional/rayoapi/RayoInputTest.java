@@ -7,8 +7,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.rayo.client.XmppException;
-import com.rayo.client.xmpp.stanza.Error.Condition;
+import com.voxeo.rayo.client.XmppException;
+import com.voxeo.rayo.client.xmpp.stanza.Error.Condition;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class RayoInputTest extends RayoBasedIntegrationTest {

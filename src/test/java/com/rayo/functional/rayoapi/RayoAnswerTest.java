@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.rayo.client.xmpp.stanza.Error.Condition;
-import com.rayo.client.xmpp.stanza.IQ;
+import com.voxeo.rayo.client.xmpp.stanza.Error.Condition;
+import com.voxeo.rayo.client.xmpp.stanza.IQ;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class RayoAnswerTest extends RayoBasedIntegrationTest {

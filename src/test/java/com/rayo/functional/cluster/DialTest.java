@@ -17,12 +17,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rayo.client.JmxClient;
-import com.rayo.client.XmppException;
-import com.rayo.client.filter.XmppObjectExtensionNameFilter;
-import com.rayo.client.filter.XmppObjectFilter;
-import com.rayo.client.xmpp.stanza.Error;
-import com.rayo.client.xmpp.stanza.Error.Condition;
+import com.voxeo.rayo.client.JmxClient;
+import com.voxeo.rayo.client.XmppException;
+import com.voxeo.rayo.client.filter.XmppObjectExtensionNameFilter;
+import com.voxeo.rayo.client.filter.XmppObjectFilter;
+import com.voxeo.rayo.client.xmpp.stanza.Error;
+import com.voxeo.rayo.client.xmpp.stanza.Error.Condition;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class DialTest extends RayoBasedIntegrationTest {

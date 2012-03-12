@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.rayo.client.xmpp.stanza.Error.Condition;
-import com.rayo.client.xmpp.stanza.IQ;
+import com.voxeo.rayo.client.xmpp.stanza.Error.Condition;
+import com.voxeo.rayo.client.xmpp.stanza.IQ;
 import com.rayo.core.DtmfEvent;
 import com.rayo.core.verb.Choices;
 import com.rayo.core.verb.Input;

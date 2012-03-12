@@ -6,10 +6,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.rayo.client.XmppConnection;
-import com.rayo.client.xmpp.stanza.Error.Condition;
-import com.rayo.client.xmpp.stanza.IQ;
-import com.rayo.client.xmpp.stanza.Ping;
+import com.voxeo.rayo.client.XmppConnection;
+import com.voxeo.rayo.client.xmpp.stanza.Error.Condition;
+import com.voxeo.rayo.client.xmpp.stanza.IQ;
+import com.voxeo.rayo.client.xmpp.stanza.Ping;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class RayoMiscTest extends RayoBasedIntegrationTest {
@@ -24,7 +24,7 @@ public class RayoMiscTest extends RayoBasedIntegrationTest {
 
     	rayoClient.unmute(incomingCallId);
     	Thread.sleep(100);
-    	com.rayo.client.xmpp.stanza.Error error = getLastError(incomingCallId);
+    	com.voxeo.rayo.client.xmpp.stanza.Error error = getLastError(incomingCallId);
     	assertNotNull(error);
     	assertTrue(error.getText().contains("Call has not been answered"));
 
@@ -41,7 +41,7 @@ public class RayoMiscTest extends RayoBasedIntegrationTest {
 
     	rayoClient.unhold(incomingCallId);
     	Thread.sleep(100);
-    	com.rayo.client.xmpp.stanza.Error error = getLastError(incomingCallId);
+    	com.voxeo.rayo.client.xmpp.stanza.Error error = getLastError(incomingCallId);
     	assertNotNull(error);
     	assertTrue(error.getText().contains("Call has not been answered"));
 

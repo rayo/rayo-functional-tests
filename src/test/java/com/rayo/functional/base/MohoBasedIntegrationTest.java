@@ -86,9 +86,9 @@ public abstract class MohoBasedIntegrationTest {
 
 		xmppUsername = getProperty("xmpp.username", "usera");
 		xmppPassword = getProperty("xmpp.password", "1");
-		xmppServer = getProperty("xmpp.server", "localhost");
-		rayoServer = getProperty("rayo.server", "localhost");
-		String[] uris = getProperty("sip.dial.uri", "sip:usera@127.0.0.1:5060").split(",");
+    xmppServer = getProperty("xmpp.server", "localhost");
+    rayoServer = getProperty("rayo.server", "localhost");
+    String[] uris = getProperty("sip.dial.uri", "sip:usera@localhost:6062").split(",");
 		sipDialUris.addAll(Arrays.asList(uris));
 	}
 

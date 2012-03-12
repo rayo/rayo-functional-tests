@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.rayo.client.xmpp.stanza.IQ;
+import com.voxeo.rayo.client.xmpp.stanza.IQ;
 import com.rayo.core.JoinDestinationType;
 import com.rayo.core.verb.InputCompleteEvent;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
@@ -74,7 +74,6 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	//TODO: #1578848
 	public void testOutputOnMixer() throws Exception {
 		
