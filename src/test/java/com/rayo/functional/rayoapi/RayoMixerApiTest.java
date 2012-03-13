@@ -116,6 +116,8 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
+	//TODO Not clear yet how this should work. Currently only one of the legs will be able to answer
 	public void testInputOnMixer() throws Exception {
 		
 		String outgoing1 = dial().getCallId();
