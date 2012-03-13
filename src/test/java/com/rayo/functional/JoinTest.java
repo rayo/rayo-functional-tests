@@ -461,4 +461,37 @@ public class JoinTest extends MohoBasedIntegrationTest {
     waitForEvents();
   }
 
+  @Test
+  public void testJoinAndHold() {
+
+    OutgoingCall outgoing1 = dial();
+    IncomingCall incoming1 = getIncomingCall();
+    incoming1.answer();
+
+    OutgoingCall outgoing2 = dial();
+    IncomingCall incoming2 = getIncomingCall();
+    incoming2.join(incoming1, JoinType.BRIDGE, Direction.DUPLEX);
+
+    assertReceived(MohoJoinCompleteEvent.class, incoming1);
+    assertReceived(MohoJoinCompleteEvent.class, incoming2);
+
+    incoming1.input(new InputCommand(new SimpleGrammar("yes,no")));
+    incoming2.input(new InputCommand(new SimpleGrammar("yes,no")));
+
+    incoming1.hold();
+    outgoing1.output("no");
+    waitForEvents();
+    assertNotReceived(MohoInputCompleteEvent.class, incoming1);
+    
+    incoming1.unhold();
+    outgoing1.output("no");
+    waitForEvents();
+
+    MohoInputCompleteEvent<?> complete = assertReceived(MohoInputCompleteEvent.class, incoming1);
+    assertTrue(complete.getUtterance().equals("no"));
+
+    incoming1.hangup();
+    incoming2.hangup();
+    waitForEvents();
+  }
 }
