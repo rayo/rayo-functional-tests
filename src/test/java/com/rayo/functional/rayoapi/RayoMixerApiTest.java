@@ -92,21 +92,21 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertTrue(iq.isResult());
 
 		waitForEvents();
-		rayoClient.input("yes,no", incoming1);
-		rayoClient.input("yes,no", incoming2);
+		rayoClient.input("yes,no", outgoing1);
+		rayoClient.input("yes,no", outgoing2);
 
 		waitForEvents();
 		rayoClient.output("yes", "1234");
 		
 		waitForEvents(1000);
 		// Expect input completes. Does not work
-		assertReceived(InputCompleteEvent.class, incoming1);
-		assertReceived(InputCompleteEvent.class, incoming2);
+		assertReceived(InputCompleteEvent.class, outgoing1);
+		assertReceived(InputCompleteEvent.class, outgoing2);
 		
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming1);
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing1);
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming2);
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing2);
 		assertTrue(iq.isResult());
 		
 		waitForEvents();

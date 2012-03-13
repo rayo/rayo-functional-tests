@@ -23,58 +23,55 @@ public class MixerTest extends MohoBasedIntegrationTest {
   public void testJoined_Unjoin_Speak() {
     OutgoingCall outgoing1 = null;
     OutgoingCall outgoing2 = null;
+
     Mixer mixer = null;
+    outgoing1 = dial();
+    IncomingCall incoming1 = getIncomingCall();
+    incoming1.answer();
+    waitForEvents();
+
+    outgoing2 = dial();
+    IncomingCall incoming2 = getIncomingCall();
+    incoming2.answer();
+    waitForEvents();
+
+    // create mixer
+    MixerEndpoint mixerEndpoint = mohoRemote.createMixerEndpoint();
+    mixer = mixerEndpoint.create("1234", null);
+
+    Joint joint = incoming1.join(mixer, JoinType.BRIDGE, Direction.DUPLEX);
+
     try {
-      outgoing1 = dial();
-      IncomingCall incoming1 = getIncomingCall();
-      incoming1.answer();
-      waitForEvents();
-
-      outgoing2 = dial();
-      IncomingCall incoming2 = getIncomingCall();
-      incoming2.answer();
-      waitForEvents();
-
-      // create mixer
-      MixerEndpoint mixerEndpoint = mohoRemote.createMixerEndpoint();
-      mixer = mixerEndpoint.create("1234", null);
-
-      Joint joint = incoming1.join(mixer, JoinType.BRIDGE, Direction.DUPLEX);
-
-      try {
-        joint.get();
-      }
-      catch (Exception ex) {
-        ex.printStackTrace();
-      }
-
-      outgoing1.input("yes,no");
-      mixer.output("yes");
-      waitForEvents(4000);
-      assertReceived(InputCompleteEvent.class, outgoing1);
-
-      Joint joint2 = incoming2.join(mixer, JoinType.BRIDGE, Direction.DUPLEX);
-
-      try {
-        joint2.get();
-      }
-      catch (Exception ex) {
-        ex.printStackTrace();
-      }
-
-      outgoing1.input("yes,no");
-      outgoing2.input("yes,no");
-      mixer.output("yes");
-      waitForEvents(4000);
-      assertReceived(InputCompleteEvent.class, outgoing1);
-      assertReceived(InputCompleteEvent.class, outgoing2);
-
+      joint.get();
     }
-    finally {
-      outgoing1.hangup();
-      outgoing2.hangup();
-      mixer.disconnect();
-      waitForEvents();
+    catch (Exception ex) {
+      ex.printStackTrace();
     }
+
+    outgoing1.input("yes,no");
+    mixer.output("yes");
+    waitForEvents(4000);
+    assertReceived(InputCompleteEvent.class, outgoing1);
+
+    Joint joint2 = incoming2.join(mixer, JoinType.BRIDGE, Direction.DUPLEX);
+
+    try {
+      joint2.get();
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+
+    outgoing1.input("yes,no");
+    outgoing2.input("yes,no");
+    mixer.output("yes");
+    waitForEvents(4000);
+    assertReceived(InputCompleteEvent.class, outgoing1);
+    assertReceived(InputCompleteEvent.class, outgoing2);
+
+    outgoing1.hangup();
+    outgoing2.hangup();
+    mixer.disconnect();
+    waitForEvents();
   }
 }
