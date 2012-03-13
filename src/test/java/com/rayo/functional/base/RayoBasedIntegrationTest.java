@@ -2,6 +2,7 @@ package com.rayo.functional.base;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -16,6 +18,7 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rayo.core.verb.VerbRef;
 import com.voxeo.rayo.client.JmxClient;
 import com.voxeo.rayo.client.RayoClient;
 import com.voxeo.rayo.client.listener.StanzaListener;
@@ -25,7 +28,6 @@ import com.voxeo.rayo.client.xmpp.stanza.IQ;
 import com.voxeo.rayo.client.xmpp.stanza.Message;
 import com.voxeo.rayo.client.xmpp.stanza.Presence;
 import com.voxeo.rayo.client.xmpp.stanza.Stanza;
-import com.rayo.core.verb.VerbRef;
 
 public abstract class RayoBasedIntegrationTest {
 
@@ -161,7 +163,25 @@ public abstract class RayoBasedIntegrationTest {
 	}
 	
 
+	protected <T> boolean assertNotReceived(Class<T> eventClass, String callId) {
+		
+		try {
+			assertReceived(eventClass, callId, 0);
+		} catch (AssertionError e) {
+			log.error(String.format("[%s] Assertion error: [%s].",
+					DateFormatUtils.format(new Date(), "hh:mm:ss.SSS"),
+					e.getMessage()));
+			return true;
+		}
+		throw new AssertionError("Call Event found and was not expected");		
+	}
+
 	protected <T> T assertReceived(Class<T> eventClass, String callId) {
+	
+		return assertReceived(eventClass, callId, retries);
+	}
+	
+	protected <T> T assertReceived(Class<T> eventClass, String callId, int retries) {
 		
 		int i = 0;
 		log.trace(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, callId, i+1));

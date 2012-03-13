@@ -74,7 +74,6 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	//TODO: #1578848
 	public void testOutputOnMixer() throws Exception {
 		
 		String outgoing1 = dial().getCallId();
@@ -114,7 +113,101 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
 		waitForEvents();		
+	}
+	
+	@Test
+	public void testInputOnMixer() throws Exception {
 		
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		String outgoing2 = dial().getCallId();
+		String incoming2 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming2);
+
+		IQ iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+
+		iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
+		assertTrue(iq.isResult());
+
+		waitForEvents();
+		rayoClient.input("yes,no", "1234");
+
+		waitForEvents(1000);
+		
+		rayoClient.output("yes", outgoing1);
+		rayoClient.output("yes", outgoing2);
+		waitForEvents(1000);
+		
+		// Expect input completes. Does not work
+		assertReceived(InputCompleteEvent.class, outgoing1);
+		assertReceived(InputCompleteEvent.class, outgoing2);
+		
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing1);
+		assertTrue(iq.isResult());
+
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing2);
+		assertTrue(iq.isResult());
+		
+		waitForEvents();
+
+		rayoClient.hangup(outgoing1);
+		rayoClient.hangup(outgoing2);
+		waitForEvents();		
+	}
+	
+	
+	@Test
+	public void testHoldUnholdOnMixer() throws Exception {
+		
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		String outgoing2 = dial().getCallId();
+		String incoming2 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming2);
+
+		IQ iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+
+		iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
+		assertTrue(iq.isResult());
+
+		waitForEvents();
+		rayoClient.input("yes,no", outgoing1);
+		rayoClient.input("yes,no", outgoing2);
+		
+		rayoClient.hold(outgoing1);
+		waitForEvents();		
+		
+		rayoClient.output("yes", "1234");
+		waitForEvents(1000);
+		
+		assertNotReceived(InputCompleteEvent.class, outgoing1);
+		assertReceived(InputCompleteEvent.class, outgoing2);
+		
+		rayoClient.unhold(outgoing1);
+		waitForEvents(300);
+		rayoClient.output("yes", "1234");
+		waitForEvents(1000);
+		
+		assertReceived(InputCompleteEvent.class, outgoing1);
+		assertNotReceived(InputCompleteEvent.class, outgoing2);		
+		
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing1);
+		assertTrue(iq.isResult());
+
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing2);
+		assertTrue(iq.isResult());
+		
+		waitForEvents();
+
+		rayoClient.hangup(outgoing1);
+		rayoClient.hangup(outgoing2);
+		waitForEvents();		
 	}
 	
 }
