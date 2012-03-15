@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import javax.media.mscontrol.join.Joinable.Direction;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -492,6 +493,22 @@ public class JoinTest extends MohoBasedIntegrationTest {
 
     incoming1.hangup();
     incoming2.hangup();
+    waitForEvents();
+  }
+  
+  @Test
+  public void testOutboundHangupBeforeAnswer() {
+    OutgoingCall outgoing1 = dial();
+    IncomingCall incoming1 = getIncomingCall();
+
+    
+    outgoing1.hangup();
+    
+    waitForEvents(3000);
+    
+    Assert.assertEquals(outgoing1.getCallState(), Call.State.DISCONNECTED);
+    Assert.assertEquals(incoming1.getCallState(), Call.State.DISCONNECTED);
+
     waitForEvents();
   }
 }
