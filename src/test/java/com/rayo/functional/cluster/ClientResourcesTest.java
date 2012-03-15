@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.util.Iterator;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -56,20 +57,10 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 	
 			waitForEvents(500);
 			JmxClient client = new JmxClient(rayoServer, "8080");
-			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
 			
-			Iterator<JSONObject> it = applications.iterator();
-			while(it.hasNext()) {
-				JSONObject json = it.next();
-				if (json.get("JID").equals(xmppUsername+"@"+xmppServer)) {
-					JSONArray resources = (JSONArray)json.get("resources");
-					assertTrue(resources.contains("resource1"));
-					assertTrue(resources.contains("resource2"));
-					return; // all good
-				}				
-			}
-			
-			fail(String.format("No client application or statuses  found for [%s] - [%s]",xmppUsername+"@"+xmppServer, applications));
+			List<String> resources = getResourcesForAppId(client, "voxeo"); 
+			assertTrue(resources.contains("resource1"));
+			assertTrue(resources.contains("resource2"));
 		} finally {
 			try {
 				if (rayoClient1 != null && rayoClient1.getXmppConnection().isConnected()) {
@@ -123,20 +114,11 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			Thread.sleep(1000);
 			rayoClient2.setStatus(Show.chat);
 			Thread.sleep(1000);
-			JmxClient client = new JmxClient(rayoServer, "8080");
-			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
-			Iterator<JSONObject> it = applications.iterator();
-			while(it.hasNext()) {
-				JSONObject json = it.next();
-				if (json.get("JID").equals(xmppUsername+"@"+xmppServer)) {
-					JSONArray resources = (JSONArray)json.get("resources");
-					assertTrue(resources.contains("resource1"));
-					assertTrue(resources.contains("resource2"));
-					return; // all good
-				}				
-			}
 			
-			fail(String.format("No client application or statuses  found for [%s] - [%s]",xmppUsername+"@"+xmppServer, applications));
+			JmxClient client = new JmxClient(rayoServer, "8080");
+			List<String> resources = getResourcesForAppId(client, "voxeo"); 
+			assertTrue(resources.contains("resource1"));
+			assertTrue(resources.contains("resource2"));			
 		} finally {
 			try {
 				if (rayoClient1 != null && rayoClient1.getXmppConnection().isConnected()) {
@@ -165,20 +147,12 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 
 			rayoClient2.setAvailable(false); // broadcasts unavailable presence
 			Thread.sleep(1000);
-			JmxClient client = new JmxClient(rayoServer, "8080");
-			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
-			Iterator<JSONObject> it = applications.iterator();
-			while(it.hasNext()) {
-				JSONObject json = it.next();
-				if (json.get("JID").equals(xmppUsername+"@"+xmppServer)) {
-					JSONArray resources = (JSONArray)json.get("resources");
-					assertTrue(resources.contains("resource1"));
-					assertFalse(resources.contains("resource2"));
-					return; // all good
-				}				
-			}
 			
-			fail(String.format("No client application or statuses  found for [%s] - [%s]",xmppUsername+"@"+xmppServer, applications));
+			JmxClient client = new JmxClient(rayoServer, "8080");
+			List<String> resources = getResourcesForAppId(client, "voxeo"); 
+			assertTrue(resources.contains("resource1"));
+			assertFalse(resources.contains("resource2"));		
+			
 		} finally {
 			try {
 				if (rayoClient1 != null && rayoClient1.getXmppConnection().isConnected()) {
@@ -211,19 +185,10 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			Thread.sleep(1000);
 			
 			JmxClient client = new JmxClient(rayoServer, "8080");
-			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
-			Iterator<JSONObject> it = applications.iterator();
-			while(it.hasNext()) {
-				JSONObject json = it.next();
-				if (json.get("JID").equals(xmppUsername+"@"+xmppServer)) {
-					JSONArray resources = (JSONArray)json.get("resources");
-					assertTrue(resources.contains("resource1"));
-					assertTrue(resources.contains("resource2"));
-					return; // all good
-				}				
-			}
-			
-			fail(String.format("No client application or statuses  found for [%s] - [%s]",xmppUsername+"@"+xmppServer, applications));
+			List<String> resources = getResourcesForAppId(client, "voxeo"); 
+			assertTrue(resources.contains("resource1"));
+			assertTrue(resources.contains("resource2"));	
+
 		} finally {
 			try {
 				if (rayoClient1 != null && rayoClient1.getXmppConnection().isConnected()) {
@@ -337,20 +302,12 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 
 			rayoClient2.setStatus(status);
 			Thread.sleep(1000);
-			JmxClient client = new JmxClient(rayoServer, "8080");
-			JSONArray applications = (JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications");
-			Iterator<JSONObject> it = applications.iterator();
-			while(it.hasNext()) {
-				JSONObject json = it.next();
-				if (json.get("JID").equals(xmppUsername+"@"+xmppServer)) {
-					JSONArray resources = (JSONArray)json.get("resources");
-					assertTrue(resources.contains("resource1"));
-					assertFalse(resources.contains("resource2"));
-					return; // all good
-				}				
-			}
 			
-			fail(String.format("No client application or statuses  found for [%s] - [%s]",xmppUsername+"@"+xmppServer, applications));
+			JmxClient client = new JmxClient(rayoServer, "8080");
+			List<String> resources = getResourcesForAppId(client, "voxeo"); 
+			assertTrue(resources.contains("resource1"));
+			assertFalse(resources.contains("resource2"));	
+			
 		} finally {
 			try {
 				if (rayoClient1 != null && rayoClient1.getXmppConnection().isConnected()) {

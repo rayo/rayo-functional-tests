@@ -2,6 +2,7 @@ package com.rayo.functional.base;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -236,6 +237,14 @@ public abstract class RayoBasedIntegrationTest {
 		waitUntilNodeDequiesced(nodeClient, "com.rayo.gateway:Type=Admin,name=Admin");
 	}
 	
+	protected List<String> getResourcesForAppId(JmxClient nodeClient, String appId) throws Exception {
+		
+		JSONArray array = (JSONArray)nodeClient.jmxExec("com.rayo.gateway:Type=Gateway", "getResourcesForAppId", appId);
+		
+		String[] result = (String[])array.toArray(new String[]{});
+		return Arrays.asList(result);
+	}	
+	
 	private void waitUntilNodeQuiesced(JmxClient nodeClient, String url) throws Exception {
 
 		int retries = 0;
@@ -327,8 +336,12 @@ public abstract class RayoBasedIntegrationTest {
 
 	protected List<String> getNodeNames() throws Exception {
 		
+		return getNodeNames(new JmxClient(rayoServer, "8080"));
+	}
+	
+	protected List<String> getNodeNames(JmxClient client) throws Exception {
+		
 		List<String> nodesList = new ArrayList<String>();
-		JmxClient client = new JmxClient(rayoServer, "8080");
 		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
 		Iterator<JSONObject> it = nodes.iterator();
 		int j = 0;
@@ -338,6 +351,32 @@ public abstract class RayoBasedIntegrationTest {
 			nodesList.add(jid);
 		}
 		return nodesList;
+	}
+	
+	protected List<String> getNodesForPlatform(JmxClient client, String platform) throws Exception {
+		
+		List<String> nodesList = new ArrayList<String>();
+		JSONArray nodes = ((JSONArray)client.jmxExec("com.rayo.gateway:Type=Gateway", "getRayoNodes", platform));
+		Iterator<JSONObject> it = nodes.iterator();
+		int j = 0;
+		while(it.hasNext()) {
+			JSONObject json = it.next();
+			String jid = (String)json.get("hostname");
+			nodesList.add(jid);
+		}
+		return nodesList;
+	}
+	
+	protected List<String> getPlatformNames(JmxClient client) throws Exception {
+				
+		List<String> platformsList = new ArrayList<String>();
+		JSONArray platforms = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "Platforms"));
+		Iterator<JSONObject> itp = platforms.iterator();
+		while(itp.hasNext()) {
+			JSONObject json = itp.next();
+			platformsList.add((String)json.get("name"));
+		}
+		return platformsList;
 	}
 	
 	protected String getNodeName(int i) throws Exception {
@@ -425,7 +464,7 @@ public abstract class RayoBasedIntegrationTest {
 	protected int getClientsConnected() throws Exception {
 		
 		JmxClient client = new JmxClient(rayoServer, "8080");
-		JSONArray clients = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ClientApplications"));
+		JSONArray clients = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ActiveClients"));
 		return clients.size();
 	}
 

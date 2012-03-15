@@ -29,9 +29,7 @@ public class RejectTest extends MohoBasedIntegrationTest {
 		    MohoCallCompleteEvent complete2 = assertReceived(MohoCallCompleteEvent.class, incoming);
 		    assertEquals(complete2.getCause(), Cause.DECLINE);
 		    
-	    } finally {
-	    	outgoing.hangup();
-	    }
+	    } finally {}
 	}
 	
 	@Test
@@ -50,9 +48,7 @@ public class RejectTest extends MohoBasedIntegrationTest {
 		    MohoCallCompleteEvent complete2 = assertReceived(MohoCallCompleteEvent.class, incoming);
 		    assertEquals(complete2.getCause(), Cause.DECLINE);
 		    
-	    } finally {
-	    	outgoing.hangup();
-	    }
+	    } finally {}
 	}
 	
 	
@@ -72,8 +68,6 @@ public class RejectTest extends MohoBasedIntegrationTest {
 		    MohoCallCompleteEvent complete2 = assertReceived(MohoCallCompleteEvent.class, incoming);
 		    assertEquals(complete2.getCause(), Cause.DECLINE);
 		    
-	    } finally {
-	    	outgoing.hangup();
-	    }
+	    } finally {}
 	}
 }

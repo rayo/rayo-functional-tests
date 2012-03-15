@@ -36,7 +36,6 @@ public class LoadBalancingTest extends RayoBasedIntegrationTest {
 	}
 
 	@Test
-	@Ignore
 	public void testNodesEvenlyLoadBalanced() throws Exception {
 
 		String firstNode = getNodeName(0);
@@ -75,7 +74,6 @@ public class LoadBalancingTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testLoadIsweighted() throws Exception {
 
 		String firstNode = getNodeName(0);
@@ -123,7 +121,6 @@ public class LoadBalancingTest extends RayoBasedIntegrationTest {
 	}	
 	
 	@Test
-	@Ignore
 	public void testPriorityIsConsideredWhenLoadBalancing() throws Exception {
 
 		String firstNode = getNodeName(0);
@@ -171,7 +168,6 @@ public class LoadBalancingTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testResourcesLoadBalancing() throws Exception {
 		
 		RayoClient rayoClient1 = null;
@@ -260,7 +256,6 @@ public class LoadBalancingTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testBlacklistNode() throws Exception {
 
 		String firstNode = getNodeName(0);
@@ -309,7 +304,6 @@ public class LoadBalancingTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testDialRedirectedToOtherNodeIfOneFails() throws Exception {
 
 		String firstNode = getNodeName(0);
@@ -376,7 +370,6 @@ public class LoadBalancingTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testFailsAreResetAfterSuccessfulDial() throws Exception {
 
 		String firstNode = getNodeName(0);
