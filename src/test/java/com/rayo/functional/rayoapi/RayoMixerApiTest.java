@@ -1,19 +1,23 @@
 package com.rayo.functional.rayoapi;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
 import java.util.UUID;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.voxeo.rayo.client.xmpp.stanza.IQ;
 import com.rayo.core.JoinDestinationType;
+import com.rayo.core.OfferEvent;
 import com.rayo.core.StartedSpeakingEvent;
 import com.rayo.core.StoppedSpeakingEvent;
 import com.rayo.core.verb.InputCompleteEvent;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
+import com.voxeo.rayo.client.RayoClient;
+import com.voxeo.rayo.client.listener.RayoMessageListener;
+import com.voxeo.rayo.client.xmpp.stanza.IQ;
+import com.voxeo.rayo.client.xmpp.stanza.Stanza;
 
 
 public class RayoMixerApiTest extends RayoBasedIntegrationTest {
@@ -347,8 +351,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
 		waitForEvents();		
-	}
-	
+	}	
 
 	@Test
 	// If we whisper to a member of a conference there should not be active speaker events

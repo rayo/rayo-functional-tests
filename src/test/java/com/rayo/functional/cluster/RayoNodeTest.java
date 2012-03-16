@@ -5,20 +5,23 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rayo.functional.base.RayoBasedIntegrationTest;
 import com.voxeo.rayo.client.JmxClient;
 import com.voxeo.rayo.client.RayoClient;
-import com.rayo.functional.base.RayoBasedIntegrationTest;
 
 public class RayoNodeTest extends RayoBasedIntegrationTest {
 
@@ -65,6 +68,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 			// without any connected clients. Then there will be two EndEvents, one 
 			// for each call leg.
 			assertTrue(errors2==errors+2 || errors2==errors+3);
+
 		} finally {
 			if (rayoClient != null && rayoClient.getXmppConnection().isConnected()) {
 				rayoClient.disconnect();
@@ -76,14 +80,20 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testRayoNodesHavePlatform() throws Exception {
 	
-		List<String> nodesList = new ArrayList<String>();
 		JmxClient client = new JmxClient(rayoServer, "8080");
-		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
-		Iterator<JSONObject> it = nodes.iterator();
-		while(it.hasNext()) {
-			JSONObject json = it.next();
-			JSONArray platforms = (JSONArray)json.get("platforms");
-			assertTrue(platforms.size() > 0);
+
+		List<String> nodesList = getNodeNames(client);
+		assertTrue(nodesList.size() > 0);
+		List<String> platformsList = getPlatformNames(client);
+		assertTrue(platformsList.size() > 0);
+		
+		Set<String> allPlatformNodes = new HashSet();
+		for(String platform: platformsList) {
+			allPlatformNodes.addAll(getNodesForPlatform(client, platform));
+		}	
+		
+		for(String node: nodesList) {
+			assertTrue(allPlatformNodes.contains(node));
 		}
 	}
 	
@@ -128,6 +138,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 	
 	// Cluster Docs. Scenario 18
 	@Test
+	@Ignore
 	public void testRayoNodeLoadBalancing() throws Exception {
 	
 		String firstNode = getNodeName(0);

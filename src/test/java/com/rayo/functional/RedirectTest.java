@@ -37,9 +37,8 @@ public class RedirectTest extends MohoBasedIntegrationTest {
 		    assertEquals(complete1.getCause(), Cause.REDIRECT);
 		    CallCompleteEvent complete2 = assertReceived(CallCompleteEvent.class, outgoing1);
 		    assertEquals(complete2.getCause(), Cause.REDIRECT);
-		} finally {
-			outgoing1.hangup();
-		}
+		    
+		} finally {}
 	}
 	
 	@Test
@@ -62,9 +61,8 @@ public class RedirectTest extends MohoBasedIntegrationTest {
 		    assertEquals(complete1.getCause(), Cause.REDIRECT);
 		    CallCompleteEvent complete2 = assertReceived(CallCompleteEvent.class, outgoing1);
 		    assertEquals(complete2.getCause(), Cause.REDIRECT);
-		} finally {
-			outgoing1.hangup();
-		}
+		    
+		} finally {}
 	}
 
 	@Test
