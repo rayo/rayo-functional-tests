@@ -18,7 +18,10 @@ import com.rayo.core.verb.Ssml;
 import com.voxeo.moho.Call;
 import com.voxeo.moho.CallableEndpoint;
 import com.voxeo.moho.IncomingCall;
+import com.voxeo.moho.Mixer;
+import com.voxeo.moho.MixerEndpoint;
 import com.voxeo.moho.OutgoingCall;
+import com.voxeo.moho.Participant;
 import com.voxeo.moho.common.event.MohoMediaCompleteEvent;
 import com.voxeo.moho.event.Event;
 import com.voxeo.moho.media.MediaOperation;
@@ -88,7 +91,7 @@ public abstract class MohoBasedIntegrationTest {
 		xmppPassword = getProperty("xmpp.password", "1");
     xmppServer = getProperty("xmpp.server", "localhost");
     rayoServer = getProperty("rayo.server", "localhost");
-    String[] uris = getProperty("sip.dial.uri", "sip:usera@localhost:6062").split(",");
+    String[] uris = getProperty("sip.dial.uri", "sip:usera@localhost").split(",");
 		sipDialUris.addAll(Arrays.asList(uris));
 	}
 
@@ -142,6 +145,13 @@ public abstract class MohoBasedIntegrationTest {
 
 		return (OutgoingCall) call;
 	}
+	
+	 public Mixer createMixer(String name) {
+	   MixerEndpoint mixerEndpoint = mohoRemote.createMixerEndpoint();
+	   Mixer mixer = mixerEndpoint.create(name, null);
+	   mixer.addObserver(new MohoObserver(this));
+	   return mixer;
+	  }
 
 	protected synchronized IncomingCall getIncomingCall() {
 
@@ -251,12 +261,12 @@ public abstract class MohoBasedIntegrationTest {
 		throw new AssertionError("Call Event found and was not expected");
 	}
 
-	protected <T> T assertReceived(Class<T> eventClass, Call call) {
+	protected <T> T assertReceived(Class<T> eventClass, Participant call) {
 
 		return assertReceived(eventClass, call, retries);
 	}
 
-	protected <T> T assertReceived(Class<T> eventClass, Call call, int retries) {
+	protected <T> T assertReceived(Class<T> eventClass, Participant call, int retries) {
 
 		int i = 0;
 		do {

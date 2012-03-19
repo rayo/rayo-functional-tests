@@ -13,6 +13,7 @@ import com.voxeo.moho.Mixer;
 import com.voxeo.moho.MixerEndpoint;
 import com.voxeo.moho.OutgoingCall;
 import com.voxeo.moho.Participant.JoinType;
+import com.voxeo.moho.event.ActiveSpeakerEvent;
 import com.voxeo.moho.event.InputCompleteEvent;
 
 public class MixerTest extends MohoBasedIntegrationTest {
@@ -20,7 +21,7 @@ public class MixerTest extends MohoBasedIntegrationTest {
 
   // test https://voxeolabs.atlassian.net/browse/RAYO-4
   @Test
-  public void testJoined_Unjoin_Speak() {
+  public void testJoinSpeak() {
     OutgoingCall outgoing1 = null;
     OutgoingCall outgoing2 = null;
 
@@ -71,6 +72,34 @@ public class MixerTest extends MohoBasedIntegrationTest {
 
     outgoing1.hangup();
     outgoing2.hangup();
+    mixer.disconnect();
+    waitForEvents();
+  }
+
+  @Test
+  public void testActiveSpeakerEvent() {
+    OutgoingCall outgoing1 = dial();
+    IncomingCall incoming1 = getIncomingCall();
+    incoming1.answer();
+    waitForEvents();
+
+    // create mixer
+    Mixer mixer = createMixer("1234");
+
+    Joint joint = incoming1.join(mixer, JoinType.BRIDGE, Direction.DUPLEX);
+
+    try {
+      joint.get();
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+
+    outgoing1.output("yes");
+    waitForEvents(4000);
+    assertReceived(ActiveSpeakerEvent.class, mixer);
+
+    outgoing1.hangup();
     mixer.disconnect();
     waitForEvents();
   }

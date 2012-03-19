@@ -1,3 +1,41 @@
-/target
+# OS generated files #
+######################
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# IDE generated files #
+######################
+.classpath
+.project
+.settings/
+
+# Directory #
+######################
+target/
+tmp/
+bin/
+
+# Compiled source #
+###################
+*.class
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs #
+######################
+*.log
+
+
 config/config.yml
 vendor
