@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -145,7 +147,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.input("yes,no", "1234");
 		waitForEvents(200);
 		rayoClient.output("yes", outgoing1);
-		waitForEvents(500);
+		waitForEvents(2000);
 		
 		// Expect input completes
 		InputCompleteEvent complete = assertReceived(InputCompleteEvent.class, "1234");
@@ -243,7 +245,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.output("Hello this is a long phrase without stops so there is no multiple events.", outgoing1);
 		
 		// one client has spoken, We expect a started speaking event. And a bit later a stopped speaking event
-		waitForEvents(400);
+		waitForEvents(1000);
 		StartedSpeakingEvent started = assertReceived(StartedSpeakingEvent.class, mixerId);
 		assertEquals(started.getSpeakerId(), incoming1);
 		waitForEvents(2000);
@@ -330,15 +332,30 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		
 		waitForEvents(2000);
 		
-		StartedSpeakingEvent started1 = assertReceived(StartedSpeakingEvent.class, mixerId);
-		assertEquals(started1.getSpeakerId(), incoming1);
-		StartedSpeakingEvent started2 = assertReceived(StartedSpeakingEvent.class, mixerId);
-		assertEquals(started2.getSpeakerId(), incoming2);
+		List<String> expectedSpeakers = new ArrayList<String>();
+		expectedSpeakers.add(incoming1);
+		expectedSpeakers.add(incoming2);
 		
+		StartedSpeakingEvent started1 = assertReceived(StartedSpeakingEvent.class, mixerId);
+		assertTrue(expectedSpeakers.contains(started1.getSpeakerId()));
+		expectedSpeakers.remove(started1.getSpeakerId());
+		
+		StartedSpeakingEvent started2 = assertReceived(StartedSpeakingEvent.class, mixerId);
+		assertTrue(expectedSpeakers.contains(started2.getSpeakerId()));
+		expectedSpeakers.remove(started2.getSpeakerId());		
+		assertTrue(expectedSpeakers.size() == 0);
+
+		expectedSpeakers.add(incoming1);
+		expectedSpeakers.add(incoming2);
+
 		StoppedSpeakingEvent stopped1 = assertReceived(StoppedSpeakingEvent.class, mixerId);
-		assertEquals(stopped1.getSpeakerId(), incoming1);	
+		assertTrue(expectedSpeakers.contains(stopped1.getSpeakerId()));
+		expectedSpeakers.remove(stopped1.getSpeakerId());
+		
 		StoppedSpeakingEvent stopped2 = assertReceived(StoppedSpeakingEvent.class, mixerId);
-		assertEquals(stopped2.getSpeakerId(), incoming2);
+		assertTrue(expectedSpeakers.contains(stopped2.getSpeakerId()));
+		expectedSpeakers.remove(stopped2.getSpeakerId());
+		assertTrue(expectedSpeakers.size() == 0);
 		
 		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, outgoing1);
 		assertTrue(iq.isResult());
