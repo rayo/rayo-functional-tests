@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.net.URI;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.functional.base.MohoBasedIntegrationTest;
@@ -100,6 +101,27 @@ public class OutputTest extends MohoBasedIntegrationTest {
 
 	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
 	    assertEquals(complete.getInterpretation(),"one hundred");
+	    
+	    incoming.hangup();
+	    waitForEvents();
+	}	
+	
+	
+	@Test
+	@Ignore
+	public void testOutputSSMLDigits() throws Exception {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    
+        String text = "<speak xmlns=\"http://www.w3.org/2001/10/synthesis\" version=\"1.0\" xml:lang=\"en-US\"><audio src=\"digits/3\"/></speak>";
+        OutputCommand outputCommand = new OutputCommand(new TextToSpeechResource(text));        
+	    outgoing.output(outputCommand);
+
+	    assertReceived(OutputCompleteEvent.class, outgoing);
 	    
 	    incoming.hangup();
 	    waitForEvents();
