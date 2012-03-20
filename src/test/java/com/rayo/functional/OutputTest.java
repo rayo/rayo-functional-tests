@@ -108,7 +108,6 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	
 	
 	@Test
-	@Ignore
 	public void testOutputSSMLDigits() throws Exception {
 		
 	    OutgoingCall outgoing = dial();
@@ -121,7 +120,9 @@ public class OutputTest extends MohoBasedIntegrationTest {
         OutputCommand outputCommand = new OutputCommand(new TextToSpeechResource(text));        
 	    outgoing.output(outputCommand);
 
-	    assertReceived(OutputCompleteEvent.class, outgoing);
+	    OutputCompleteEvent<Call> complete = assertReceived(OutputCompleteEvent.class, outgoing);
+	    assertEquals(complete.getCause(), Cause.ERROR);
+	    assertTrue(complete.getErrorText().contains("Could not find the Resource's URI"));
 	    
 	    incoming.hangup();
 	    waitForEvents();
