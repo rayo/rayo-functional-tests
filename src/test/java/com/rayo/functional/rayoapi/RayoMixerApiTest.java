@@ -1,29 +1,28 @@
 package com.rayo.functional.rayoapi;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.core.JoinDestinationType;
 import com.rayo.core.JoinedEvent;
-import com.rayo.core.OfferEvent;
 import com.rayo.core.StartedSpeakingEvent;
 import com.rayo.core.StoppedSpeakingEvent;
 import com.rayo.core.UnjoinedEvent;
 import com.rayo.core.verb.InputCompleteEvent;
+import com.rayo.core.verb.OutputCompleteEvent;
+import com.rayo.core.verb.RecordCompleteEvent;
+import com.rayo.core.verb.VerbCompleteEvent.Reason;
+import com.rayo.core.verb.VerbRef;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
-import com.voxeo.moho.common.event.MohoJoinCompleteEvent;
-import com.voxeo.moho.common.event.MohoUnjoinCompleteEvent;
-import com.voxeo.rayo.client.RayoClient;
-import com.voxeo.rayo.client.listener.RayoMessageListener;
 import com.voxeo.rayo.client.xmpp.stanza.IQ;
-import com.voxeo.rayo.client.xmpp.stanza.Stanza;
 
 
 public class RayoMixerApiTest extends RayoBasedIntegrationTest {
@@ -498,5 +497,84 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		waitForEvents();		
+	}
+	
+	@Test
+	public void testShouldRecordAndGetValidMetadata() throws Exception {
+		
+		String outgoingCallId = dial().getCallId();
+		String incomingCallId = getIncomingCall().getCallId();
+		
+		rayoClient.answer(incomingCallId);
+		waitForEvents();
+
+		String mixerName = UUID.randomUUID().toString();
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incomingCallId);
+		assertTrue(iq.isResult());
+		
+		VerbRef recordRef = rayoClient.record(mixerName);
+		rayoClient.output("Hello World", mixerName);
+		waitForEvents();
+		assertReceived(OutputCompleteEvent.class, mixerName);
+		
+		rayoClient.stop(recordRef);
+		
+		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, mixerName);
+		assertNotNull(complete);
+		assertEquals(complete.getReason(), Reason.STOP);
+		assertTrue(complete.getDuration().getMillis() >= 1000);
+		assertTrue(complete.getSize() > 15000);
+		assertNotNull(complete.getUri());
+		//assertTrue(new File(complete.getUri()).exists()); Difficult to run on cluster setup
+		assertTrue(complete.getUri().toString().endsWith(".wav"));
+		
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incomingCallId);
+		assertTrue(iq.isResult());
+
+		rayoClient.hangup(outgoingCallId);
+		waitForEvents();
+	}
+	
+	
+	@Test
+	@Ignore
+	public void testMediaRecorded() throws Exception {
+		
+		String outgoingCallId = dial().getCallId();
+		String incomingCallId = getIncomingCall().getCallId();
+		
+		rayoClient.answer(incomingCallId);
+		waitForEvents();
+		
+		String mixerName = UUID.randomUUID().toString();
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incomingCallId);
+		assertTrue(iq.isResult());
+
+		VerbRef recordRef = rayoClient.record(mixerName);		
+		rayoClient.output("Hello World", mixerName);
+		waitForEvents();
+		assertReceived(OutputCompleteEvent.class, mixerName);
+		
+		rayoClient.stop(recordRef);
+		
+		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, mixerName);
+
+		// We now do output on the mixer. Important thing to remember here is that the .wav file
+		// was stored on the hostname that holds the mixer. So sending the output to the mixer 
+		// is the safest way to ensure that we actually play the file.
+		waitForEvents();
+		rayoClient.input("hello world, thanks frank", outgoingCallId);
+		waitForEvents();
+		rayoClient.output(complete.getUri(), mixerName);
+		waitForEvents();
+		
+		InputCompleteEvent inputComplete = assertReceived(InputCompleteEvent.class, outgoingCallId);
+		assertEquals(inputComplete.getUtterance(), "hello world");
+				
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incomingCallId);
+		assertTrue(iq.isResult());
+		
+		rayoClient.hangup(outgoingCallId);
+		waitForEvents();
 	}
 }
