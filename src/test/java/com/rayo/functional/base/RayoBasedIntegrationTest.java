@@ -480,6 +480,19 @@ public abstract class RayoBasedIntegrationTest {
 		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
 		return nodes.size();
 	}
+
+	protected int getActiveMixers() throws Exception {
+		
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		JSONArray mixers = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "ActiveMixers"));
+		return mixers.size();
+	}
+	
+	protected long getTotalMixers() throws Exception {
+		
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		return ((Long)client.jmxValue("com.rayo.gateway:Type=GatewayStatistics", "TotalMixersCount"));
+	}
 	
 	protected long getNodeIncomingCalls(JmxClient client) throws Exception {
 		

@@ -11,11 +11,15 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.rayo.core.JoinDestinationType;
+import com.rayo.core.JoinedEvent;
 import com.rayo.core.OfferEvent;
 import com.rayo.core.StartedSpeakingEvent;
 import com.rayo.core.StoppedSpeakingEvent;
+import com.rayo.core.UnjoinedEvent;
 import com.rayo.core.verb.InputCompleteEvent;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
+import com.voxeo.moho.common.event.MohoJoinCompleteEvent;
+import com.voxeo.moho.common.event.MohoUnjoinCompleteEvent;
 import com.voxeo.rayo.client.RayoClient;
 import com.voxeo.rayo.client.listener.RayoMessageListener;
 import com.voxeo.rayo.client.xmpp.stanza.IQ;
@@ -33,11 +37,16 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.answer(incomingCallId);
 		waitForEvents();
 
-		IQ iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incomingCallId);
+		String mixerId = UUID.randomUUID().toString();
+		IQ iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incomingCallId);
 		assertTrue(iq.isResult());
+		JoinedEvent event = assertReceived(JoinedEvent.class, incomingCallId);
+		assertEquals(event.getTo(), mixerId);
 		
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incomingCallId);
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incomingCallId);
 		assertTrue(iq.isResult());
+		UnjoinedEvent unjoined = assertReceived(UnjoinedEvent.class, incomingCallId);
+		assertEquals(unjoined.getFrom(), mixerId);
 		
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
@@ -87,6 +96,8 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testOutputOnMixer() throws Exception {
 		
+		String mixerName = UUID.randomUUID().toString();
+		
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
 		rayoClient.answer(incoming1);
@@ -95,10 +106,10 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		String incoming2 = getIncomingCall().getCallId();
 		rayoClient.answer(incoming2);
 
-		IQ iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.join("1234", "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
+		iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
 
 		waitForEvents();
@@ -106,17 +117,17 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.input("yes,no", outgoing2);
 
 		waitForEvents();
-		rayoClient.output("yes", "1234");
+		rayoClient.output("yes", mixerName);
 		
 		waitForEvents(1000);
 		// Expect input completes. Does not work
 		assertReceived(InputCompleteEvent.class, outgoing1);
 		assertReceived(InputCompleteEvent.class, outgoing2);
 		
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing1);
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing2);
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
 		
 		waitForEvents();
@@ -158,10 +169,10 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertNotReceived(InputCompleteEvent.class, "1234");
 		
 		
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing1);
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing2);
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
 		
 		waitForEvents();
@@ -210,10 +221,10 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertReceived(InputCompleteEvent.class, outgoing1);
 		assertNotReceived(InputCompleteEvent.class, outgoing2);		
 		
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing1);
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, outgoing2);
+		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
 		
 		waitForEvents();
@@ -252,10 +263,10 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		StoppedSpeakingEvent stopped = assertReceived(StoppedSpeakingEvent.class, mixerId);
 		assertEquals(stopped.getSpeakerId(), incoming1);		
 		
-		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, outgoing1);
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, outgoing2);
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
 		
 		waitForEvents();
@@ -295,10 +306,10 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertReceived(StoppedSpeakingEvent.class, mixerId);
 		assertReceived(StoppedSpeakingEvent.class, mixerId);
 		
-		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, outgoing1);
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, outgoing2);
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
 		
 		waitForEvents();
@@ -357,10 +368,10 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		expectedSpeakers.remove(stopped2.getSpeakerId());
 		assertTrue(expectedSpeakers.size() == 0);
 		
-		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, outgoing1);
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, outgoing2);
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
 		
 		waitForEvents();
@@ -397,16 +408,95 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertNotReceived(StartedSpeakingEvent.class, mixerId);
 		assertNotReceived(StoppedSpeakingEvent.class, mixerId);
 		
-		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, outgoing1);
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
 
-		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, outgoing2);
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
 		
 		waitForEvents();
 
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
+		waitForEvents();		
+	}
+
+	@Test
+	public void testMixersAreDisposedAfterLastParticipantsLeave() throws Exception {
+		
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		String outgoing2 = dial().getCallId();
+		String incoming2 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming2);
+
+		int activeMixers = getActiveMixers();
+		
+		String mixerId = UUID.randomUUID().toString();
+		
+		IQ iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		
+		assertEquals(getActiveMixers(), activeMixers + 1);
+
+		iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
+		assertTrue(iq.isResult());
+
+		// number of mixers should be preserved, the call has join an existing mixer
+		assertEquals(getActiveMixers(), activeMixers + 1);
+
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+
+		// number of mixers should be preserved, there still should be one participant
+		assertEquals(getActiveMixers(), activeMixers + 1);
+
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming2);
+		assertTrue(iq.isResult());
+		
+		// last participant leaves. Mixer should have been disposed
+		assertEquals(getActiveMixers(), activeMixers);
+	
+		waitForEvents();
+
+		rayoClient.hangup(outgoing1);
+		rayoClient.hangup(outgoing2);
+		waitForEvents();		
+	}
+	
+	@Test
+	public void testTotalMixers() throws Exception {
+		
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		long totalMixers = getTotalMixers();
+		
+		String mixerId1 = UUID.randomUUID().toString();
+		String mixerId2 = UUID.randomUUID().toString();
+		
+		IQ iq = rayoClient.join(mixerId1, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(500);		
+		iq = rayoClient.unjoin(mixerId1, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(500);		
+
+		rayoClient.join(mixerId2, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(500);		
+		iq = rayoClient.unjoin(mixerId2, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(500);		
+
+		assertEquals(getTotalMixers(), totalMixers + 2);
+	
+		waitForEvents();
+
+		rayoClient.hangup(outgoing1);
 		waitForEvents();		
 	}
 }
