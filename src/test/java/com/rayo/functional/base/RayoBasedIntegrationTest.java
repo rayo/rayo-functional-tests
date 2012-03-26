@@ -527,4 +527,16 @@ public abstract class RayoBasedIntegrationTest {
 		}
 		return null;
 	}
+	
+	protected void registerApplication(String platform, String name, String jid) throws Exception {
+		
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "registerApplication", platform, name, jid);
+	}
+	
+	protected void registerAddress(String appId, String address) throws Exception {
+		
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "registerAddress", appId, address);
+	}
 }

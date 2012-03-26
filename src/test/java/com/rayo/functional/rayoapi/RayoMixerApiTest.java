@@ -51,7 +51,6 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 	}
 	
-
 	@Test
 	public void testJoinAndUnjoinMultipleCalls() throws Exception {
 		
@@ -85,6 +84,84 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertTrue(iq.isResult());
 		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming3);
 		assertTrue(iq.isResult());
+		
+		rayoClient.hangup(outgoing1);
+		rayoClient.hangup(outgoing2);
+		rayoClient.hangup(outgoing3);
+		waitForEvents(3000);
+	}
+
+	@Test
+	// This test needs to use different RayoClients as joined events directed to the same
+	// app are multiplexed
+	public void testJoinAndUnjoinParticipantEvents() throws Exception {
+		
+		String mixerName = UUID.randomUUID().toString();
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();		
+		rayoClient.answer(incoming1);
+		waitForEvents();
+
+		String outgoing2 = dial().getCallId();
+		String incoming2 = getIncomingCall().getCallId();		
+		rayoClient.answer(incoming2);
+		waitForEvents();
+
+		String outgoing3 = dial().getCallId();
+		String incoming3 = getIncomingCall().getCallId();		
+		rayoClient.answer(incoming3);
+		waitForEvents();
+
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		
+		// First participant will get its own joined event from mixer
+		JoinedEvent event = assertReceived(JoinedEvent.class, mixerName);
+		assertEquals(event.getTo(), incoming1);
+		
+		iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
+		assertTrue(iq.isResult());
+		
+		// Now, two participant (joined) events should have been dispatched advertising incoming 2 presence
+		for (int i=1;i<=2;i++) {
+			event = assertReceived(JoinedEvent.class, mixerName);
+			assertEquals(event.getTo(), incoming2);
+		}
+		
+		iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming3);
+		assertTrue(iq.isResult());
+		
+		// Finally, three participant (joined) events should have been dispatched advertising incoming 3 presence
+		for (int i=1;i<=3;i++) {
+			event = assertReceived(JoinedEvent.class, mixerName);
+			assertEquals(event.getTo(), incoming3);
+		}
+		
+		// And there should be no other pending joined events from mixer
+		assertNotReceived(JoinedEvent.class, mixerName);
+		
+		waitForEvents(1000);
+		
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		// Two participant (unjoined) events should have been dispatched advertising incoming 2 exit
+		for (int i=1;i<=2;i++) {
+			UnjoinedEvent unjoined = assertReceived(UnjoinedEvent.class, mixerName);
+			assertEquals(unjoined.getFrom(), incoming1);
+		}	
+		
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming2);
+		assertTrue(iq.isResult());
+		// One participant (unjoined) events should have been dispatched advertising incoming 2 exit
+		for (int i=1;i<=1;i++) {
+			UnjoinedEvent unjoined = assertReceived(UnjoinedEvent.class, mixerName);
+			assertEquals(unjoined.getFrom(), incoming2);
+		}
+		
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming3);
+		assertTrue(iq.isResult());
+		// No calls on the mixer, so there wont be any incoming messages here
+		assertNotReceived(UnjoinedEvent.class, incoming3);
 		
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
