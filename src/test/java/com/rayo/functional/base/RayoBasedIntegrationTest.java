@@ -488,6 +488,45 @@ public abstract class RayoBasedIntegrationTest {
 		return mixers.size();
 	}
 	
+	public List<String> getParticipants(String mixerName) throws Exception {
+		
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		JSONObject mixer = ((JSONObject)client.jmxExec("com.rayo.gateway:Type=Gateway", "mixerInfo", mixerName));
+		if (mixer == null) {
+			return new ArrayList<String>();
+		}
+		JSONArray participants = (JSONArray)mixer.get("participants");
+		List<String> result = new ArrayList<String>();
+		Iterator<String> it = participants.iterator();
+		while(it.hasNext()) {
+			result.add(it.next());
+		}
+		return result;
+	}
+		
+	public long getActiveVerbsCount(String mixerName) throws Exception {
+		
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		JSONObject mixer = ((JSONObject)client.jmxExec("com.rayo.gateway:Type=Gateway", "mixerInfo", mixerName));
+		if (mixer == null) {
+			return 0;
+		}
+		return (Long)mixer.get("activeVerbs");
+	}
+	
+	public List<String> getActiveVerbs(String mixerName) throws Exception {
+		
+		List<String> verbs = new ArrayList<String>();
+		JmxClient client = new JmxClient(rayoServer, "8080");
+		JSONArray array = ((JSONArray)client.jmxExec("com.rayo.gateway:Type=Gateway", "activeVerbs", mixerName));
+		Iterator<JSONObject> it = array.iterator();
+		while(it.hasNext()) {
+			JSONObject verb = it.next();
+			verbs.add((String)verb.get("verbId"));
+		}
+		return verbs;
+	}
+	
 	protected long getTotalMixers() throws Exception {
 		
 		JmxClient client = new JmxClient(rayoServer, "8080");

@@ -19,6 +19,7 @@ import com.rayo.core.UnjoinedEvent;
 import com.rayo.core.verb.InputCompleteEvent;
 import com.rayo.core.verb.OutputCompleteEvent;
 import com.rayo.core.verb.RecordCompleteEvent;
+import com.rayo.core.verb.VerbCompleteEvent;
 import com.rayo.core.verb.VerbCompleteEvent.Reason;
 import com.rayo.core.verb.VerbRef;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
@@ -84,84 +85,6 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertTrue(iq.isResult());
 		iq = rayoClient.unjoin("1234", JoinDestinationType.MIXER, incoming3);
 		assertTrue(iq.isResult());
-		
-		rayoClient.hangup(outgoing1);
-		rayoClient.hangup(outgoing2);
-		rayoClient.hangup(outgoing3);
-		waitForEvents(3000);
-	}
-
-	@Test
-	// This test needs to use different RayoClients as joined events directed to the same
-	// app are multiplexed
-	public void testJoinAndUnjoinParticipantEvents() throws Exception {
-		
-		String mixerName = UUID.randomUUID().toString();
-		String outgoing1 = dial().getCallId();
-		String incoming1 = getIncomingCall().getCallId();		
-		rayoClient.answer(incoming1);
-		waitForEvents();
-
-		String outgoing2 = dial().getCallId();
-		String incoming2 = getIncomingCall().getCallId();		
-		rayoClient.answer(incoming2);
-		waitForEvents();
-
-		String outgoing3 = dial().getCallId();
-		String incoming3 = getIncomingCall().getCallId();		
-		rayoClient.answer(incoming3);
-		waitForEvents();
-
-		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
-		assertTrue(iq.isResult());
-		
-		// First participant will get its own joined event from mixer
-		JoinedEvent event = assertReceived(JoinedEvent.class, mixerName);
-		assertEquals(event.getTo(), incoming1);
-		
-		iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
-		assertTrue(iq.isResult());
-		
-		// Now, two participant (joined) events should have been dispatched advertising incoming 2 presence
-		for (int i=1;i<=2;i++) {
-			event = assertReceived(JoinedEvent.class, mixerName);
-			assertEquals(event.getTo(), incoming2);
-		}
-		
-		iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming3);
-		assertTrue(iq.isResult());
-		
-		// Finally, three participant (joined) events should have been dispatched advertising incoming 3 presence
-		for (int i=1;i<=3;i++) {
-			event = assertReceived(JoinedEvent.class, mixerName);
-			assertEquals(event.getTo(), incoming3);
-		}
-		
-		// And there should be no other pending joined events from mixer
-		assertNotReceived(JoinedEvent.class, mixerName);
-		
-		waitForEvents(1000);
-		
-		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
-		assertTrue(iq.isResult());
-		// Two participant (unjoined) events should have been dispatched advertising incoming 2 exit
-		for (int i=1;i<=2;i++) {
-			UnjoinedEvent unjoined = assertReceived(UnjoinedEvent.class, mixerName);
-			assertEquals(unjoined.getFrom(), incoming1);
-		}	
-		
-		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming2);
-		assertTrue(iq.isResult());
-		// One participant (unjoined) events should have been dispatched advertising incoming 2 exit
-		for (int i=1;i<=1;i++) {
-			UnjoinedEvent unjoined = assertReceived(UnjoinedEvent.class, mixerName);
-			assertEquals(unjoined.getFrom(), incoming2);
-		}
-		
-		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming3);
-		assertTrue(iq.isResult());
-		// No calls on the mixer, so there wont be any incoming messages here
-		assertNotReceived(UnjoinedEvent.class, incoming3);
 		
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
@@ -258,6 +181,34 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		waitForEvents();		
 	}
 	
+	
+	@Test
+	// This test reflects the fact that if we unjoin a mixer, we will received an output 
+	// complete event that may arrive after the mixer has been disposed on the mixer and therefore
+	// the client application will never get the output complete event. 
+	public void testCompleteEventNotReceivedIfUnjoin() throws Exception {
+		
+		String mixerName = UUID.randomUUID().toString();
+		
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+		waitForEvents();
+
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+        waitForEvents(500);
+        
+		rayoClient.output("This is a long phrase. It will never have the chance to finish as we are unjoining the mixer very soon" ,mixerName);
+		
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+
+		assertNotReceived(OutputCompleteEvent.class, mixerName);
+
+		rayoClient.hangup(outgoing1);
+		waitForEvents();		
+	}
 	
 	@Test
 	public void testHoldUnholdOnMixer() throws Exception {
@@ -514,23 +465,27 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		
 		IQ iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
+		waitForEvents(200);
 		
 		assertEquals(getActiveMixers(), activeMixers + 1);
 
 		iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
+		waitForEvents(200);
 
 		// number of mixers should be preserved, the call has join an existing mixer
 		assertEquals(getActiveMixers(), activeMixers + 1);
 
 		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
+		waitForEvents(200);
 
 		// number of mixers should be preserved, there still should be one participant
 		assertEquals(getActiveMixers(), activeMixers + 1);
 
 		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming2);
 		assertTrue(iq.isResult());
+		waitForEvents(200);
 		
 		// last participant leaves. Mixer should have been disposed
 		assertEquals(getActiveMixers(), activeMixers);
@@ -652,6 +607,260 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertTrue(iq.isResult());
 		
 		rayoClient.hangup(outgoingCallId);
+		waitForEvents();
+	}
+	
+	@Test
+	// Tests that mixer participants are tracked in the gateway and are
+	// removed when a call is finished
+	public void testMixerParticipants() throws Exception {
+		
+		String outgoing1 = dial().getCallId();
+		waitForEvents(500);
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		String outgoing2 = dial().getCallId();
+		waitForEvents(500);
+		String incoming2 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming2);
+
+		String mixerId1 = UUID.randomUUID().toString();
+
+		assertTrue(getParticipants(mixerId1).isEmpty());
+		
+		IQ iq = rayoClient.join(mixerId1, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(500);
+		
+		List<String> participants = getParticipants(mixerId1);
+		assertEquals(participants.size(), 1);
+		assertTrue(participants.contains(incoming1));
+		
+		iq = rayoClient.join(mixerId1, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
+		assertTrue(iq.isResult());
+		waitForEvents(500);
+		
+		participants = getParticipants(mixerId1);
+		assertEquals(participants.size(), 2);
+		assertTrue(participants.contains(incoming1));
+		assertTrue(participants.contains(incoming2));
+		
+		iq = rayoClient.unjoin(mixerId1, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(500);		
+		
+		participants = getParticipants(mixerId1);
+		assertEquals(participants.size(), 1);
+		assertTrue(participants.contains(incoming2));
+
+		iq = rayoClient.unjoin(mixerId1, JoinDestinationType.MIXER, incoming2);
+		assertTrue(iq.isResult());
+		waitForEvents(500);		
+		
+		assertTrue(getParticipants(mixerId1).isEmpty());	
+
+		rayoClient.hangup(outgoing1);
+		rayoClient.hangup(outgoing2);
+		waitForEvents();		
+	}
+
+	@Test
+	// Tests that mixer participants are tracked in the gateway and are
+	// removed when a call ends
+	public void testMixerParticipantsOnCallEnd() throws Exception {
+		
+		String outgoing1 = dial().getCallId();
+		waitForEvents(500);
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		String outgoing2 = dial().getCallId();
+		waitForEvents(500);
+		String incoming2 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming2);
+
+		String mixerId1 = UUID.randomUUID().toString();
+
+		assertTrue(getParticipants(mixerId1).isEmpty());
+		
+		IQ iq = rayoClient.join(mixerId1, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(500);
+		
+		iq = rayoClient.join(mixerId1, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
+		assertTrue(iq.isResult());
+		waitForEvents(500);
+		
+		List<String> participants = getParticipants(mixerId1);
+		assertEquals(participants.size(), 2);
+		assertTrue(participants.contains(incoming1));
+		assertTrue(participants.contains(incoming2));
+		
+		rayoClient.hangup(outgoing1);		
+		waitForEvents();
+		
+		participants = getParticipants(mixerId1);
+		assertEquals(participants.size(), 1);
+		assertTrue(participants.contains(incoming2));
+		
+		rayoClient.hangup(outgoing2);		
+		waitForEvents();			
+	}
+	
+	@Test
+	// Tests that verb resources for mixers are tracked in the Gateway and are 
+	// removed when the verb is completed
+	public void testMixerVerbs() throws Exception {
+		
+		String mixerName = UUID.randomUUID().toString();
+		
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		assertEquals(getActiveVerbsCount(mixerName), 0);
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(100);
+		assertEquals(getActiveVerbsCount(mixerName), 0);
+		
+		rayoClient.output("yes. This is an output", mixerName);
+		assertEquals(getActiveVerbsCount(mixerName), 1);
+		assertReceived(OutputCompleteEvent.class, mixerName);
+		assertEquals(getActiveVerbsCount(mixerName), 0);
+		
+		waitForEvents();
+		rayoClient.output("this is another output.", mixerName);
+		rayoClient.input("yes, no", mixerName);
+		assertEquals(getActiveVerbsCount(mixerName), 2);		
+		assertReceived(OutputCompleteEvent.class, mixerName);
+		assertEquals(getActiveVerbsCount(mixerName), 1);
+
+		rayoClient.output("yes", outgoing1);
+		assertReceived(InputCompleteEvent.class, mixerName);
+		assertEquals(getActiveVerbsCount(mixerName), 0);
+		
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		
+		waitForEvents();
+
+		rayoClient.hangup(outgoing1);
+		waitForEvents();		
+	}
+
+	
+	@Test
+	@Ignore
+	// Two outputs on a mixer. how this should behave?
+	public void testMixerAndTwoOutputs() throws Exception {
+		
+		String mixerName = UUID.randomUUID().toString();
+		
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);		
+		waitForEvents();
+		rayoClient.output("this is a long phrase as we need to validate that there will be two active verbs", mixerName);
+		rayoClient.output("yes. what is going on", mixerName);
+		assertEquals(getActiveVerbsCount(mixerName), 2);
+		
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		
+		waitForEvents();
+
+		rayoClient.hangup(outgoing1);
+		waitForEvents();		
+	}
+	
+	@Test
+	// Tests that mixer verbs are disposed on the Gateway after verb failure
+	public void testMixerVerbsAreDisposedAfterVerbStop() throws Exception {
+		
+		String mixerName = UUID.randomUUID().toString();		
+		String outgoing1 = dial().getCallId();
+		waitForEvents();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		assertEquals(getActiveVerbsCount(mixerName), 0);
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(100);
+		assertEquals(getActiveVerbsCount(mixerName), 0);
+		
+		VerbRef output = rayoClient.output("this is a large output phrase that we are going to stop and check if the verb gets disposed from the mixer.", mixerName);
+		assertEquals(getActiveVerbsCount(mixerName), 1);		
+		
+		rayoClient.stop(output);		
+		waitForEvents();
+		assertEquals(getActiveVerbsCount(mixerName), 0);
+
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		
+		waitForEvents();
+		rayoClient.hangup(outgoing1);
+		waitForEvents();
+	}
+	
+	@Test
+	// Tests that mixer verbs are disposed on the Gateway after verb failure
+	public void testMixerVerbsAreDisposedOnFailure() throws Exception {
+		
+		String mixerName = UUID.randomUUID().toString();		
+		String outgoing1 = dial().getCallId();
+		waitForEvents();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(500);
+		
+        String text = "<speak xmlns=\"http://www.w3.org/2001/10/synthesis\" version=\"1.0\" xml:lang=\"en-US\"><audio src=\"digits/3\"/></speak>";
+        rayoClient.outputSsml(text,mixerName);
+
+	    VerbCompleteEvent complete = assertReceived(VerbCompleteEvent.class, mixerName);
+	    assertEquals(complete.getReason(), Reason.ERROR);
+		assertEquals(getActiveVerbsCount(mixerName), 0);
+		
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		
+		waitForEvents();
+		rayoClient.hangup(outgoing1);
+		waitForEvents();
+	}
+	
+	@Test
+	// Tests that mixer verbs are disposed on the Gateway after verb failure
+	public void testMixerVerbsDisposedOnMixerUnjoin() throws Exception {
+		
+		String mixerName = UUID.randomUUID().toString();		
+		String outgoing1 = dial().getCallId();
+		waitForEvents();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+		waitForEvents();
+
+		IQ iq = rayoClient.join(mixerName, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents(500);
+		
+        rayoClient.output("This is a long phrase. It will never have the chance to finish as we are unjoining the mixer very soon" ,mixerName);
+        assertEquals(getActiveVerbsCount(mixerName), 1);
+        
+		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+        assertEquals(getActiveVerbsCount(mixerName), 0);
+		
+		waitForEvents();
+		rayoClient.hangup(outgoing1);
 		waitForEvents();
 	}
 }

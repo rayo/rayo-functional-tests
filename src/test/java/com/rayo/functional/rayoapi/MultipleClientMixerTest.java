@@ -161,37 +161,37 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 			IQ iq = rayoClient1.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateJoins(joinQueue, xmppUser2, incoming1, mixerId, xmppUser2);
+			validateJoins(joinQueue, xmppUser2, incoming1, mixerId, false, xmppUser2);
 
 			// 2nd join. 1 call event, 2 participant events
 			iq = rayoClient2.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateJoins(joinQueue, xmppUser3,incoming2, mixerId, xmppUser2, xmppUser3);
+			validateJoins(joinQueue, xmppUser3,incoming2, mixerId, false, xmppUser2, xmppUser3);
 
 			// 3rd join. 1 call event, 3 participant events
 			iq = rayoClient3.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming3);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateJoins(joinQueue, xmppUser4,incoming3, mixerId, xmppUser2, xmppUser3, xmppUser4);
+			validateJoins(joinQueue, xmppUser4,incoming3, mixerId, false, xmppUser2, xmppUser3, xmppUser4);
 			
 			// 1st unjoin. 1 call event, 3 participant events
 			iq = rayoClient1.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateUnjoins(unjoinQueue, xmppUser2,incoming1, mixerId, xmppUser2, xmppUser3, xmppUser4);
+			validateUnjoins(unjoinQueue, xmppUser2,incoming1, mixerId, false, xmppUser2, xmppUser3, xmppUser4);
 
 			// 2nd unjoin. 1 call event, 2 participant events
 			iq = rayoClient2.unjoin(mixerId, JoinDestinationType.MIXER, incoming2);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateUnjoins(unjoinQueue, xmppUser3,incoming2, mixerId, xmppUser3, xmppUser4);
+			validateUnjoins(unjoinQueue, xmppUser3,incoming2, mixerId, false, xmppUser3, xmppUser4);
 
 			// 3rd unjoin. 1 call event, 1 participant events
 			iq = rayoClient3.unjoin(mixerId, JoinDestinationType.MIXER, incoming3);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateUnjoins(unjoinQueue, xmppUser4,incoming3, mixerId, xmppUser4);
+			validateUnjoins(unjoinQueue, xmppUser4,incoming3, mixerId, false, xmppUser4);
 
 			rayoClient1.hangup(outgoing1);
 			rayoClient2.hangup(outgoing2);
@@ -218,7 +218,7 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 	}
 	
 	private void validateJoins(LinkedBlockingQueue<Stanza> joinQueue,
-			String sender, String callId, String mixerId, String... participants) {
+			String sender, String callId, String mixerId, boolean validateParticipantEvents, String... participants) {
 
 		List<Stanza> stanzas = new ArrayList<Stanza>();
 		while(!joinQueue.isEmpty()) {
@@ -245,25 +245,27 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 		}
 		
 		// Validate participant events
-		for(String participant: participants) {
-			boolean participantEventFound = false;
-			for (Stanza stanza: stanzas) {
-				String from = stanza.getFrom().substring(0, stanza.getFrom().indexOf('@'));
-				String to = stanza.getTo().substring(0, stanza.getTo().indexOf('@'));
-				if (to.equals(participant) && from.equals(mixerId)) {
-					participantEventFound = true;
-					break;
+		if (validateParticipantEvents) {
+			for(String participant: participants) {
+				boolean participantEventFound = false;
+				for (Stanza stanza: stanzas) {
+					String from = stanza.getFrom().substring(0, stanza.getFrom().indexOf('@'));
+					String to = stanza.getTo().substring(0, stanza.getTo().indexOf('@'));
+					if (to.equals(participant) && from.equals(mixerId)) {
+						participantEventFound = true;
+						break;
+					}
+				}	
+				if (!participantEventFound) {
+					fail("Participant event for call id " + participant + " was not received");
 				}
-			}	
-			if (!participantEventFound) {
-				fail("Participant event for call id " + participant + " was not received");
 			}
 		}
 	}
 	
 	
 	private void validateUnjoins(LinkedBlockingQueue<Stanza> unjoinQueue,
-			String sender, String callId, String mixerId, String... participants) {
+			String sender, String callId, String mixerId, boolean validateParticipantEvents, String... participants) {
 
 		List<Stanza> stanzas = new ArrayList<Stanza>();
 		while(!unjoinQueue.isEmpty()) {
@@ -387,7 +389,7 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 	
 	
 	@Test
-	public void testDisableParticipantEvents() throws Exception {
+	public void testParticipantEvents() throws Exception {
 		
 		String mixerId = UUID.randomUUID().toString();
 		
@@ -439,37 +441,37 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 			IQ iq = rayoClient1.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateJoins(joinQueue, xmppUser2, incoming1, mixerId, xmppUser2);
+			validateJoins(joinQueue, xmppUser2, incoming1, mixerId, true, xmppUser2);
 
 			// 2nd join. 1 call event, 2 participant events
 			iq = rayoClient2.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateJoins(joinQueue, xmppUser3,incoming2, mixerId, xmppUser2, xmppUser3);
+			validateJoins(joinQueue, xmppUser3,incoming2, mixerId, true, xmppUser2, xmppUser3);
 
 			// 3rd join. 1 call event, 3 participant events
 			iq = rayoClient3.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming3);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateJoins(joinQueue, xmppUser4,incoming3, mixerId, xmppUser2, xmppUser3, xmppUser4);
+			validateJoins(joinQueue, xmppUser4,incoming3, mixerId, true, xmppUser2, xmppUser3, xmppUser4);
 			
 			// 1st unjoin. 1 call event, 3 participant events
 			iq = rayoClient1.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateUnjoins(unjoinQueue, xmppUser2,incoming1, mixerId, xmppUser2, xmppUser3, xmppUser4);
+			validateUnjoins(unjoinQueue, xmppUser2,incoming1, mixerId, true, xmppUser2, xmppUser3, xmppUser4);
 
 			// 2nd unjoin. 1 call event, 2 participant events
 			iq = rayoClient2.unjoin(mixerId, JoinDestinationType.MIXER, incoming2);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateUnjoins(unjoinQueue, xmppUser3,incoming2, mixerId, xmppUser3, xmppUser4);
+			validateUnjoins(unjoinQueue, xmppUser3,incoming2, mixerId, true, xmppUser3, xmppUser4);
 
 			// 3rd unjoin. 1 call event, 1 participant events
 			iq = rayoClient3.unjoin(mixerId, JoinDestinationType.MIXER, incoming3);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateUnjoins(unjoinQueue, xmppUser4,incoming3, mixerId, xmppUser4);
+			validateUnjoins(unjoinQueue, xmppUser4,incoming3, mixerId, true, xmppUser4);
 
 			rayoClient1.hangup(outgoing1);
 			rayoClient2.hangup(outgoing2);
@@ -536,7 +538,7 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 			IQ iq = rayoClient1.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateJoins(joinQueue, xmppUser2, incoming1, mixerId, xmppUser2);
+			validateJoins(joinQueue, xmppUser2, incoming1, mixerId, true, xmppUser2);
 
 			// unsubscribe
 			rayoClient1.unavailable(mixerId);
@@ -547,14 +549,14 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 			waitForEvents(500);
 			assertTrue(iq.isResult());
 			// But as test2 unsubscribed only test3 will receive the joined event from mixer
-			validateJoins(joinQueue, xmppUser3,incoming2, mixerId, xmppUser3);
+			validateJoins(joinQueue, xmppUser3,incoming2, mixerId, true, xmppUser3);
 			
 			// Again 2 mixer events in theory
 			iq = rayoClient2.unjoin(mixerId, JoinDestinationType.MIXER, incoming2);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
 			// But as test2 unsubscribed only test3 will receive the joined event from mixer
-			validateUnjoins(unjoinQueue, xmppUser3,incoming2, mixerId, xmppUser3);
+			validateUnjoins(unjoinQueue, xmppUser3,incoming2, mixerId, true, xmppUser3);
 
 			// resubscribe
 			rayoClient1.available(mixerId); 
@@ -564,7 +566,7 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 			iq = rayoClient1.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
 			waitForEvents(500);
 			assertTrue(iq.isResult());
-			validateUnjoins(unjoinQueue, xmppUser2,incoming1, mixerId, xmppUser2);
+			validateUnjoins(unjoinQueue, xmppUser2,incoming1, mixerId, true, xmppUser2);
 
 			// end
 			rayoClient1.hangup(outgoing1);
