@@ -127,6 +127,7 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		try {			
 			quiesceNode(nodeClient);
 			dequiesceNode(nodeClient);
+			waitForEvents();
 
 			int nodes2 = getNodes();
 			assertEquals(nodes2,nodes);
