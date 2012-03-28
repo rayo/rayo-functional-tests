@@ -852,11 +852,12 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertTrue(iq.isResult());
 		waitForEvents(500);
 		
-        rayoClient.output("This is a long phrase. It will never have the chance to finish as we are unjoining the mixer very soon" ,mixerName);
+        rayoClient.output("This is a long phrase. It will never have the chance to finish as we are unjoining the mixer very soon. This is a long phrase. It will never have the chance to finish as we are unjoining the mixer very soon. This is a long phrase. It will never have the chance to finish as we are unjoining the mixer very soon." ,mixerName);
         assertEquals(getActiveVerbsCount(mixerName), 1);
         
 		iq = rayoClient.unjoin(mixerName, JoinDestinationType.MIXER, incoming1);
 		assertTrue(iq.isResult());
+		waitForEvents(500);
         assertEquals(getActiveVerbsCount(mixerName), 0);
 		
 		waitForEvents();
