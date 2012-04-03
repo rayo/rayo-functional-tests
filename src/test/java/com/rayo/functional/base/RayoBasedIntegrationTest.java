@@ -488,6 +488,17 @@ public abstract class RayoBasedIntegrationTest {
 		return mixers.size();
 	}
 	
+	protected int getActiveMixersInNodes() throws Exception {
+		
+		int activeMixers = 0;
+		for (String nodeName : getNodeNames()) {
+			JmxClient client = new JmxClient(nodeName, "8080");
+			JSONArray mixers = ((JSONArray)client.jmxValue("com.rayo:Type=Mixers", "ActiveMixers"));
+			activeMixers += mixers.size();
+		}
+		return activeMixers;
+	}
+	
 	public List<String> getParticipants(String mixerName) throws Exception {
 		
 		JmxClient client = new JmxClient(rayoServer, "8080");

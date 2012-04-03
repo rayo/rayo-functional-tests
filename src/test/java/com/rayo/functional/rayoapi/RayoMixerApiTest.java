@@ -53,6 +53,56 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
+	public void testActiveMixersInNode() throws Exception {
+		
+		int activeMixers = getActiveMixersInNodes();
+		String outgoingCallId = dial().getCallId();
+		String incomingCallId = getIncomingCall().getCallId();
+		
+		rayoClient.answer(incomingCallId);
+		waitForEvents();
+
+		String outgoingCallId2 = dial().getCallId();
+		String incomingCallId2 = getIncomingCall().getCallId();
+		
+		rayoClient.answer(incomingCallId2);
+		waitForEvents();
+
+		String mixerId = UUID.randomUUID().toString();
+		String mixerId2 = UUID.randomUUID().toString();
+		
+		IQ iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incomingCallId);
+		assertTrue(iq.isResult());
+		JoinedEvent event = assertReceived(JoinedEvent.class, incomingCallId);
+		assertEquals(event.getTo(), mixerId);
+
+		iq = rayoClient.join(mixerId2, "bridge", "duplex", JoinDestinationType.MIXER, incomingCallId2);
+		assertTrue(iq.isResult());
+		JoinedEvent event2 = assertReceived(JoinedEvent.class, incomingCallId2);
+		assertEquals(event2.getTo(), mixerId2);
+
+		assertEquals(activeMixers + 2, getActiveMixersInNodes());
+		
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incomingCallId);
+		assertTrue(iq.isResult());
+		UnjoinedEvent unjoined = assertReceived(UnjoinedEvent.class, incomingCallId);
+		assertEquals(unjoined.getFrom(), mixerId);
+
+		assertEquals(activeMixers + 1, getActiveMixersInNodes());
+
+		iq = rayoClient.unjoin(mixerId2, JoinDestinationType.MIXER, incomingCallId2);
+		assertTrue(iq.isResult());
+		UnjoinedEvent unjoined2 = assertReceived(UnjoinedEvent.class, incomingCallId2);
+		assertEquals(unjoined2.getFrom(), mixerId2);
+
+		rayoClient.hangup(outgoingCallId);
+		rayoClient.hangup(outgoingCallId2);
+		waitForEvents();
+		
+		assertEquals(activeMixers, getActiveMixersInNodes());
+	}
+	
+	@Test
 	public void testJoinAndUnjoinMultipleCalls() throws Exception {
 		
 		String outgoing1 = dial().getCallId();
@@ -95,6 +145,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testOutputOnMixer() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerName = UUID.randomUUID().toString();
 		
 		String outgoing1 = dial().getCallId();
@@ -133,12 +184,15 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
-		waitForEvents();		
+		waitForEvents();	
+		
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	public void testAcceptAndJoinMixer() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerName = UUID.randomUUID().toString();
 		
 		String outgoing1 = dial().getCallId();
@@ -164,12 +218,14 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 
 		rayoClient.hangup(outgoing1);
-		waitForEvents();			
+		waitForEvents();		
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	public void testNoSelfEchoOnMixer() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerId = UUID.randomUUID().toString();
 		String outgoing1 = dial().getCallId();
 		waitForEvents(100);
@@ -195,12 +251,14 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		waitForEvents();		
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}	
 	
 	@Test
 	@Ignore
 	public void testNoEchoIfOutputAndJoinMixer() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerName = UUID.randomUUID().toString();
 		
 		String outgoing1 = dial().getCallId();
@@ -228,11 +286,13 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		waitForEvents();			
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	public void testInputOnMixer() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerId = UUID.randomUUID().toString();
 		//String outgoing1 = dial().getCallId();
 		//waitForEvents(100);
@@ -258,7 +318,8 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 
 		//rayoClient.hangup(outgoing1);
-		waitForEvents();		
+		waitForEvents();
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	
@@ -268,6 +329,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	// the client application will never get the output complete event. 
 	public void testCompleteEventNotReceivedIfUnjoin() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerName = UUID.randomUUID().toString();
 		
 		String outgoing1 = dial().getCallId();
@@ -288,11 +350,13 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		waitForEvents();		
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	public void testHoldUnholdOnMixer() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
 		rayoClient.answer(incoming1);
@@ -339,11 +403,13 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
 		waitForEvents();		
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 
 	@Test
 	public void testActiveSpeakerEvents() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
 		rayoClient.answer(incoming1);
@@ -380,13 +446,15 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
-		waitForEvents();		
+		waitForEvents();
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 
 	@Test
 	public void testActiveSpeakerEventsMultiplePhrases() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerId = UUID.randomUUID().toString();
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
@@ -424,11 +492,13 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
 		waitForEvents();		
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	public void testMultipleSpeakers() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerId = UUID.randomUUID().toString();
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
@@ -485,13 +555,15 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
-		waitForEvents();		
+		waitForEvents();	
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}	
 
 	@Test
 	// If we whisper to a member of a conference there should not be active speaker events
 	public void testWhisperDoesNotGenerateActiveSpeakerEvents() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
 		rayoClient.answer(incoming1);
@@ -525,7 +597,8 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
-		waitForEvents();		
+		waitForEvents();
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 
 	@Test
@@ -574,12 +647,14 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
-		waitForEvents();		
+		waitForEvents();	
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	public void testTotalMixers() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String outgoing1 = dial().getCallId();
 		String incoming1 = getIncomingCall().getCallId();
 		rayoClient.answer(incoming1);
@@ -609,11 +684,13 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoing1);
 		waitForEvents();		
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	public void testShouldRecordAndGetValidMetadata() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
@@ -645,6 +722,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	
@@ -652,6 +730,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	@Ignore
 	public void testMediaRecorded() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
@@ -688,6 +767,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
@@ -695,6 +775,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	// removed when a call is finished
 	public void testMixerParticipants() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String outgoing1 = dial().getCallId();
 		waitForEvents(500);
 		String incoming1 = getIncomingCall().getCallId();
@@ -743,6 +824,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.hangup(outgoing1);
 		rayoClient.hangup(outgoing2);
 		waitForEvents();		
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 
 	@Test
@@ -750,6 +832,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	// removed when a call ends
 	public void testMixerParticipantsOnCallEnd() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String outgoing1 = dial().getCallId();
 		waitForEvents(500);
 		String incoming1 = getIncomingCall().getCallId();
@@ -785,7 +868,8 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertTrue(participants.contains(incoming2));
 		
 		rayoClient.hangup(outgoing2);		
-		waitForEvents();			
+		waitForEvents();	
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
@@ -793,6 +877,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	// removed when the verb is completed
 	public void testMixerVerbs() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerName = UUID.randomUUID().toString();
 		
 		String outgoing1 = dial().getCallId();
@@ -827,7 +912,8 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 
 		rayoClient.hangup(outgoing1);
-		waitForEvents();		
+		waitForEvents();	
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 
 	
@@ -836,6 +922,7 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	// Two outputs on a mixer. how this should behave?
 	public void testMixerAndTwoOutputs() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerName = UUID.randomUUID().toString();
 		
 		String outgoing1 = dial().getCallId();
@@ -854,13 +941,15 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 
 		rayoClient.hangup(outgoing1);
-		waitForEvents();		
+		waitForEvents();	
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	// Tests that mixer verbs are disposed on the Gateway after verb failure
 	public void testMixerVerbsAreDisposedAfterVerbStop() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerName = UUID.randomUUID().toString();		
 		String outgoing1 = dial().getCallId();
 		waitForEvents();
@@ -886,12 +975,14 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 		rayoClient.hangup(outgoing1);
 		waitForEvents();
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	// Tests that mixer verbs are disposed on the Gateway after verb failure
 	public void testMixerVerbsAreDisposedOnFailure() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerName = UUID.randomUUID().toString();		
 		String outgoing1 = dial().getCallId();
 		waitForEvents();
@@ -915,12 +1006,14 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 		rayoClient.hangup(outgoing1);
 		waitForEvents();
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	@Test
 	// Tests that mixer verbs are disposed on the Gateway after verb failure
 	public void testMixerVerbsDisposedOnMixerUnjoin() throws Exception {
 		
+		int activeMixers = getActiveMixersInNodes();
 		String mixerName = UUID.randomUUID().toString();		
 		String outgoing1 = dial().getCallId();
 		waitForEvents();
@@ -943,5 +1036,6 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 		rayoClient.hangup(outgoing1);
 		waitForEvents();
+		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 }
