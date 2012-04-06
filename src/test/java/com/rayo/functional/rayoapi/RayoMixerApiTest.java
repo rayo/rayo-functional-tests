@@ -466,6 +466,117 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
+	@Test
+	public void testMixerActorsAreDisposedOnUnjoin() throws Exception {
+		/*
+		 * If actors are not disposed they will receive and dispatch events even though 
+		 * the mixer may not exist
+		 */
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		String mixerId = UUID.randomUUID().toString();
+
+		IQ iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+
+		rayoClient.output("Hello world.", outgoing1);
+		waitForEvents(100);
+
+		assertReceived(StartedSpeakingEvent.class, mixerId);
+		// We should only got 1 event
+		assertNotReceived(StartedSpeakingEvent.class, mixerId);
+
+		assertReceived(StoppedSpeakingEvent.class, mixerId);
+		// We should only got 1 event.
+		assertNotReceived(StoppedSpeakingEvent.class, mixerId);
+
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+		waitForEvents();
+		
+		// Now repeat the same process again. Joining the mixer will create a new actor
+		// but no additional events should pop up
+		iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+
+		rayoClient.output("Hello world.", outgoing1);
+		waitForEvents(100);
+		
+		assertReceived(StartedSpeakingEvent.class, mixerId);
+		// We should only got 1 event
+		assertNotReceived(StartedSpeakingEvent.class, mixerId);
+
+		assertReceived(StoppedSpeakingEvent.class, mixerId);
+		// We should only got 1 event.
+		assertNotReceived(StoppedSpeakingEvent.class, mixerId);
+
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());				
+		waitForEvents();
+
+		rayoClient.hangup(outgoing1);
+		waitForEvents();
+	}
+	
+	@Test
+	public void testMixerActorsAreDisposedOnEnd() throws Exception {
+		/*
+		 * If actors are not disposed they will receive and dispatch events even though 
+		 * the mixer may not exist
+		 */
+		String outgoing1 = dial().getCallId();
+		String incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+
+		String mixerId = UUID.randomUUID().toString();
+
+		IQ iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+
+		rayoClient.output("Hello world.", outgoing1);
+		waitForEvents(100);
+
+		assertReceived(StartedSpeakingEvent.class, mixerId);
+		// We should only got 1 event
+		assertNotReceived(StartedSpeakingEvent.class, mixerId);
+
+		assertReceived(StoppedSpeakingEvent.class, mixerId);
+		// We should only got 1 event.
+		assertNotReceived(StoppedSpeakingEvent.class, mixerId);
+
+		rayoClient.hangup(outgoing1);
+		waitForEvents();
+		
+		// Now repeat the same process again. Joining the mixer will create a new actor
+		// but no additional events should pop up
+		outgoing1 = dial().getCallId();
+		incoming1 = getIncomingCall().getCallId();
+		rayoClient.answer(incoming1);
+		waitForEvents();
+		
+		iq = rayoClient.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());
+
+		rayoClient.output("Hello world.", outgoing1);
+		waitForEvents(100);
+		
+		assertReceived(StartedSpeakingEvent.class, mixerId);
+		// We should only got 1 event
+		assertNotReceived(StartedSpeakingEvent.class, mixerId);
+
+		assertReceived(StoppedSpeakingEvent.class, mixerId);
+		// We should only got 1 event.
+		assertNotReceived(StoppedSpeakingEvent.class, mixerId);
+
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
+		assertTrue(iq.isResult());				
+		waitForEvents();
+
+		rayoClient.hangup(outgoing1);
+		waitForEvents();
+	}
 
 	@Test
 	public void testActiveSpeakerEventsMultiplePhrases() throws Exception {
@@ -1055,5 +1166,50 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 		rayoClient.hangup(outgoing1);
 		waitForEvents();
 		assertEquals(activeMixers, getActiveMixersInNodes());
+	}
+	
+	@Test
+	public void testJoinCallsAndThenJoinMixer() throws Exception {
+		
+		String outgoingCallId1 = dial().getCallId();
+		String incomingCallId1 = getIncomingCall().getCallId();
+		
+		rayoClient.answer(incomingCallId1);
+		waitForEvents();
+		
+		String outgoingCallId2 = dial().getCallId();
+		String incomingCallId2 = getIncomingCall().getCallId();
+		
+		rayoClient.answer(incomingCallId2);
+		waitForEvents();
+		
+		String mixerId = UUID.randomUUID().toString();
+				
+		IQ iq = rayoClient.join(incomingCallId1, "bridge", "duplex", JoinDestinationType.CALL, incomingCallId2);
+		assertTrue(iq.isResult());
+		assertReceived(JoinedEvent.class, incomingCallId1);
+
+		iq = rayoClient.join(mixerId, null, null, JoinDestinationType.MIXER, incomingCallId1);
+		assertTrue(iq.isResult());
+
+		iq = rayoClient.join(mixerId, null, null, JoinDestinationType.MIXER, incomingCallId2);
+		assertTrue(iq.isResult());
+
+		JoinedEvent event = assertReceived(JoinedEvent.class, mixerId);
+		event = assertReceived(JoinedEvent.class, mixerId);
+
+		
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incomingCallId1);
+		assertTrue(iq.isResult());
+
+		iq = rayoClient.unjoin(mixerId, JoinDestinationType.MIXER, incomingCallId2);
+		assertTrue(iq.isResult());
+
+		assertReceived(UnjoinedEvent.class, incomingCallId1);
+		assertReceived(UnjoinedEvent.class, incomingCallId2);
+		
+		rayoClient.hangup(outgoingCallId1);
+		rayoClient.hangup(outgoingCallId2);
+		waitForEvents();
 	}
 }
