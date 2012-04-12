@@ -820,7 +820,6 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testShouldRecordAndGetValidMetadata() throws Exception {
 		
-		int activeMixers = getActiveMixersInNodes();
 		String outgoingCallId = dial().getCallId();
 		String incomingCallId = getIncomingCall().getCallId();
 		
@@ -852,7 +851,6 @@ public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
-		assertEquals(activeMixers, getActiveMixersInNodes());
 	}
 	
 	
