@@ -187,23 +187,23 @@ public abstract class RayoBasedIntegrationTest {
 		int i = 0;
 		log.trace(String.format("Asserting event [%s] on call [%s]. Try %s", eventClass, callId, i+1));
 		List<Object> events = callEvents.get(callId);
-		if (events != null) {
 			do {
-				T evt = null;
-				for (Object event: events) {
-					if (eventClass.isAssignableFrom(event.getClass())) {
-						evt = (T)event;
-						break;
+				if (events != null) {
+					T evt = null;
+					for (Object event: events) {
+						if (eventClass.isAssignableFrom(event.getClass())) {
+							evt = (T)event;
+							break;
+						}
 					}
+					if (evt != null) {
+						events.remove(evt);
+						return evt;
+					}
+					i++;
+					waitForEvents(waitTime);
 				}
-				if (evt != null) {
-					events.remove(evt);
-					return evt;
-				}
-				i++;
-				waitForEvents(waitTime);
 			} while (i<retries);
-		}
 		log.error("Call event not found");
 		throw new AssertionError("Call Event not found");
 	}
