@@ -538,17 +538,17 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 			
 			// 1st join. 1 call event, 1 participant event
 			IQ iq = rayoClient1.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming1);
-			waitForEvents(500);
+			waitForEvents(1000);
 			assertTrue(iq.isResult());
 			validateJoins(joinQueue, xmppUser2, incoming1, mixerId, true, xmppUser2);
 
 			// unsubscribe
 			rayoClient1.unavailable(mixerId);
-			waitForEvents(500);
+			waitForEvents(1000);
 
 			// 2nd join. In theory 1 call event, 2 participant events
 			iq = rayoClient2.join(mixerId, "bridge", "duplex", JoinDestinationType.MIXER, incoming2);
-			waitForEvents(500);
+			waitForEvents(1000);
 			assertTrue(iq.isResult());
 			// But as test2 unsubscribed only test3 will receive the joined event from mixer
 			validateJoins(joinQueue, xmppUser3,incoming2, mixerId, true, xmppUser3);
@@ -562,11 +562,11 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 
 			// resubscribe
 			rayoClient1.available(mixerId); 
-			waitForEvents(500);
+			waitForEvents(1000);
 			
 			// 2nd unjoin. Available. It will get the unjoin
 			iq = rayoClient1.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
-			waitForEvents(500);
+			waitForEvents(1000);
 			assertTrue(iq.isResult());
 			validateUnjoins(unjoinQueue, xmppUser2,incoming1, mixerId, true, xmppUser2);
 

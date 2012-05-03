@@ -55,7 +55,7 @@ public class ClientResourcesTest extends RayoBasedIntegrationTest {
 			rayoClient2 = new RayoClient(xmppServer, rayoServer);
 			rayoClient2.connect(xmppUsername, xmppPassword, "resource2");
 	
-			waitForEvents(500);
+			waitForEvents(1000);
 			JmxClient client = new JmxClient(rayoServer, "8080");
 			
 			List<String> resources = getResourcesForAppId(client, "voxeo"); 
