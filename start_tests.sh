@@ -81,7 +81,7 @@ knife ec2 server create \
 --ssh-user ${SSH_USER} \
 --environment ${CHEF_ENVIRONMENT} \
 --identity-file ${SSH_KEY_PATH} \
---run-list 'role[base],recipe[rayo_node]' \
+--run-list 'role[base],role[rayo_node]' \
 --node-name ${NODE_HOSTNAME} \
 --tags Name=${NODE_HOSTNAME},Build=${BUILD_TAG},BuildId=${BUILD_NUMBER},Branch=${RAYO_GIT_BRANCH} \
 --user-data ~/.chef/userdata/userdata.sh | tee chef_deployment_logs/rft-node_rayo_chef_deployment.$BUILD_NUMBER.log &
