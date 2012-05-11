@@ -21,7 +21,7 @@ SSH_KEY_PATH=~/.ssh/test_ssh_key
 #
 #################################
 HOSTNAME=rft
-XMPP_SERVER_DOMAIN=xmpp.${TEST_DOMAIN}
+XMPP_SERVER_DOMAIN=xmpp.testing.voxeolabs.net #xmpp.${TEST_DOMAIN}
 XMPP_SERVER_USERNAME=rayo
 XMPP_SERVER_PASSWORD=p@ssword
 
