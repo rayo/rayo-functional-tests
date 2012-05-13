@@ -148,7 +148,7 @@ wait
 #
 ##########################################
 PARAMETERS="-Dxmpp.server=${XMPP_SERVER_DOMAIN}"
-PARAMETERS="${PARAMETERS} -Drayo.server=${rft-gw-client}.${TEST_DOMAIN}"
+PARAMETERS="${PARAMETERS} -Drayo.server=rft-gw-client.${TEST_DOMAIN}"
 PARAMETERS="${PARAMETERS} -Dxmpp.username=${XMPP_SERVER_USERNAME}"
 PARAMETERS="${PARAMETERS} -Dxmpp.password=${XMPP_SERVER_PASSWORD}"
 PARAMETERS="${PARAMETERS} -Dhudson.append.ext=true"
