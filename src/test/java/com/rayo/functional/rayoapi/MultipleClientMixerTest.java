@@ -269,7 +269,7 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 	private void validateUnjoins(LinkedBlockingQueue<Stanza> unjoinQueue,
 			String sender, String callId, String mixerId, boolean validateParticipantEvents, String... participants) {
 
-		waitForEvents(500);
+		waitForEvents(1500);
 		List<Stanza> stanzas = new ArrayList<Stanza>();
 		while(!unjoinQueue.isEmpty()) {
 			stanzas.add(unjoinQueue.poll());
