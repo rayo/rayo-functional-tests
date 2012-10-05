@@ -19,6 +19,7 @@ import com.rayo.core.JoinDestinationType;
 import com.rayo.core.JoinedEvent;
 import com.rayo.core.UnjoinedEvent;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
+import com.voxeo.rayo.client.JmxClient;
 import com.voxeo.rayo.client.RayoClient;
 import com.voxeo.rayo.client.filter.XmppObjectExtensionNameFilter;
 import com.voxeo.rayo.client.filter.XmppObjectFilter;
@@ -311,7 +312,7 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 	}
 
 	@Test
-	public void testMultipleClientesGetMultipleActiveSpeakerEvents() throws Exception {
+	public void testMultipleClientsGetMultipleActiveSpeakerEvents() throws Exception {
 		
 		String mixerId = UUID.randomUUID().toString();
 
@@ -586,5 +587,16 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 				}
 			}
 		}		
+	}
+	
+	protected void registerApplication(String platform, String name, String jid) throws Exception {
+		
+		try {
+			super.registerApplication(platform, name, jid);
+		} catch (Exception e) {
+			if (!e.getMessage().contains("ApplicationAlreadyExistsException")) {
+				throw e;
+			}
+		}
 	}
 }
