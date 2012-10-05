@@ -75,7 +75,8 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		waitForEvents();
 		
 		InputCompleteEvent inputComplete = assertReceived(InputCompleteEvent.class, outgoingCallId);
-		assertEquals(inputComplete.getUtterance(), "hello world");
+		//assertEquals(inputComplete.getUtterance(), "hello world");
+		assertEquals(inputComplete.getConcept(), "hello world");
 		
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
