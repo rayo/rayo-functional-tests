@@ -563,11 +563,11 @@ public class MultipleClientMixerTest extends RayoBasedIntegrationTest {
 
 			// resubscribe
 			rayoClient1.available(mixerId); 
-			waitForEvents(1000);
+			waitForEvents(2000);
 			
 			// 2nd unjoin. Available. It will get the unjoin
 			iq = rayoClient1.unjoin(mixerId, JoinDestinationType.MIXER, incoming1);
-			waitForEvents(1000);
+			waitForEvents(2000);
 			assertTrue(iq.isResult());
 			validateUnjoins(unjoinQueue, xmppUser2,incoming1, mixerId, true, xmppUser2);
 
