@@ -1,6 +1,5 @@
 package com.rayo.functional;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
@@ -10,7 +9,6 @@ import com.voxeo.moho.Call;
 import com.voxeo.moho.IncomingCall;
 import com.voxeo.moho.OutgoingCall;
 import com.voxeo.moho.event.InputCompleteEvent;
-import com.voxeo.moho.event.InputCompleteEvent.Cause;
 import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.input.InputCommand;
 import com.voxeo.moho.media.input.SimpleGrammar;

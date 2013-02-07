@@ -39,7 +39,11 @@
       <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
-
+	<dependency>
+		<artifactId>commons-codec</artifactId>
+		<groupId>commons-codec</groupId>
+		<version>1.4</version>
+	</dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-exec</artifactId>
@@ -48,7 +52,7 @@
     <dependency>
       <groupId>com.voxeo.moho</groupId>
       <artifactId>moho-remote</artifactId>
-      <version>0.8-SNAPSHOT</version>
+      <version>trunk-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <artifactId>commons-codec</artifactId>

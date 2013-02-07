@@ -25,7 +25,7 @@ import com.voxeo.moho.media.output.TextToSpeechResource;
 
 public class OutputTest extends MohoBasedIntegrationTest {
 
-	String audioURL = "http://dl.dropbox.com/u/25511/Voxeo/troporocks.mp3"; // 7-8 seconds length
+	String audioURL = "http://www.phono.com/audio/troporocks.mp3"; // 7-8 seconds length
 	
 	@Test
 	public void testOutputCompleteReceived() {

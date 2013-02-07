@@ -214,10 +214,10 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    	assertTrue(e.getMessage().contains("The call has not been answered"));
 	    }
 	    Thread.sleep(100);
+	    MohoCallCompleteEvent endIncoming = assertReceived(MohoCallCompleteEvent.class, incoming);
+	    assertEquals(endIncoming.getCause(), com.voxeo.moho.event.CallCompleteEvent.Cause.ERROR);
 	    MohoCallCompleteEvent endOutgoing = assertReceived(MohoCallCompleteEvent.class, outgoing);
 	    assertEquals(endOutgoing.getCause(), com.voxeo.moho.event.CallCompleteEvent.Cause.DECLINE);
-	    MohoCallCompleteEvent endIncoming = assertReceived(MohoCallCompleteEvent.class, incoming);
-	    assertEquals(endIncoming.getCause(), com.voxeo.moho.event.CallCompleteEvent.Cause.ERROR);		    
 	}
 	
 	@Test

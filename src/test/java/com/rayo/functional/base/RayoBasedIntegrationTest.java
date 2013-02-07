@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rayo.core.verb.VerbRef;
+import com.rayo.core.CallRef;
 import com.voxeo.rayo.client.JmxClient;
 import com.voxeo.rayo.client.RayoClient;
 import com.voxeo.rayo.client.listener.StanzaListener;
@@ -117,12 +117,12 @@ public abstract class RayoBasedIntegrationTest {
 		});
 	}
 	
-	public VerbRef dial() throws Exception {
+	public CallRef dial() throws Exception {
 		
 		return dial(new URI(sipDialUri));
 	}
 	
-	public VerbRef dial(URI uri) throws Exception {
+	public CallRef dial(URI uri) throws Exception {
 		
 		return rayoClient.dial(uri);
 	}
@@ -308,7 +308,7 @@ public abstract class RayoBasedIntegrationTest {
 		xmppPassword = getProperty("xmpp.password", "1");
 		xmppServer = getProperty("xmpp.server", "localhost");
 		rayoServer = getProperty("rayo.server", "localhost");
-		sipDialUri = getProperty("sip.dial.uri", "sip:usera@localhost:6062");
+		sipDialUri = getProperty("sip.dial.uri", "sip:usera@localhost:5060");
 	}
 
 	private String getProperty(String property, String defaultValue) {
