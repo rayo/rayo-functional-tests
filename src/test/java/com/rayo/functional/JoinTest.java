@@ -24,7 +24,6 @@ import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.input.InputCommand;
 import com.voxeo.moho.media.input.SimpleGrammar;
 
-@Ignore
 public class JoinTest extends MohoBasedIntegrationTest {
 
   @Test
@@ -419,6 +418,7 @@ public class JoinTest extends MohoBasedIntegrationTest {
 
   // test https://voxeolabs.atlassian.net/browse/RAYO-1
   @Test
+  @Ignore
   public void testJoinedDuplextRejoinReceived() {
     OutgoingCall outgoing1 = dial();
     IncomingCall incoming1 = getIncomingCall();
