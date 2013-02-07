@@ -24,6 +24,7 @@ import com.voxeo.moho.media.Input;
 import com.voxeo.moho.media.input.InputCommand;
 import com.voxeo.moho.media.input.SimpleGrammar;
 
+@Ignore
 public class JoinTest extends MohoBasedIntegrationTest {
 
   @Test
