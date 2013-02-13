@@ -35,7 +35,6 @@ public class RayoNodeTest extends RayoBasedIntegrationTest {
 		
 	// Cluster Docs. Scenario 13
 	@Test
-	@Ignore
 	public void testRayoNodesReceiveErrorIfNoClients() throws Exception {
 
 		// We are going to cheat. We are going to connect directly to one of 
