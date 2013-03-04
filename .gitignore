@@ -37,5 +37,5 @@ bin/
 *.log
 
 
-config/config.yml
-vendor
+ruby_suite/config/config.yml
+ruby_suite/vendor
