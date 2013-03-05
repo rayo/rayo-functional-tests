@@ -12,22 +12,6 @@
   <name>Rayo Server Functional Tests</name>
         <repositories>
                 <repository>
-                        <id>maven.voxeolabs.net</id>
-                        <name>Voxeo Labs</name>
-                        <releases>
-                                <enabled>true</enabled>
-                                <updatePolicy>never</updatePolicy>
-                                <checksumPolicy>fail</checksumPolicy>
-                        </releases>
-                        <snapshots>
-                                <enabled>true</enabled>
-                                <updatePolicy>always</updatePolicy>
-                                <checksumPolicy>fail</checksumPolicy>
-                        </snapshots>
-                        <url>http://maven.voxeolabs.net:8081/nexus/content/repositories/snapshots</url>
-                        <layout>default</layout>
-                </repository>
-                <repository>
                         <id>public.maven.voxeolabs.net</id>
                         <name>Voxeo Labs</name>
                         <releases>
@@ -86,7 +70,7 @@
     <dependency>
       <groupId>com.voxeo.moho</groupId>
       <artifactId>moho-remote</artifactId>
-      <version>trunk-SNAPSHOT</version>
+      <version>cpa-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <artifactId>commons-codec</artifactId>
