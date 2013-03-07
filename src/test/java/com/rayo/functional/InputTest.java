@@ -22,7 +22,7 @@ import com.voxeo.moho.media.output.TextToSpeechResource;
 
 public class InputTest extends MohoBasedIntegrationTest {
 
-	private String grxml = "<grammar xmlns=\"http://www.w3.org/2001/06/grammar\" root=\"MAINRULE\"> " +
+	public static String grxml = "<grammar xmlns=\"http://www.w3.org/2001/06/grammar\" root=\"MAINRULE\"> " +
         "<rule id=\"MAINRULE\"> " +
           "<one-of> " +
             "<item> " +
@@ -82,6 +82,28 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
 	    assertEquals(complete.getCause(), Cause.MATCH);
 	    assertEquals(complete.getInterpretation(),"dtmf-7");		
+	}
+	
+	@Test
+	public void testInputMultipleDTMF() {
+		
+	    OutgoingCall outgoing = dial();
+	    
+	    IncomingCall incoming = getIncomingCall();
+	    assertNotNull(incoming);
+	    incoming.answer();
+	    
+	    InputCommand command = new InputCommand(new SimpleGrammar("[2 DIGITS]"));
+	    command.setInputMode(InputMode.DTMF);
+	    Input<Call> input = incoming.input(command);
+	    
+        String text = "<speak><audio src=\"dtmf:75\"/></speak>";
+        OutputCommand outputCommand = new OutputCommand(new TextToSpeechResource(text));        
+	    outgoing.output(outputCommand);
+
+	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
+	    assertEquals(complete.getCause(), Cause.MATCH);
+	    assertEquals(complete.getInterpretation(),"dtmf-7 dtmf-5");		
 	}
 	
 	@Test
