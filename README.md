@@ -36,11 +36,7 @@ mvn clean install -Dmaven.test.skip=true
 git clone git@github.com:rayo/rayo-functional-tests.git
 ```
 
-5. Start prism
-```
-/opt/voxeo/prism/bin/prism run as
-/opt/voxeo/prism/bin/prism run ms
-```
+5. Start the rayo server
 
 6. Run all tests, an individual test class or an individual test method
 ```
