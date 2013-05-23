@@ -278,7 +278,7 @@ public abstract class RayoBasedIntegrationTest {
 		}
 	}
 	
-	private String getCallId(Stanza<?> stanza) {
+	protected String getCallId(Stanza<?> stanza) {
 		
 		String callId = null;
 		int at = stanza.getFrom().indexOf('@');
