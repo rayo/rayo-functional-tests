@@ -342,13 +342,17 @@ public abstract class RayoBasedIntegrationTest {
 	protected List<String> getNodeNames(JmxClient client) throws Exception {
 		
 		List<String> nodesList = new ArrayList<String>();
-		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
-		Iterator<JSONObject> it = nodes.iterator();
-		int j = 0;
-		while(it.hasNext()) {
-			JSONObject json = it.next();
-			String jid = (String)json.get("hostname");
-			nodesList.add(jid);
+		if ("true".equals(System.getProperty("cluster.test"))) {
+			JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
+			Iterator<JSONObject> it = nodes.iterator();
+			int j = 0;
+			while(it.hasNext()) {
+				JSONObject json = it.next();
+				String jid = (String)json.get("hostname");
+				nodesList.add(jid);
+			}
+		} else {
+			nodesList.add(System.getProperty("rayo.server"));
 		}
 		return nodesList;
 	}
@@ -381,19 +385,23 @@ public abstract class RayoBasedIntegrationTest {
 	
 	protected String getNodeName(int i) throws Exception {
 		
-		JmxClient client = new JmxClient(rayoServer, "8080");
-		JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
-		Iterator<JSONObject> it = nodes.iterator();
-		int j = 0;
-		while(it.hasNext()) {
-			JSONObject json = it.next();
-			if (j == i) {
-				String jid = (String)json.get("hostname");
-				return jid;
+		if ("true".equals(System.getProperty("cluster.test"))) {
+			JmxClient client = new JmxClient(rayoServer, "8080");
+			JSONArray nodes = ((JSONArray)client.jmxValue("com.rayo.gateway:Type=Gateway", "RayoNodes"));
+			Iterator<JSONObject> it = nodes.iterator();
+			int j = 0;
+			while(it.hasNext()) {
+				JSONObject json = it.next();
+				if (j == i) {
+					String jid = (String)json.get("hostname");
+					return jid;
+				}
+				j++;
 			}
-			j++;
+			return null;
+		} else {
+			return System.getProperty("rayo.server");
 		}
-		return null;
 	}
 	
 	protected Object getCdr(JmxClient jmx, String id) throws Exception {
@@ -580,13 +588,13 @@ public abstract class RayoBasedIntegrationTest {
 	
 	protected void registerApplication(String platform, String name, String jid) throws Exception {
 		
-		JmxClient client = new JmxClient(rayoServer, "8080");
+		JmxClient client = new JmxClient(rayoServer, "8080", "rayo/jmx");
 		client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "registerApplication", platform, name, jid);
 	}
 	
 	protected void registerAddress(String appId, String address) throws Exception {
 		
-		JmxClient client = new JmxClient(rayoServer, "8080");
+		JmxClient client = new JmxClient(rayoServer, "8080", "rayo/jmx");
 		client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "registerAddress", appId, address);
 	}
 }
