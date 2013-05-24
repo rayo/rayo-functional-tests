@@ -1,6 +1,8 @@
 package com.rayo.functional.base;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -596,5 +598,10 @@ public abstract class RayoBasedIntegrationTest {
 		
 		JmxClient client = new JmxClient(rayoServer, "8080", "rayo/jmx");
 		client.jmxExec("com.rayo.gateway:Type=Admin,name=Admin", "registerAddress", appId, address);
+	}
+	
+	protected URL getResourceUrl(String filename) throws MalformedURLException {
+
+		return new URL("http://" + rayoServer + ":8080/rayo/resources/" + filename);
 	}
 }

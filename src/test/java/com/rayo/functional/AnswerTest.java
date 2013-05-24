@@ -46,5 +46,6 @@ public class AnswerTest extends MohoBasedIntegrationTest {
 	    
 	    MohoCallCompleteEvent endOutgoing = assertReceived(MohoCallCompleteEvent.class, outgoing);
 	    assertEquals(endOutgoing.getCause(), Cause.DISCONNECT);
-	}	
+	}
+		
 }

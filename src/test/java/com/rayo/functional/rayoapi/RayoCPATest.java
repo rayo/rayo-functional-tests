@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 
 import java.net.URL;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.core.verb.CpaData;
@@ -24,7 +23,6 @@ import com.voxeo.rayo.client.XmppException;
 import com.voxeo.rayo.client.xmpp.stanza.Error.Condition;
 import com.voxeo.rayo.client.xmpp.stanza.IQ;
 
-@Ignore
 public class RayoCPATest extends RayoBasedIntegrationTest {
 
 	@Test
@@ -55,7 +53,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		rayoClient.input(cpaInput, incomingCallId);
 		waitForEvents();
 		
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("test.cpa.sit.wav");
+		URL beep = getResourceUrl("test.cpa.sit.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(3000);
 		
@@ -81,7 +79,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		rayoClient.input(cpaInput, incomingCallId);
 		waitForEvents();
 		
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("test.cpa.fax.wav");
+		URL beep = getResourceUrl("test.cpa.fax.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(6000);
 		SignalEvent signal = assertReceived(SignalEvent.class, incomingCallId);
@@ -106,7 +104,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		rayoClient.input(cpaInput, incomingCallId);
 		waitForEvents();
 		
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("test.cpa.fax.wav");
+		URL beep = getResourceUrl("test.cpa.fax.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(3000);
 		SignalEvent signal = assertReceived(SignalEvent.class, incomingCallId);
@@ -136,7 +134,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		VerbRef inputRef = rayoClient.input(cpaInput, incomingCallId);
 		waitForEvents();
 		
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("test.cpa.sit.wav");
+		URL beep = getResourceUrl("test.cpa.sit.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(300);
 		
@@ -166,7 +164,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		rayoClient.input(cpaInput, incomingCallId, grammar);
 		waitForEvents();
 		
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("test.cpa.sit.wav");
+		URL beep = getResourceUrl("test.cpa.sit.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(3000);
 		
@@ -283,7 +281,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		rayoClient.input(cpaInput, incomingCallId);
 		waitForEvents();
 	    
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("test.cpa.am.wav");
+		URL beep = getResourceUrl("test.cpa.am.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(20000);
 	    
@@ -313,7 +311,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		waitForEvents();
 	    
 		// 4.8 seconds speech
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("human.wav");
+		URL beep = getResourceUrl("human.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(6000);
 	    
@@ -343,7 +341,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		waitForEvents();
 	    
 		// 4.8 seconds speech
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("human.wav");
+		URL beep = getResourceUrl("human.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(6000);
 	    
@@ -368,7 +366,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		rayoClient.input(cpaInput, incomingCallId);
 		waitForEvents();
 		
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("beep.wav");
+		URL beep = getResourceUrl("beep.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(3000);
 		
@@ -417,7 +415,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		rayoClient.input(cpaInput, incomingCallId);
 		waitForEvents();
 		
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("test.cpa.sit.wav");
+		URL beep = getResourceUrl("test.cpa.sit.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(3000);
 		
@@ -446,7 +444,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		rayoClient.input(cpaInput, incomingCallId);
 		waitForEvents();
 		
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("test.cpa.sit.wav");
+		URL beep = getResourceUrl("test.cpa.sit.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(3000);
 		
@@ -545,7 +543,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		waitForEvents();
 	    
 		// 4.8 seconds speech
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("human.wav");
+		URL beep = getResourceUrl("human.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(6000);
 	    
@@ -578,7 +576,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 		waitForEvents();
 	    
 		// 4.8 seconds speech
-		URL beep = Thread.currentThread().getContextClassLoader().getResource("human.wav");
+		URL beep = getResourceUrl("human.wav");
 		rayoClient.output(beep.toURI(), outgoingCallId);
 		waitForEvents(6000);
 	    

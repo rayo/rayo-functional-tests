@@ -20,7 +20,7 @@ public class CdrTest extends RayoBasedIntegrationTest {
 		    try {
 			    Object value = null;
 			    for (String node: getNodeNames()) {
-					JmxClient nodeClient = new JmxClient(node, "8080");
+					JmxClient nodeClient = new JmxClient(node, "8080","rayo/jmx");
 					value = getAttributeValue(nodeClient, "com.rayo:Type=Cdrs", "ActiveCDRs", "callId", incomingCallId);
 			    	if (value != null) break;
 			    }
@@ -40,7 +40,7 @@ public class CdrTest extends RayoBasedIntegrationTest {
 	    try {
 		    Object cdr = null;
 		    for (String node: getNodeNames()) {
-				JmxClient nodeClient = new JmxClient(node, "8080");
+				JmxClient nodeClient = new JmxClient(node, "8080", "rayo/jmx");
 				cdr = getCdr(nodeClient, outgoingCall);
 		    	if (cdr != null) break;
 		    }
@@ -62,7 +62,7 @@ public class CdrTest extends RayoBasedIntegrationTest {
 	    try {
 		    String value = null;
 		    for (String node: getNodeNames()) {
-				JmxClient nodeClient = new JmxClient(node, "8080");
+				JmxClient nodeClient = new JmxClient(node, "8080", "rayo/jmx");
 				value = getCdrTranscript(nodeClient, incomingCallId);
 		    	if (value != null) break;
 		    }
