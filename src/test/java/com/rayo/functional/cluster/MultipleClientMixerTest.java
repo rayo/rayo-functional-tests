@@ -1,4 +1,4 @@
-package com.rayo.functional.rayoapi;
+package com.rayo.functional.cluster;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
