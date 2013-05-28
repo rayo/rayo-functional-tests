@@ -44,7 +44,7 @@ import com.rayo.functional.rayoapi.TransferTest;
 	RecordTest.class,
 	RedirectTest.class,
 	RejectTest.class,
-	TransferTest.class,
+	TransferTest.class
 })
 public class SingleNodeFunctionalTestSuite {
 
