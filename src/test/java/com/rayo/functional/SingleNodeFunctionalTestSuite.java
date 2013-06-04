@@ -4,7 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.rayo.functional.cluster.MultipleClientMixerTest;
 import com.rayo.functional.rayoapi.CommandTest;
 import com.rayo.functional.rayoapi.QuiesceTest;
 import com.rayo.functional.rayoapi.RayoAnswerTest;
@@ -28,7 +27,6 @@ import com.rayo.functional.rayoapi.TransferTest;
 	JoinTest.class,
 	MiscTest.class,
 	MixerTest.class,
-	MultipleClientMixerTest.class,
 	MultipleJoinTest.class,
 	OutputTest.class,
 	QuiesceTest.class,
