@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.rayo.functional.rayoapi.CommandTest;
 import com.rayo.functional.rayoapi.QuiesceTest;
+import com.rayo.functional.rayoapi.RayoAcceptTest;
 import com.rayo.functional.rayoapi.RayoAnswerTest;
 import com.rayo.functional.rayoapi.RayoCPATest;
 import com.rayo.functional.rayoapi.RayoDtmfTest;
@@ -42,7 +43,8 @@ import com.rayo.functional.rayoapi.TransferTest;
 	RecordTest.class,
 	RedirectTest.class,
 	RejectTest.class,
-	TransferTest.class
+	TransferTest.class,
+	RayoAcceptTest.class
 })
 public class SingleNodeFunctionalTestSuite {
 
