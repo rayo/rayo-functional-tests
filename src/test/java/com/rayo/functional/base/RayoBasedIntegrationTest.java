@@ -124,6 +124,11 @@ public abstract class RayoBasedIntegrationTest {
 		return dial(new URI(sipDialUri));
 	}
 	
+	public CallRef dial(Map<String,String> headers) throws Exception {
+		
+		return rayoClient.dial(null, null, new URI(sipDialUri), headers);
+	}
+	
 	public CallRef dial(URI uri) throws Exception {
 		
 		return rayoClient.dial(uri);
