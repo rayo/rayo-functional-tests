@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.Duration;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.core.verb.Choices;
@@ -102,6 +103,7 @@ public class RayoAcceptTest extends RayoBasedIntegrationTest {
 	}
 
 	@Test
+	@Ignore
 	public void testAcceptWithEarlyMediaFailsIfNo100rel() throws Exception {
 		
 		dial().getCallId();
