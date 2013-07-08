@@ -42,7 +42,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		assertTrue(complete.getSize() > 15000);
 		assertNotNull(complete.getUri());
 		//assertTrue(new File(complete.getUri()).exists()); Difficult to run on cluster setup
-		assertTrue(complete.getUri().toString().startsWith("http"));
+		assertTrue(complete.getUri().toString().startsWith("http") || complete.getUri().toString().startsWith("file"));
 		
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
