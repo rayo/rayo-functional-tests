@@ -96,7 +96,7 @@ public class RayoAcceptTest extends RayoBasedIntegrationTest {
 		assertTrue(complete.getDuration().getMillis() >= 1000);
 		assertTrue(complete.getSize() > 15000);
 		assertNotNull(complete.getUri());
-		assertTrue(complete.getUri().toString().startsWith("http"));
+		assertTrue(complete.getUri().toString().startsWith("http") || complete.getUri().toString().startsWith("file"));
 		
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
