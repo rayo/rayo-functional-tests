@@ -28,7 +28,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 	public void testCanQueryQuiesceStatus() throws Exception {
 		
 		String node = getNodeName();
-		JmxClient nodeClient = new JmxClient(node, "8080", "rayo/jmx");
+		JmxClient nodeClient = new JmxClient(node, "8080", "jolokia");
 		boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 		assertFalse(quiesce);
 	}
@@ -37,7 +37,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 	public void testCanQuiesce() throws Exception {
 		
 		String node = getNodeName();
-		JmxClient nodeClient = new JmxClient(node, "8080", "rayo/jmx");
+		JmxClient nodeClient = new JmxClient(node, "8080", "jolokia");
 		try {
 			boolean quiesce = (Boolean)nodeClient.jmxValue("com.rayo:Type=Admin,name=Admin", "QuiesceMode");
 			assertFalse(quiesce);
@@ -58,7 +58,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 	public void testCallsRejectedOnQuiesce() throws Exception {
 		
 		String node = getNodeName();
-		JmxClient nodeClient = new JmxClient(node, "8080", "rayo/jmx");
+		JmxClient nodeClient = new JmxClient(node, "8080", "jolokia");
 
 		try {
 			quiesceNode(nodeClient);	
@@ -81,7 +81,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 		
 		int nodes = getNodeNames().size();
 		String node = getNodeName();
-		JmxClient nodeClient = new JmxClient(node, "8080", "rayo/jmx");
+		JmxClient nodeClient = new JmxClient(node, "8080", "jolokia");
 		
 		try {
 			quiesceNode(nodeClient);
@@ -101,7 +101,7 @@ public class QuiesceTest extends RayoBasedIntegrationTest {
 	public void testQuiesceLetsActiveCallsFinish() throws Exception {
 				
 		String node = getNodeName();
-		JmxClient nodeClient = new JmxClient(node, "8080", "rayo/jmx");
+		JmxClient nodeClient = new JmxClient(node, "8080", "jolokia");
 		String outgoingCall1 = dial(new URI("sip:usera@"+node)).getCallId();
 		String incomingCall1 = getIncomingCall().getCallId();
 		rayoClient.answer(incomingCall1);
