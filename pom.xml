@@ -70,7 +70,7 @@
     <dependency>
       <groupId>com.voxeo.moho</groupId>
       <artifactId>moho-remote</artifactId>
-      <version>trunk-SNAPSHOT</version>
+      <version>1.2.1-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <artifactId>commons-codec</artifactId>
