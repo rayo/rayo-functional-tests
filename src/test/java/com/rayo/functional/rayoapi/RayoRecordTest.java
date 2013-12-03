@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-
 import org.joda.time.Duration;
 import org.junit.Test;
 
@@ -98,7 +96,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
 		assertTrue(complete.getDuration().getMillis() < 1000);
-		assertEquals(complete.getReason(), com.rayo.core.verb.RecordCompleteEvent.Reason.INI_TIMEOUT);
+		assertEquals(complete.getReason(), com.rayo.core.verb.RecordCompleteEvent.Reason.INITIAL_TIMEOUT);
 		
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
@@ -122,6 +120,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
 		assertTrue(complete.getDuration().getMillis() <= 1500);
+		assertEquals(complete.getReason(), com.rayo.core.verb.RecordCompleteEvent.Reason.FINAL_TIMEOUT);
 		
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
@@ -146,7 +145,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
 		
 		assertEquals(complete.getDuration().getMillis(), 1000);
-		assertEquals(complete.getReason(), com.rayo.core.verb.RecordCompleteEvent.Reason.TIMEOUT);		
+		assertEquals(complete.getReason(), com.rayo.core.verb.RecordCompleteEvent.Reason.MAX_DURATION);		
 				
 		rayoClient.hangup(outgoingCallId);
 		waitForEvents();
