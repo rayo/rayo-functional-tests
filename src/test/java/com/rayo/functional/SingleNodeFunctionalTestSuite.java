@@ -27,7 +27,7 @@ import com.rayo.functional.rayoapi.TransferTest;
 	InputTest.class,
 	JoinTest.class,
 	MiscTest.class,
-	MixerTest.class,
+//	MixerTest.class,
 	MultipleJoinTest.class,
 	OutputTest.class,
 	QuiesceTest.class,
