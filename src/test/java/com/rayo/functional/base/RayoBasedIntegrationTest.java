@@ -53,7 +53,7 @@ public abstract class RayoBasedIntegrationTest {
 	protected String xmppServer;
 	protected String rayoServer;
 		
-	@Rule TestName testName = new TestName();
+	public @Rule TestName testName = new TestName();
 	
 	@Before
 	public void setup() throws Exception {
