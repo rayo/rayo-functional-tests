@@ -18,6 +18,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,10 +53,12 @@ public abstract class RayoBasedIntegrationTest {
 	protected String xmppServer;
 	protected String rayoServer;
 		
+	@Rule TestName testName = new TestName();
 	
 	@Before
 	public void setup() throws Exception {
-		
+	
+		log.debug("Running " + testName.getMethodName());
 		loadProperties();
 		
 		rayoClient = new RayoClient(xmppServer, rayoServer);

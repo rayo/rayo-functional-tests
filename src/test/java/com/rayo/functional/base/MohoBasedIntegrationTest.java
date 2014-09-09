@@ -4,13 +4,17 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +56,12 @@ public abstract class MohoBasedIntegrationTest {
 	protected String xmppServer;
 	protected String rayoServer;
 
+	@Rule TestName testName = new TestName();
+	
 	@Before
 	public void setup() {
 		
+		log.debug("Running " + testName.getMethodName());
 		setup(xmppUsername, xmppPassword);
 	}
 
@@ -135,9 +142,11 @@ public abstract class MohoBasedIntegrationTest {
 	
 	public OutgoingCall dial(String uri) {
 
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("sipRecEnabled", "true");
 		CallableEndpoint endpoint = (CallableEndpoint) mohoRemote
 				.createEndpoint(URI.create(uri));
-		Call call = endpoint.createCall("sip:test@test.com");
+		Call call = endpoint.createCall("sip:test@test.com", headers);
 		call.addObserver(new MohoObserver(this));
 		call.join();
 
