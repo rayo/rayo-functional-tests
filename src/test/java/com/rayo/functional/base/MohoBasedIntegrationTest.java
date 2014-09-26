@@ -144,6 +144,7 @@ public abstract class MohoBasedIntegrationTest {
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("sipRecEnabled", "true");
+		headers.put("testName", testName.getMethodName());
 		CallableEndpoint endpoint = (CallableEndpoint) mohoRemote
 				.createEndpoint(URI.create(uri));
 		Call call = endpoint.createCall("sip:test@test.com", headers);
