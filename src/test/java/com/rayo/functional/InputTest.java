@@ -1,6 +1,9 @@
 package com.rayo.functional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -9,7 +12,6 @@ import com.rayo.functional.base.MohoBasedIntegrationTest;
 import com.voxeo.moho.Call;
 import com.voxeo.moho.IncomingCall;
 import com.voxeo.moho.OutgoingCall;
-import com.voxeo.moho.common.event.MohoCallCompleteEvent;
 import com.voxeo.moho.event.InputCompleteEvent;
 import com.voxeo.moho.event.InputCompleteEvent.Cause;
 import com.voxeo.moho.media.Input;
@@ -233,13 +235,11 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    	incoming.input("yes,no");
 	    	fail("Expected exception");
 	    } catch(Exception e) {
-	    	assertTrue(e.getMessage().contains("The call has not been answered"));
+	    	assertTrue(e.getMessage().contains("Could not start media operation"));
+	    } finally {
+	    	Thread.sleep(100);
+	    	outgoing.hangup();
 	    }
-	    Thread.sleep(100);
-	    MohoCallCompleteEvent endIncoming = assertReceived(MohoCallCompleteEvent.class, incoming);
-	    assertEquals(endIncoming.getCause(), com.voxeo.moho.event.CallCompleteEvent.Cause.ERROR);
-	    MohoCallCompleteEvent endOutgoing = assertReceived(MohoCallCompleteEvent.class, outgoing);
-	    assertEquals(endOutgoing.getCause(), com.voxeo.moho.event.CallCompleteEvent.Cause.DECLINE);
 	}
 	
 	@Test
