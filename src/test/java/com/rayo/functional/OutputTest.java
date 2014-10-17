@@ -46,13 +46,6 @@ public class OutputTest extends MohoBasedIntegrationTest {
 		
 	    OutgoingCall outgoing = dial();
 	    
-	    try {
-			Thread.sleep(10000000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    
 	    IncomingCall call = getIncomingCall();
 	    assertNotNull(call);
 	    call.answer();
