@@ -463,6 +463,7 @@ public class JoinTest extends MohoBasedIntegrationTest {
   }
 
   @Test
+  @Ignore //TROPO-7196
   public void testJoinAndHold() {
 
     OutgoingCall outgoing1 = dial();
@@ -478,15 +479,13 @@ public class JoinTest extends MohoBasedIntegrationTest {
 
     incoming1.input(new InputCommand(new SimpleGrammar("yes,no")));
     incoming2.input(new InputCommand(new SimpleGrammar("yes,no")));
-    waitForEvents(300);
+
     incoming1.hold();
-    waitForEvents(300);
     outgoing1.output("no");
     waitForEvents();
     assertNotReceived(MohoInputCompleteEvent.class, incoming1);
     
     incoming1.unhold();
-    waitForEvents(300);
     outgoing1.output("no");
     waitForEvents();
 
