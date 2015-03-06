@@ -519,7 +519,7 @@ public class RayoCPATest extends RayoBasedIntegrationTest {
 	    assertNotReceived(SignalEvent.class, incomingCallId);
 	    InputCompleteEvent complete = assertReceived(InputCompleteEvent.class, incomingCallId);
 	    assertEquals(complete.getReason(), Reason.MATCH);
-	    assertEquals(complete.getInterpretation(),"dtmf-1 dtmf-2");		
+	    assertEquals(complete.getInterpretation(),"12");		
 	}
 	
 	@Test

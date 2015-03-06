@@ -83,7 +83,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 
 	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
 	    assertEquals(complete.getCause(), Cause.MATCH);
-	    assertEquals(complete.getInterpretation(),"dtmf-7");		
+	    assertEquals(complete.getInterpretation(),"7");		
 	}
 	
 	@Test
@@ -105,7 +105,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 
 	    InputCompleteEvent<?> complete = assertReceived(InputCompleteEvent.class, input);
 	    assertEquals(complete.getCause(), Cause.MATCH);
-	    assertEquals(complete.getInterpretation(),"dtmf-7 dtmf-5");		
+	    assertEquals(complete.getInterpretation(),"75");		
 	}
 	
 	@Test
