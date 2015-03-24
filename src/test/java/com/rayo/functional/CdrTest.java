@@ -3,6 +3,7 @@ package com.rayo.functional;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.voxeo.rayo.client.JmxClient;
@@ -51,6 +52,7 @@ public class CdrTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testShouldCreateTranscript() throws Exception {
 		
 	    String outgoingCall = dial().getCallId();		    
