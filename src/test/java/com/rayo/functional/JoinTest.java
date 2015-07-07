@@ -463,7 +463,6 @@ public class JoinTest extends MohoBasedIntegrationTest {
   }
 
   @Test
-  @Ignore //TROPO-7196
   public void testJoinAndHold() {
 
     OutgoingCall outgoing1 = dial();
