@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.net.URI;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.rayo.functional.base.MohoBasedIntegrationTest;
@@ -25,14 +26,27 @@ public class OutputTest extends MohoBasedIntegrationTest {
 
 	String audioURL = "http://www.phono.com/audio/troporocks.mp3"; // 7-8 seconds length
 	
+	@Before
+	public void setup() {
+
+		System.setProperty("xmpp.server", "192.168.1.35");
+		System.setProperty("rayo.server", "192.168.1.35");
+		System.setProperty("xmpp.username", "usera");
+		System.setProperty("xmpp.password", "1");
+		System.setProperty("sip.dial.uri", "sip:usera@192.168.1.35");
+		System.setProperty("cluster.test", "false");
+		super.setup();
+	}
+	
 	@Test
-	public void testOutputCompleteReceived() {
+	public void testOutputCompleteReceived() throws Exception {
 		
 	    dial();
-	    
+	    	    
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    Output<Call> output = incoming.output("Hello World");
 	    assertReceived(OutputCompleteEvent.class, output);
@@ -49,6 +63,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    IncomingCall call = getIncomingCall();
 	    assertNotNull(call);
 	    call.answer();
+	    waitForEvents();
 	    
 	    Input<Call> input = call.input("yes,no");
 	    
@@ -69,6 +84,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    Output<Call> output = incoming.output(new URI(audioURL));
 	    waitForEvents(1000);
@@ -90,6 +106,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
         Input<Call> input = incoming.input("one hundred,ireland");
 
@@ -113,6 +130,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
         String text = "<speak xmlns=\"http://www.w3.org/2001/10/synthesis\" version=\"1.0\" xml:lang=\"en-US\"><audio src=\"digits/3\"/></speak>";
         OutputCommand outputCommand = new OutputCommand(new TextToSpeechResource(text));        
@@ -134,6 +152,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
         Input<Call> input = incoming.input("one hundred,ireland");
 
@@ -184,6 +203,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    // Forward
 	    Output<Call> output = incoming.output(new URI(audioURL));
@@ -213,6 +233,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    long init = System.currentTimeMillis();
 	    Output<Call> output = incoming.output(new URI(audioURL));	    
@@ -242,6 +263,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    Output<Call> output = incoming.output(new URI(audioURL));
 	    
@@ -267,6 +289,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    Output<Call> output = incoming.output(new URI(audioURL));
 
@@ -315,7 +338,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 		    IncomingCall incoming = getIncomingCall();	    
 		    assertNotNull(incoming);
 		    incoming.answer();
-		    Thread.sleep(100);
+		    waitForEvents();
 		    incoming.hold();		    
 		    try {
 		    	incoming.output("hello");
@@ -337,7 +360,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 		    IncomingCall incoming = getIncomingCall();	    
 		    assertNotNull(incoming);
 		    incoming.answer();
-		    Thread.sleep(100);
+		    waitForEvents();
 		    incoming.hold();
 		    Thread.sleep(100);
 		    incoming.unhold();
@@ -361,7 +384,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	    	incoming.output("hello");
 	    	fail("Expected exception");
 	    } catch(Exception e) {
-	    	assertTrue(e.getMessage().contains("Could not start media operation"));
+	    	assertTrue(e.getMessage().contains("Media not available on this connection yet"));
 	    } finally {
 		    Thread.sleep(100);
 		    outgoing.hangup();	    	
