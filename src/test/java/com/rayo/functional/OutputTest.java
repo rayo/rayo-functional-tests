@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 
 import java.net.URI;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.rayo.functional.base.MohoBasedIntegrationTest;
@@ -25,18 +24,6 @@ import com.voxeo.moho.media.output.TextToSpeechResource;
 public class OutputTest extends MohoBasedIntegrationTest {
 
 	String audioURL = "http://www.phono.com/audio/troporocks.mp3"; // 7-8 seconds length
-	
-	@Before
-	public void setup() {
-
-		System.setProperty("xmpp.server", "192.168.1.35");
-		System.setProperty("rayo.server", "192.168.1.35");
-		System.setProperty("xmpp.username", "usera");
-		System.setProperty("xmpp.password", "1");
-		System.setProperty("sip.dial.uri", "sip:usera@192.168.1.35");
-		System.setProperty("cluster.test", "false");
-		super.setup();
-	}
 	
 	@Test
 	public void testOutputCompleteReceived() throws Exception {
