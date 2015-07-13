@@ -21,6 +21,7 @@ public class HangupTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    	    
 	    assertReceived(AnsweredEvent.class, outgoing);
 	    
@@ -41,6 +42,7 @@ public class HangupTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.accept();
+	    waitForEvents();
 	    
 	    waitForEvents(1000);
 	    incoming.hangup();
@@ -60,6 +62,7 @@ public class HangupTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    	    
 	    assertReceived(AnsweredEvent.class, outgoing);
 	    
