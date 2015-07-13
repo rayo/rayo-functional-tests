@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.net.URI;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.functional.base.MohoBasedIntegrationTest;
@@ -156,6 +157,7 @@ public class OutputTest extends MohoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testAudioPlayback() throws Exception {
 		
 	    dial();

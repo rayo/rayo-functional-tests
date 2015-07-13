@@ -28,6 +28,7 @@ public class RecordTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    Recording<Call> recording = incoming.record(new RecordCommand(null));
 	    
@@ -51,6 +52,7 @@ public class RecordTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    Recording<Call> recording = incoming.record(new RecordCommand(null));
 	    
@@ -80,7 +82,7 @@ public class RecordTest extends MohoBasedIntegrationTest {
 	    	incoming.record(new RecordCommand(null));
 	    	fail("Expected exception");
 	    } catch(Exception e) {
-	    	assertTrue(e.getMessage().contains("Could not start recording"));
+	    	assertTrue(e.getMessage().contains("Media not available on this connection yet"));
 	    } finally {
 	    	Thread.sleep(100);	
 	    	outgoing.hangup();

@@ -55,6 +55,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    Input<Call> input = incoming.input(new InputCommand(new SimpleGrammar("yes,no")));
 	    outgoing.output("yes");
@@ -72,6 +73,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    InputCommand command = new InputCommand(new SimpleGrammar("[1 DIGITS]"));
 	    command.setInputMode(InputMode.DTMF);
@@ -94,6 +96,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
+	    waitForEvents();
 	    
 	    InputCommand command = new InputCommand(new SimpleGrammar("[2 DIGITS]"));
 	    command.setInputMode(InputMode.DTMF);
@@ -116,7 +119,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
-	    
+	    waitForEvents();	    
 	    
 	    Grammar grammar = new Grammar("application/srgs+xml", grxml);	    
 	    Input<Call> input = incoming.input(new InputCommand(grammar));
@@ -138,7 +141,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
-	    
+	    waitForEvents();	    
 	    
 	    InputCommand command = new InputCommand(new SimpleGrammar("yes,no"));
 	    command.setInitialTimeout(2000);
@@ -161,7 +164,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
-	    
+	    waitForEvents();
 	    
 	    InputCommand command = new InputCommand(new SimpleGrammar("yes,no"));
 	    command.setMinConfidence(1f);
@@ -184,7 +187,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();
-	    
+	    waitForEvents();	    
 	    
 	    InputCommand command = new InputCommand(new SimpleGrammar("yes,no"));
 	    command.setMinConfidence(1f);
@@ -207,6 +210,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    IncomingCall incoming = getIncomingCall();
 	    assertNotNull(incoming);
 	    incoming.answer();	    
+	    waitForEvents();
 	    
 	    InputCommand command = new InputCommand(new SimpleGrammar("si,no"));
 	    command.setMinConfidence(1f);
@@ -235,7 +239,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    	incoming.input("yes,no");
 	    	fail("Expected exception");
 	    } catch(Exception e) {
-	    	assertTrue(e.getMessage().contains("Could not start media operation"));
+	    	assertTrue(e.getMessage().contains("Media not available on this connection yet"));
 	    } finally {
 	    	Thread.sleep(100);
 	    	outgoing.hangup();
