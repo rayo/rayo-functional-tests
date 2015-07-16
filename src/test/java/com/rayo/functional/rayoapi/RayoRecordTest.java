@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.joda.time.Duration;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rayo.core.verb.InputCompleteEvent;
@@ -47,6 +48,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testMediaRecorded() throws Exception {
 		
 		String outgoingCallId = dial().getCallId();
@@ -114,6 +116,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		Record record = new Record();
 		record.setFinalTimeout(new Duration(500));
 		VerbRef recordRef = rayoClient.record(record, incomingCallId);		
+		waitForEvents();
 		rayoClient.output("a", outgoingCallId);
 		Thread.sleep(4000);		
 		rayoClient.stop(recordRef);

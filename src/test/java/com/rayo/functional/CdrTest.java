@@ -37,7 +37,8 @@ public class CdrTest extends RayoBasedIntegrationTest {
 	@Test
 	public void testShouldCreateCdrOnOutgoingCall() throws Exception {
 		
-	    String outgoingCall = dial().getCallId();		    
+	    String outgoingCall = dial().getCallId();	
+	    waitForEvents();
 	    try {
 		    Object cdr = null;
 		    for (String node: getNodeNames()) {

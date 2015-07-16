@@ -25,7 +25,7 @@ import com.rayo.core.verb.VerbRef;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 import com.voxeo.rayo.client.xmpp.stanza.IQ;
 
-
+@Ignore
 public class RayoMixerApiTest extends RayoBasedIntegrationTest {
 
 	@Test

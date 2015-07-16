@@ -40,7 +40,8 @@ public class RayoAnswerTest extends RayoBasedIntegrationTest {
 		rayoClient.answer(incomingCallId);
 		
 		waitForEvents();
-		assertFalse(hasAnyErrors(incomingCallId));
+		assertTrue(getLastError(incomingCallId).getText().contains("the call has already been connected or continued"));
+		
 		rayoClient.hangup(incomingCallId);		
 		waitForEvents();
 	}

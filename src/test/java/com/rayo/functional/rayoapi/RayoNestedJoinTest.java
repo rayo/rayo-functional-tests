@@ -18,6 +18,7 @@ import com.rayo.core.JoinedEvent;
 import com.rayo.functional.base.RayoBasedIntegrationTest;
 import com.voxeo.moho.Participant.JoinType;
 
+@Ignore
 public class RayoNestedJoinTest extends RayoBasedIntegrationTest {
 
 	@Test
