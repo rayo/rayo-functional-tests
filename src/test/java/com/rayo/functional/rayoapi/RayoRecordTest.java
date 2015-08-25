@@ -122,7 +122,7 @@ public class RayoRecordTest extends RayoBasedIntegrationTest {
 		rayoClient.stop(recordRef);
 		
 		RecordCompleteEvent complete = assertReceived(RecordCompleteEvent.class, incomingCallId);
-		assertTrue(complete.getDuration().getMillis() <= 1500);
+		assertTrue(complete.getDuration().getMillis() <= 2200);
 		assertEquals(complete.getReason(), com.rayo.core.verb.RecordCompleteEvent.Reason.FINAL_TIMEOUT);
 		
 		rayoClient.hangup(outgoingCallId);
