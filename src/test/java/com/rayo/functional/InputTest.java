@@ -239,7 +239,7 @@ public class InputTest extends MohoBasedIntegrationTest {
 	    	incoming.input("yes,no");
 	    	fail("Expected exception");
 	    } catch(Exception e) {
-	    	assertTrue(e.getMessage().contains("Media not available on this connection yet"));
+	    	assertTrue(e.getMessage().contains("Could not start media operation"));
 	    } finally {
 	    	Thread.sleep(100);
 	    	outgoing.hangup();
